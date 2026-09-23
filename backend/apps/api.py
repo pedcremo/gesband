@@ -107,11 +107,32 @@ class ProgrammeSerializer(serializers.ModelSerializer):
 class InvitationSerializer(serializers.ModelSerializer):
     member_name = serializers.SerializerMethodField()
     attendance = serializers.SerializerMethodField()
+    needs_reconfirmation = serializers.SerializerMethodField()
 
     class Meta:
         model = Invitation
-        fields = ["id", "member", "member_name", "response", "response_note", "responded_at", "attendance"]
-        read_only_fields = ["responded_at", "attendance"]
+        fields = [
+            "id",
+            "member",
+            "member_name",
+            "response",
+            "response_note",
+            "responded_at",
+            "activity_version",
+            "needs_reconfirmation",
+            "attendance",
+        ]
+        read_only_fields = ["responded_at", "activity_version", "needs_reconfirmation", "attendance"]
+
+    def get_needs_reconfirmation(self, obj):
+        """Pendiente con respuestas anteriores: un cambio anulo lo ya contestado.
+
+        Sin esto el cliente no distingue «no he contestado todavia» de «me han
+        anulado el si porque cambio la fecha».
+        """
+        if obj.response != Invitation.Response.PENDING:
+            return False
+        return obj.response_history.exists()
 
     def get_member_name(self, obj):
         return str(obj.member)

@@ -1,0 +1,15 @@
+{% load static %}{
+  "name": "Gesband",
+  "short_name": "Gesband",
+  "description": "Convocatorias, respuestas y avisos de tu banda.",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1B4965",
+  "lang": "es",
+  "icons": [
+    {"src": "{% static 'member_app/icon.svg' %}", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}

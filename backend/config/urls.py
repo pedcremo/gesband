@@ -3,6 +3,8 @@ from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
+
+from config.member_app import member_app, member_app_manifest, member_app_service_worker
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
@@ -58,6 +60,9 @@ urlpatterns = [
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("accounts/activate/<str:token>/", activate_invitation, name="account-invitation-activate"),
     path("accounts/activation-complete/", activation_complete, name="account-activation-complete"),
+    path("app/", member_app, name="member-app"),
+    path("app/sw.js", member_app_service_worker, name="member-app-service-worker"),
+    path("app/manifest.webmanifest", member_app_manifest, name="member-app-manifest"),
     path("panel/", dashboard, name="panel"),
     path("panel/members/", members, name="panel-members"),
     path("panel/members/access/", member_access_invitations, name="member-access-invitations"),

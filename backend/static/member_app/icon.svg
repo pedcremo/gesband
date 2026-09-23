@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Gesband">
+  <rect width="192" height="192" rx="40" fill="#1B4965"/>
+  <circle cx="72" cy="126" r="22" fill="#CAE9FF"/>
+  <circle cx="132" cy="112" r="18" fill="#CAE9FF"/>
+  <path d="M90 126V54l60-14v58" fill="none" stroke="#CAE9FF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
