@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from apps.activities.models import Activity, Attendance, Invitation, ProgrammeItem
 from apps.activities.services import record_attendance, respond
 from apps.associations.models import Association, AssociationAccess, AssociationRole
-from apps.associations.permissions import MANAGER_ROLES, accessible_association_ids, get_access_or_403, require_roles
+from apps.associations.permissions import MANAGER_ROLES, PARTICIPANT_ROLES, accessible_association_ids, get_access_or_403, require_roles
 from apps.communications.models import DeviceRegistration, Notification
 from apps.communications.services import mark_receipt, register_device
 from apps.members.images import sanitize_member_photo
@@ -49,7 +49,11 @@ class AssociationSerializer(serializers.ModelSerializer):
         if not access:
             return []
         roles = set(access.role_assignments.values_list("role", flat=True))
-        permissions = {"association.view", "activities.view", "notifications.view", "devices.manage_own"}
+        # `notifications.view` y `devices.manage_own` son por cuenta, no por
+        # asociacion; `activities.view` depende de participar en la banda.
+        permissions = {"association.view", "notifications.view", "devices.manage_own"}
+        if roles.intersection(PARTICIPANT_ROLES):
+            permissions |= {"activities.view"}
         if roles.intersection(MANAGER_ROLES):
             permissions |= {"members.view", "members.manage", "activities.manage", "attendance.manage", "transport.manage"}
         if AssociationRole.Role.ADMIN in roles:
@@ -258,7 +262,7 @@ class ScopedViewSet(viewsets.ModelViewSet):
         return value
 
     def check_access(self, manager=False):
-        return require_roles(self.request.user, self.association_id(), self.manager_roles if manager else {AssociationRole.Role.MEMBER, *MANAGER_ROLES})
+        return require_roles(self.request.user, self.association_id(), self.manager_roles if manager else PARTICIPANT_ROLES)
 
     def get_serializer_context(self):
         return {**super().get_serializer_context(), "association_id": self.association_id()}

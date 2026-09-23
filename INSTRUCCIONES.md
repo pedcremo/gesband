@@ -46,6 +46,10 @@ recorrido del músico se puede recorrer entero desde la app.
 
 El músico ve en la agenda **solo su propia convocatoria**, no las de los demás.
 
+Los 403 de `platform` y `web_editor` son intencionados: operan la plataforma o el
+complemento web y no participan en la banda. Desde el 23/09/2026 la lista de
+permisos de `/auth/me` ya no les promete lo contrario.
+
 > **`pedcremo` no sirve para probar permisos.** Es superusuario: `require_roles`
 > lo deja pasar siempre (`backend/apps/associations/permissions.py:27`) y la API
 > le devuelve `["*"]` en la lista de permisos. Para observar lo que ve una junta
@@ -85,12 +89,11 @@ Ninguno introducido por la siembra; son del código anterior.
 
 1. ~~**`DJANGO_DEBUG` no hace efecto en Docker.**~~ Resuelto el 23/09/2026: ver
    el apartado 4.
-2. **Incoherencia de permisos en `platform` y `web_editor`.** `/api/v1/auth/me`
-   les anuncia `activities.view` y `notifications.view`, pero
-   `ScopedViewSet.check_access` (`backend/apps/api.py:261`) les responde 403
-   porque no son ni `member` ni rol de gestión. Decisión de producto pendiente: o
-   el serializador promete de más, o esos roles deberían implicar lectura de
-   miembro.
+2. ~~**Incoherencia de permisos en `platform` y `web_editor`.**~~ Resuelto el
+   23/09/2026: ver el apartado 4 y
+   [docs/decisions/0002-alcance-de-lectura-por-rol.md](docs/decisions/0002-alcance-de-lectura-por-rol.md).
+
+No quedan puntos abiertos registrados.
 
 ## 4. Correcciones aplicadas el 23/09/2026
 
@@ -107,6 +110,20 @@ Ahora un ayudante `env_flag` acepta `1/true/yes/on` y `0/false/no/off` sin
 distinguir mayusculas ni espacios, trata el valor vacio como ausente y detiene el
 arranque con `ImproperlyConfigured` ante un valor no reconocido, para que una
 errata no vuelva a leerse como falso. Cubierto por `backend/tests/test_settings.py`.
+
+### Permisos anunciados a `platform` y `web_editor`
+
+`/api/v1/auth/me` anunciaba `activities.view` a cualquier acceso activo, tambien
+a `platform` y `web_editor`, y despues `ScopedViewSet.check_access` les respondia
+403. `notifications.view` no formaba parte del problema: ese extremo filtra por
+cuenta, no por asociacion, asi que el anuncio ya era cierto.
+
+Se decidio rebajar el anuncio en vez de conceder la lectura, por lo razonado en
+[docs/decisions/0002-alcance-de-lectura-por-rol.md](docs/decisions/0002-alcance-de-lectura-por-rol.md).
+El conjunto `PARTICIPANT_ROLES` de `backend/apps/associations/permissions.py` es
+ahora la unica definicion que leen el anuncio y la comprobacion, de modo que no
+puedan volver a separarse. Cubierto por `backend/tests/test_role_permissions.py`,
+que recorre los siete roles.
 
 ## 5. Correcciones aplicadas el 22/09/2026
 

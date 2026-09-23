@@ -10,6 +10,11 @@ MANAGER_ROLES = {
     AssociationRole.Role.DIRECTOR,
 }
 
+# Roles que participan en la vida de la banda y por tanto leen sus datos.
+# `platform` y `web_editor` quedan fuera a proposito: operan la plataforma o el
+# complemento web, no asisten a ensayos ni salidas.
+PARTICIPANT_ROLES = {AssociationRole.Role.MEMBER, *MANAGER_ROLES}
+
 
 def get_access_or_403(user, association_id):
     if not user.is_authenticated:
