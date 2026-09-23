@@ -136,6 +136,47 @@ El MVP propondrá compartir mensajes preparados por WhatsApp con individuos o gr
 
 Esta solución asistida no satisface un eventual requisito de envío automático a grupos grandes. La integración automática individual con WhatsApp Business y cualquier automatización de grupos quedan pendientes de validar capacidades, condiciones y costes. No se usarán automatizaciones no oficiales de WhatsApp Web.
 
+### 3.7 Encuestas a los miembros
+
+Añadido el 23 de septiembre de 2026 a petición del promotor.
+
+La junta necesita consultar a la banda —fechas de un viaje, compra de material,
+uniforme nuevo— sin recurrir a un grupo de WhatsApp donde cada voto queda a la
+vista de todos y quien responde tarde ya sabe lo que han dicho los demás.
+
+- La junta crea una encuesta con un enunciado, sus opciones y un plazo de
+  votación. Mientras no se abra permanece en borrador y se puede corregir.
+- Los destinatarios se eligen como los de una convocatoria: por personas,
+  instrumentos o cuerdas. La encuesta se anuncia por los mismos canales que una
+  convocatoria y aparece en la bandeja de avisos.
+- **Cada persona vota una sola vez.** El servidor rechaza el segundo intento;
+  no basta con ocultar el botón en el cliente.
+- **El voto es anónimo.** El sistema debe poder demostrar que alguien ya votó
+  sin poder decir qué votó. Esto obliga a separar el registro de participación
+  —quién ha votado— de las papeletas, sin ninguna clave que las relacione. Una
+  columna `votante` en la tabla de votos incumple el requisito aunque nadie la
+  consulte.
+- Mientras el plazo sigue abierto, quien puede votar ve el **recuento provisional
+  anónimo**: totales por opción, nunca quién eligió qué.
+- Al vencer el plazo se cierra la votación y la junta **publica el resultado
+  definitivo**. La publicación es una acción explícita, no un efecto automático
+  del reloj: permite revisar la participación antes de dar por bueno el recuento.
+- El resultado publicado queda consultable después, con la fecha de cierre y el
+  número de votos emitidos sobre el de convocados.
+
+Decisiones que quedan abiertas y no impiden documentar el requisito:
+
+- Tipos de pregunta admitidos. La propuesta mínima es opción única; opción
+  múltiple y orden de preferencia se evaluarán al implementarla.
+- Si la junta puede ver el recuento provisional cuando los miembros no, o si
+  ambos ven lo mismo mientras está abierta.
+- Si una encuesta puede anularse una vez abierta y qué se conserva si se anula.
+- Si el plazo vencido sin publicar oculta también el provisional.
+
+El anonimato tiene una consecuencia que conviene aceptar por escrito: una vez
+emitido, un voto no se puede modificar ni retirar a petición de quien lo emitió,
+porque el sistema no sabe cuál es suyo.
+
 ## 4. Fuera del MVP, sin perderlos del producto
 
 | Función | Tratamiento previsto |

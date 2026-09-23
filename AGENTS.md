@@ -13,6 +13,7 @@ Límites de alcance:
 - Incluir foto privada opcional del músico y personalización por asociación.
 - Cumplir MUST-NOTIF-01 de `ANALISIS.md`: activación guiada, comprobación de permiso y registro push, recuperación desde ajustes y prueba real en Android/iOS antes del piloto. No rebajar este requisito a una mejora opcional ni sustituirlo por correo.
 - Incluir transporte básico y repertorio como lista de títulos y notas.
+- Incluir encuestas a los miembros según `ANALISIS.md` 3.7, añadidas el 23/09/2026. El voto único y el anonimato son requisitos del servidor, no del cliente: el registro de participación y las papeletas no pueden compartir clave.
 - Prescindir de Hitobito y otros productos base en esta etapa.
 - No implementar monetización, periodos comerciales de prueba, checkout, precios ni bloqueo por impago.
 - No implementar todavía cuotas, liquidaciones ni pagos bancarios. Son funciones de las asociaciones, distintas de la futura monetización de Gesband.
