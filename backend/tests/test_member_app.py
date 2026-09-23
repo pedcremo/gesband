@@ -1,5 +1,6 @@
 import base64
 from datetime import timedelta
+from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -42,6 +43,27 @@ class MemberAppShellTests(TestCase):
     def test_the_shell_is_not_cached_by_intermediaries(self):
         page = self.client.get("/app/")
         self.assertIn("no-cache", page["Cache-Control"])
+
+    def test_the_service_worker_is_versioned_with_the_shell(self):
+        """Sin version, quien ya tiene la app instalada nunca recibe un cambio."""
+        from config.member_app import shell_version
+
+        version = shell_version()
+        self.assertRegex(version, r"^[0-9a-f]{16}$")
+
+        worker = self.client.get("/app/sw.js")
+        self.assertContains(worker, f"gesband-shell-{version}")
+        # La pagina pide las mismas URL que el service worker guarda.
+        self.assertContains(self.client.get("/app/"), f"app.css?v={version}")
+        self.assertContains(worker, f"app.css?v={version}")
+
+    def test_the_version_changes_when_the_shell_changes(self):
+        import config.member_app as shell
+
+        first = shell.shell_version()
+        with mock.patch.object(shell, "_version_cache", None), \
+                mock.patch("pathlib.Path.read_bytes", return_value=b"otro contenido"):
+            self.assertNotEqual(shell.shell_version(), first)
 
 
 class AssociationBrandingTests(TestCase):

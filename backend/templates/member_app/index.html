@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#1B4965">
   <title>Gesband</title>
   <link rel="manifest" href="/app/manifest.webmanifest">
-  <link rel="icon" href="{% static 'member_app/icon.svg' %}" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="{% static 'member_app/icon.svg' %}">
-  <link rel="stylesheet" href="{% static 'member_app/app.css' %}">
+  <link rel="icon" href="{% static 'member_app/icon.svg' %}?v={{ shell_version }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{% static 'member_app/icon.svg' %}?v={{ shell_version }}">
+  <link rel="stylesheet" href="{% static 'member_app/app.css' %}?v={{ shell_version }}">
 </head>
 <body>
-  <noscript>Esta aplicación necesita JavaScript.</noscript>
+  <noscript><p class="notice error" style="margin:1.15rem">Esta aplicación necesita JavaScript.</p></noscript>
   <div id="app" aria-live="polite"></div>
-  <script src="{% static 'member_app/app.js' %}" defer></script>
+  <script src="{% static 'member_app/app.js' %}?v={{ shell_version }}" defer></script>
 </body>
 </html>

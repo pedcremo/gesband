@@ -1,11 +1,11 @@
 {% load static %}/* Cascaron sin conexion del cliente del musico.
    Los datos nunca se sirven de cache: una convocatoria caducada enganaria. */
-const SHELL = "gesband-shell-v1";
+const SHELL = "gesband-shell-{{ shell_version }}";
 const FILES = [
   "/app/",
-  "{% static 'member_app/app.css' %}",
-  "{% static 'member_app/app.js' %}",
-  "{% static 'member_app/icon.svg' %}",
+  "{% static 'member_app/app.css' %}?v={{ shell_version }}",
+  "{% static 'member_app/app.js' %}?v={{ shell_version }}",
+  "{% static 'member_app/icon.svg' %}?v={{ shell_version }}",
 ];
 
 self.addEventListener("install", (event) => {
