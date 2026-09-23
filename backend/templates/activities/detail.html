@@ -9,12 +9,41 @@
 {% if activity.is_mandatory %}
   <p class="status">{% translate "Asistencia obligatoria" %}</p>
 {% endif %}
+<p class="status">{{ activity.get_status_display }}</p>
 {% if activity.status == 'draft' %}
   <form method="post">
     {% csrf_token %}
     <button class="button" name="publish" value="1">{% translate "Publish activity" %}</button>
   </form>
 {% endif %}
+
+{% if activity.status != 'cancelled' %}
+  <h2>{% translate "Cambiar la ficha" %}</h2>
+  {% if activity.status == 'published' %}
+    <p>
+      {% translate "La actividad está publicada: cada cambio se avisa a quien esté convocado. Cambiar la fecha, la hora de concentración o el lugar anula las respuestas ya dadas y obliga a confirmar de nuevo." %}
+    </p>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {{ change_form.as_p }}
+    <div class="actions">
+      <button class="button" name="save_changes" value="1">{% translate "Guardar y avisar" %}</button>
+    </div>
+  </form>
+
+  <h2>{% translate "Cancelar la actividad" %}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <p>
+      <label for="cancel-reason">{% translate "Motivo (se incluye en el aviso)" %}</label>
+      <input type="text" id="cancel-reason" name="reason" maxlength="500" required>
+    </p>
+    <div class="actions">
+      <button class="button" name="cancel" value="1">{% translate "Cancelar y avisar" %}</button>
+    </div>
+  </form>
+
 <h2>{% translate "Convocar músicos" %}</h2>
 <p>
   {% blocktranslate count musician_count=active_musicians_count %}
@@ -35,6 +64,7 @@
     </button>
   </div>
 </form>
+{% endif %}
 <h2>{% translate "Invitations" %}</h2>
 <table>
   <thead>

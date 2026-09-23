@@ -31,10 +31,33 @@ def queue_notification_deliveries(notification):
     if notification.account.email:
         deliveries.append(Delivery(notification=notification, channel=Delivery.Channel.EMAIL))
     Delivery.objects.bulk_create(deliveries, ignore_conflicts=True)
+    _dispatch_pending_emails(notification)
     return len(deliveries)
 
 
+def _dispatch_pending_emails(notification):
+    """Encola el envio de los correos que siguen pendientes.
+
+    `bulk_create` con `ignore_conflicts` no devuelve las claves, asi que se
+    releen; quedarse con las pendientes evita reenviar una entrega ya resuelta.
+    """
+    from .tasks import deliver_email_task
+
+    delivery_ids = list(
+        Delivery.objects.filter(
+            notification=notification,
+            channel=Delivery.Channel.EMAIL,
+            status=Delivery.Status.PENDING,
+        ).values_list("id", flat=True)
+    )
+    for delivery_id in delivery_ids:
+        transaction.on_commit(lambda delivery_id=delivery_id: deliver_email_task.delay(delivery_id))
+    return len(delivery_ids)
+
+
 def deliver_email(delivery):
+    if delivery.status == Delivery.Status.SENT:
+        return delivery.status
     notification = delivery.notification
     try:
         send_mail(notification.title, notification.body, settings.DEFAULT_FROM_EMAIL, [notification.account.email], fail_silently=False)

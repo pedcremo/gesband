@@ -130,7 +130,9 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ["id", "association", "kind", "status", "title", "description", "location", "starts_at", "ends_at", "meeting_at", "response_deadline", "uniform", "is_mandatory", "version", "programme", "invitations"]
-        read_only_fields = ["id", "association", "created_by", "version", "invitations"]
+        # `status` solo cambia por las acciones publish y cancel, que avisan a
+        # quien esta convocado; un PATCH lo cambiaria en silencio.
+        read_only_fields = ["id", "association", "created_by", "status", "version", "invitations"]
 
     def create(self, validated_data):
         programme = validated_data.pop("programme", [])
@@ -151,7 +153,10 @@ class ActivitySerializer(serializers.ModelSerializer):
         return InvitationSerializer(invitations, many=True, context=self.context).data
 
     def update(self, instance, validated_data):
+        from apps.activities.services import announce_activity_change, changed_activity_fields
+
         programme = validated_data.pop("programme", None)
+        changed = changed_activity_fields(instance, validated_data)
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.version += 1
@@ -160,6 +165,7 @@ class ActivitySerializer(serializers.ModelSerializer):
         if programme is not None:
             instance.programme.all().delete()
             ProgrammeItem.objects.bulk_create([ProgrammeItem(activity=instance, **item) for item in programme])
+        self.change_notice = announce_activity_change(instance, changed, self.context["request"].user)
         return instance
 
 
@@ -488,11 +494,18 @@ class ActivityViewSet(ScopedViewSet):
     @decorators.action(detail=True, methods=["post"])
     def publish(self, request, pk=None):
         self.check_access(manager=True)
-        activity = self.get_object()
-        activity.status = Activity.Status.PUBLISHED
-        activity.version += 1
-        activity.save(update_fields=["status", "version", "updated_at"])
-        return response.Response(self.get_serializer(activity).data)
+        from apps.activities.services import publish_activity
+
+        result = publish_activity(self.get_object(), request.user)
+        return response.Response(self.get_serializer(result["activity"]).data)
+
+    @decorators.action(detail=True, methods=["post"])
+    def cancel(self, request, pk=None):
+        self.check_access(manager=True)
+        from apps.activities.services import cancel_activity
+
+        result = cancel_activity(self.get_object(), request.user, reason=request.data.get("reason", ""))
+        return response.Response(self.get_serializer(result["activity"]).data)
 
     @decorators.action(detail=True, methods=["post"])
     def invite(self, request, pk=None):
@@ -501,15 +514,12 @@ class ActivityViewSet(ScopedViewSet):
         members = Member.objects.filter(association_id=activity.association_id)
         if not request.data.get("all_active_musicians", False):
             members = members.filter(id__in=request.data.get("member_ids", []))
-        from apps.activities.services import create_activity_notifications, invite_members
-        from apps.communications.tasks import queue_notification_task
+        from apps.activities.services import invite_members, notify_activity
 
         result = invite_members(activity, members, mandatory=request.data.get("is_mandatory"))
         activity = result["activity"]
         if activity.status == Activity.Status.PUBLISHED:
-            create_activity_notifications(activity, "Nueva convocatoria", activity.title)
-            for notification in Notification.objects.filter(activity=activity):
-                transaction.on_commit(lambda notification_id=notification.id: queue_notification_task.delay(notification_id))
+            notify_activity(activity, _("Nueva convocatoria"), activity.title)
         return response.Response(
             {"invited": result["eligible"], "created": result["created"], "existing": result["existing"]}
         )

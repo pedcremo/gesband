@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gesband\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-22 09:01+0200\n"
+"POT-Creation-Date: 2026-09-23 17:26+0200\n"
 "PO-Revision-Date: 2026-09-21 10:00+0200\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -10,1219 +10,1642 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: backend/apps/accounts/apps.py:8
+#: apps/accounts/apps.py:8
 msgid "Cuentas"
 msgstr ""
 
-#: backend/apps/accounts/models.py:7 backend/apps/members/models.py:95
+#: apps/accounts/models.py:9 apps/accounts/models.py:33
+#: apps/members/models.py:95
 msgid "correo electrónico"
 msgstr ""
 
-#: backend/apps/accounts/models.py:10 backend/apps/associations/models.py:48
-#: backend/apps/communications/models.py:20
-#: backend/apps/communications/models.py:61 backend/apps/members/models.py:87
+#: apps/accounts/models.py:12 apps/associations/models.py:48
+#: apps/communications/models.py:20 apps/communications/models.py:61
+#: apps/members/models.py:87
 msgid "cuenta"
 msgstr ""
 
-#: backend/apps/accounts/models.py:11
+#: apps/accounts/models.py:13
 msgid "cuentas"
 msgstr ""
 
-#: backend/apps/activities/apps.py:8
-#, fuzzy
-#| msgid "Activities"
-msgid "Actividades"
-msgstr "Activitats"
-
-#: backend/apps/activities/models.py:14
-msgid "Ensayo"
-msgstr ""
-
-#: backend/apps/activities/models.py:15
-msgid "Actuación"
-msgstr ""
-
-#: backend/apps/activities/models.py:18
-msgid "Borrador"
-msgstr ""
-
-#: backend/apps/activities/models.py:19
-msgid "Publicada"
-msgstr ""
-
-#: backend/apps/activities/models.py:20
-msgid "Cancelada"
-msgstr ""
-
-#: backend/apps/activities/models.py:21
-msgid "Completada"
-msgstr ""
-
-#: backend/apps/activities/models.py:23 backend/apps/activities/models.py:88
-#: backend/apps/associations/models.py:10
-#: backend/apps/communications/models.py:12
-#: backend/apps/communications/models.py:56 backend/apps/members/models.py:77
-#: backend/apps/members/models.py:150 backend/apps/transport/models.py:17
+#: apps/accounts/models.py:20 apps/activities/models.py:23
+#: apps/activities/models.py:89 apps/associations/models.py:10
+#: apps/communications/models.py:12 apps/communications/models.py:56
+#: apps/members/models.py:77 apps/members/models.py:150
+#: apps/transport/models.py:17
 msgid "identificador"
 msgstr ""
 
-#: backend/apps/activities/models.py:25 backend/apps/associations/models.py:33
-#: backend/apps/associations/models.py:42
-#: backend/apps/communications/models.py:14 backend/apps/members/models.py:22
-#: backend/apps/members/models.py:39 backend/apps/members/models.py:79
-#: backend/apps/members/models.py:152
+#: apps/accounts/models.py:25 apps/activities/models.py:25
+#: apps/associations/models.py:33 apps/associations/models.py:42
+#: apps/communications/models.py:14 apps/members/models.py:22
+#: apps/members/models.py:39 apps/members/models.py:79
+#: apps/members/models.py:152
 msgid "asociación"
 msgstr ""
 
-#: backend/apps/activities/models.py:27 backend/apps/members/models.py:96
-#: backend/apps/transport/models.py:21
-msgid "tipo"
-msgstr ""
-
-#: backend/apps/activities/models.py:28 backend/apps/activities/models.py:146
-#: backend/apps/communications/models.py:101 backend/apps/members/models.py:97
-#: backend/apps/members/models.py:166
-msgid "estado"
-msgstr ""
-
-#: backend/apps/activities/models.py:29 backend/apps/activities/models.py:72
-#: backend/apps/communications/models.py:30
-msgid "título"
-msgstr ""
-
-#: backend/apps/activities/models.py:30
-msgid "descripción"
-msgstr ""
-
-#: backend/apps/activities/models.py:31
-msgid "lugar"
-msgstr ""
-
-#: backend/apps/activities/models.py:32
-msgid "inicio"
-msgstr ""
-
-#: backend/apps/activities/models.py:33
-msgid "final"
-msgstr ""
-
-#: backend/apps/activities/models.py:34
-msgid "hora de concentración"
-msgstr ""
-
-#: backend/apps/activities/models.py:35
-msgid "plazo de respuesta"
-msgstr ""
-
-#: backend/apps/activities/models.py:36
-msgid "uniforme"
-msgstr ""
-
-#: backend/apps/activities/models.py:37
-msgid "versión"
-msgstr ""
-
-#: backend/apps/activities/models.py:42
-msgid "creada por"
-msgstr ""
-
-#: backend/apps/activities/models.py:44 backend/apps/activities/models.py:101
-#: backend/apps/activities/models.py:128 backend/apps/associations/models.py:29
-#: backend/apps/associations/models.py:51
-#: backend/apps/communications/models.py:35
-#: backend/apps/communications/models.py:106 backend/apps/members/models.py:99
-#: backend/apps/members/models.py:170
-msgid "fecha de creación"
-msgstr ""
-
-#: backend/apps/activities/models.py:45 backend/apps/activities/models.py:157
-#: backend/apps/members/models.py:100
-msgid "fecha de actualización"
-msgstr ""
-
-#: backend/apps/activities/models.py:50 backend/apps/activities/models.py:70
-#: backend/apps/activities/models.py:90
-#: backend/apps/communications/models.py:28 backend/apps/transport/models.py:19
-msgid "actividad"
-msgstr ""
-
-#: backend/apps/activities/models.py:51
-#, fuzzy
-#| msgid "Activities"
-msgid "actividades"
-msgstr "Activitats"
-
-#: backend/apps/activities/models.py:56
-msgid "El final no puede ser anterior al inicio."
-msgstr ""
-
-#: backend/apps/activities/models.py:58
-msgid "La concentración no puede ser posterior al inicio."
-msgstr ""
-
-#: backend/apps/activities/models.py:60
-msgid "El plazo debe terminar antes de la actividad."
-msgstr ""
-
-#: backend/apps/activities/models.py:73
-msgid "notas"
-msgstr ""
-
-#: backend/apps/activities/models.py:74 backend/apps/members/models.py:25
-msgid "orden"
-msgstr ""
-
-#: backend/apps/activities/models.py:78
-msgid "elemento de repertorio"
-msgstr ""
-
-#: backend/apps/activities/models.py:79
-msgid "elementos de repertorio"
-msgstr ""
-
-#: backend/apps/activities/models.py:84
-#: backend/apps/communications/models.py:85
-msgid "Pendiente"
-msgstr ""
-
-#: backend/apps/activities/models.py:85
-msgid "Aceptada"
-msgstr ""
-
-#: backend/apps/activities/models.py:86
-msgid "Rechazada"
-msgstr ""
-
-#: backend/apps/activities/models.py:93 backend/apps/members/models.py:109
-#: backend/apps/members/models.py:118 backend/apps/transport/models.py:57
+#: apps/accounts/models.py:31 apps/activities/models.py:94
+#: apps/members/models.py:109 apps/members/models.py:118
+#: apps/transport/models.py:57
 msgid "miembro"
 msgstr ""
 
-#: backend/apps/activities/models.py:96 backend/apps/activities/models.py:120
+#: apps/accounts/models.py:34
+msgid "huella del token"
+msgstr ""
+
+#: apps/accounts/models.py:39 apps/activities/models.py:43
+msgid "creada por"
+msgstr ""
+
+#: apps/accounts/models.py:45
+msgid "revocada por"
+msgstr ""
+
+#: apps/accounts/models.py:49 apps/activities/models.py:45
+#: apps/activities/models.py:102 apps/activities/models.py:129
+#: apps/associations/models.py:29 apps/associations/models.py:51
+#: apps/communications/models.py:35 apps/communications/models.py:106
+#: apps/members/models.py:99 apps/members/models.py:170
+msgid "fecha de creación"
+msgstr ""
+
+#: apps/accounts/models.py:50
+msgid "fecha de caducidad"
+msgstr ""
+
+#: apps/accounts/models.py:51
+msgid "fecha de envío"
+msgstr ""
+
+#: apps/accounts/models.py:52
+msgid "fecha de aceptación"
+msgstr ""
+
+#: apps/accounts/models.py:53
+msgid "fecha de revocación"
+msgstr ""
+
+#: apps/accounts/models.py:54
+msgid "último error de envío"
+msgstr ""
+
+#: apps/accounts/models.py:66
+msgid "invitación de acceso"
+msgstr ""
+
+#: apps/accounts/models.py:67
+msgid "invitaciones de acceso"
+msgstr ""
+
+#: apps/accounts/services.py:30
+msgid "Solo se puede invitar a miembros activos."
+msgstr ""
+
+#: apps/accounts/services.py:32
+msgid "Este miembro ya tiene una cuenta vinculada."
+msgstr ""
+
+#: apps/accounts/services.py:34
+msgid "El miembro no tiene correo electrónico."
+msgstr ""
+
+#: apps/accounts/services.py:38
+msgid ""
+"Ya existe una cuenta con este correo. Debe vincularse tras comprobar su "
+"identidad."
+msgstr ""
+
+#: apps/accounts/services.py:60 templates/accounts/activate_invitation.html:12
+msgid "Activa tu cuenta de Gesband"
+msgstr ""
+
+#: apps/accounts/services.py:62
+#, python-format
+msgid ""
+"Has recibido una invitación para acceder a %(association)s como %(member)s.\n"
+"\n"
+"Crea tu contraseña mediante este enlace, válido hasta %(expires)s:\n"
+"%(url)s\n"
+"\n"
+"Si no esperabas esta invitación, ignora el mensaje."
+msgstr ""
+
+#: apps/accounts/services.py:110
+msgid "La invitación no es válida."
+msgstr ""
+
+#: apps/accounts/services.py:112
+msgid "La invitación ha caducado o ya no está disponible."
+msgstr ""
+
+#: apps/accounts/services.py:117
+msgid "Ya existe una cuenta con este correo."
+msgstr ""
+
+#: apps/accounts/services.py:149
+msgid "Una invitación aceptada no se puede revocar."
+msgstr ""
+
+#: apps/activities/apps.py:8
+msgid "Actividades"
+msgstr ""
+
+#: apps/activities/forms.py:41 apps/activities/services.py:159
+#: templates/activities/detail.html:10
+msgid "Asistencia obligatoria"
+msgstr "Assistència obligatòria"
+
+#: apps/activities/models.py:14
+msgid "Ensayo"
+msgstr ""
+
+#: apps/activities/models.py:15
+msgid "Actuación"
+msgstr ""
+
+#: apps/activities/models.py:18
+msgid "Borrador"
+msgstr ""
+
+#: apps/activities/models.py:19
+msgid "Publicada"
+msgstr ""
+
+#: apps/activities/models.py:20
+msgid "Cancelada"
+msgstr ""
+
+#: apps/activities/models.py:21
+msgid "Completada"
+msgstr ""
+
+#: apps/activities/models.py:27 apps/members/models.py:96
+#: apps/transport/models.py:21
+msgid "tipo"
+msgstr ""
+
+#: apps/activities/models.py:28 apps/activities/models.py:147
+#: apps/communications/models.py:101 apps/members/models.py:97
+#: apps/members/models.py:166
+msgid "estado"
+msgstr ""
+
+#: apps/activities/models.py:29 apps/activities/models.py:73
+#: apps/communications/models.py:30
+msgid "título"
+msgstr ""
+
+#: apps/activities/models.py:30
+msgid "descripción"
+msgstr ""
+
+#: apps/activities/models.py:31
+msgid "lugar"
+msgstr ""
+
+#: apps/activities/models.py:32
+msgid "inicio"
+msgstr ""
+
+#: apps/activities/models.py:33
+msgid "final"
+msgstr ""
+
+#: apps/activities/models.py:34
+msgid "hora de concentración"
+msgstr ""
+
+#: apps/activities/models.py:35
+msgid "plazo de respuesta"
+msgstr ""
+
+#: apps/activities/models.py:36
+msgid "uniforme"
+msgstr ""
+
+#: apps/activities/models.py:37
+msgid "asistencia obligatoria"
+msgstr ""
+
+#: apps/activities/models.py:38
+msgid "versión"
+msgstr ""
+
+#: apps/activities/models.py:46 apps/activities/models.py:158
+#: apps/members/models.py:100
+msgid "fecha de actualización"
+msgstr ""
+
+#: apps/activities/models.py:51 apps/activities/models.py:71
+#: apps/activities/models.py:91 apps/communications/models.py:28
+#: apps/transport/models.py:19
+msgid "actividad"
+msgstr ""
+
+#: apps/activities/models.py:52
+msgid "actividades"
+msgstr ""
+
+#: apps/activities/models.py:57
+msgid "El final no puede ser anterior al inicio."
+msgstr ""
+
+#: apps/activities/models.py:59
+msgid "La concentración no puede ser posterior al inicio."
+msgstr ""
+
+#: apps/activities/models.py:61
+msgid "El plazo debe terminar antes de la actividad."
+msgstr ""
+
+#: apps/activities/models.py:74
+msgid "notas"
+msgstr ""
+
+#: apps/activities/models.py:75 apps/members/models.py:25
+msgid "orden"
+msgstr ""
+
+#: apps/activities/models.py:79
+msgid "elemento de repertorio"
+msgstr ""
+
+#: apps/activities/models.py:80
+msgid "elementos de repertorio"
+msgstr ""
+
+#: apps/activities/models.py:85 apps/communications/models.py:85
+msgid "Pendiente"
+msgstr ""
+
+#: apps/activities/models.py:86 templates/members/access_invitations.html:38
+msgid "Aceptada"
+msgstr ""
+
+#: apps/activities/models.py:87
+msgid "Rechazada"
+msgstr ""
+
+#: apps/activities/models.py:97 apps/activities/models.py:121
 msgid "respuesta"
 msgstr ""
 
-#: backend/apps/activities/models.py:98
+#: apps/activities/models.py:99
 msgid "nota de respuesta"
 msgstr ""
 
-#: backend/apps/activities/models.py:99
+#: apps/activities/models.py:100
 msgid "fecha de respuesta"
 msgstr ""
 
-#: backend/apps/activities/models.py:100
+#: apps/activities/models.py:101
 msgid "versión de la actividad"
 msgstr ""
 
-#: backend/apps/activities/models.py:105 backend/apps/activities/models.py:118
-#: backend/apps/activities/models.py:144
+#: apps/activities/models.py:106 apps/activities/models.py:119
+#: apps/activities/models.py:145
 msgid "convocatoria"
 msgstr ""
 
-#: backend/apps/activities/models.py:106
+#: apps/activities/models.py:107
 msgid "convocatorias"
 msgstr ""
 
-#: backend/apps/activities/models.py:110 backend/apps/api.py:192
-#: backend/apps/transport/models.py:70
+#: apps/activities/models.py:111 apps/api.py:202 apps/transport/models.py:70
 msgid "El miembro pertenece a otra asociación."
 msgstr "El membre pertany a una altra associació."
 
-#: backend/apps/activities/models.py:121 backend/apps/activities/models.py:147
+#: apps/activities/models.py:122 apps/activities/models.py:148
 msgid "nota"
 msgstr ""
 
-#: backend/apps/activities/models.py:126
+#: apps/activities/models.py:127
 msgid "modificada por"
 msgstr ""
 
-#: backend/apps/activities/models.py:132
+#: apps/activities/models.py:133
 msgid "cambio de respuesta"
 msgstr ""
 
-#: backend/apps/activities/models.py:133
+#: apps/activities/models.py:134
 msgid "cambios de respuesta"
 msgstr ""
 
-#: backend/apps/activities/models.py:138
+#: apps/activities/models.py:139
 msgid "Sin registrar"
 msgstr ""
 
-#: backend/apps/activities/models.py:139
-#, fuzzy
-#| msgid "Present"
+#: apps/activities/models.py:140
 msgid "Presente"
-msgstr "Present"
+msgstr ""
 
-#: backend/apps/activities/models.py:140
-#, fuzzy
-#| msgid "Absent"
+#: apps/activities/models.py:141
 msgid "Ausente"
-msgstr "Absent"
+msgstr ""
 
-#: backend/apps/activities/models.py:141
+#: apps/activities/models.py:142
 msgid "Ausencia justificada"
 msgstr ""
 
-#: backend/apps/activities/models.py:154
+#: apps/activities/models.py:155
 msgid "registrada por"
 msgstr ""
 
-#: backend/apps/activities/models.py:156
+#: apps/activities/models.py:157
 msgid "fecha de registro"
 msgstr ""
 
-#: backend/apps/activities/models.py:160
+#: apps/activities/models.py:161
 msgid "asistencia"
 msgstr ""
 
-#: backend/apps/activities/models.py:161
+#: apps/activities/models.py:162
 msgid "asistencias"
 msgstr ""
 
-#: backend/apps/activities/services.py:15
+#: apps/activities/services.py:51
 msgid "Solo la persona convocada puede responder."
 msgstr ""
 
-#: backend/apps/activities/services.py:17
+#: apps/activities/services.py:53
 msgid "La actividad no admite respuestas."
 msgstr ""
 
-#: backend/apps/activities/services.py:19
+#: apps/activities/services.py:55
 msgid "El plazo de respuesta ha terminado."
 msgstr ""
 
-#: backend/apps/activities/services.py:21
+#: apps/activities/services.py:57
 msgid "Respuesta no válida."
 msgstr ""
 
-#: backend/apps/activities/services.py:34
+#: apps/activities/services.py:60
+msgid "Indica el motivo de la ausencia en una actividad obligatoria."
+msgstr ""
+
+#: apps/activities/services.py:73
 msgid "Estado de asistencia no válido."
 msgstr ""
 
-#: backend/apps/api.py:74 backend/apps/members/models.py:61
+#: apps/activities/services.py:152
+msgid "Título"
+msgstr "Títol"
+
+#: apps/activities/services.py:153
+msgid "Inicio"
+msgstr "Inici"
+
+#: apps/activities/services.py:154
+msgid "Final"
+msgstr "Final"
+
+#: apps/activities/services.py:155
+msgid "Concentración"
+msgstr "Concentració"
+
+#: apps/activities/services.py:156
+msgid "Lugar"
+msgstr "Lloc"
+
+#: apps/activities/services.py:157
+msgid "Uniforme"
+msgstr "Uniforme"
+
+#: apps/activities/services.py:158
+msgid "Plazo de respuesta"
+msgstr "Termini de resposta"
+
+#: apps/activities/services.py:167
+msgid "sí"
+msgstr "sí"
+
+#: apps/activities/services.py:167
+msgid "no"
+msgstr "no"
+
+#: apps/activities/services.py:169
+msgid "sin indicar"
+msgstr "sense indicar"
+
+#: apps/activities/services.py:192
+msgid "Anulada por un cambio de fecha o lugar."
+msgstr "Anul·lada per un canvi de data o lloc."
+
+#: apps/activities/services.py:219
+msgid "Cambio importante: vuelve a confirmar"
+msgstr "Canvi important: torna a confirmar"
+
+#: apps/activities/services.py:224
+msgid "Cambio en la convocatoria"
+msgstr "Canvi en la convocatòria"
+
+#: apps/activities/services.py:236
+msgid "La actividad ya está cancelada."
+msgstr "L'activitat ja està cancel·lada."
+
+#: apps/activities/services.py:248
+msgid "Motivo"
+msgstr "Motiu"
+
+#: apps/activities/services.py:250
+msgid "Actividad cancelada"
+msgstr "Activitat cancel·lada"
+
+#: apps/activities/services.py:259
+msgid "Una actividad cancelada no se puede publicar."
+msgstr "Una activitat cancel·lada no es pot publicar."
+
+#: apps/activities/services.py:263 apps/api.py:526 config/panel.py:321
+msgid "Nueva convocatoria"
+msgstr "Nova convocatòria"
+
+#: apps/api.py:78 apps/members/models.py:61
 msgid "La cuerda pertenece a otra asociación."
 msgstr "La corda pertany a una altra associació."
 
-#: backend/apps/api.py:173
+#: apps/api.py:183
 msgid "La actividad pertenece a otra asociación."
 msgstr "L'activitat pertany a una altra associació."
 
-#: backend/apps/api.py:175 backend/apps/transport/models.py:43
+#: apps/api.py:185 apps/transport/models.py:43
 msgid "El conductor pertenece a otra asociación."
 msgstr "El conductor pertany a una altra associació."
 
-#: backend/apps/api.py:190
+#: apps/api.py:200
 msgid "El transporte pertenece a otra asociación."
 msgstr "El transport pertany a una altra associació."
 
-#: backend/apps/api.py:212
+#: apps/api.py:222
 msgid "Credenciales no válidas."
 msgstr ""
 
-#: backend/apps/api.py:225
+#: apps/api.py:235
 msgid "Token de renovación no válido."
 msgstr ""
 
-#: backend/apps/api.py:257
+#: apps/api.py:267
 msgid "Es obligatorio seleccionar la asociación."
 msgstr ""
 
-#: backend/apps/api.py:308 backend/apps/api.py:343
+#: apps/api.py:318 apps/api.py:353
 msgid "Adjunta una imagen."
 msgstr ""
 
-#: backend/apps/api.py:324
+#: apps/api.py:334
 msgid "No hay una ficha vinculada a esta cuenta."
 msgstr ""
 
-#: backend/apps/api.py:437 backend/apps/transport/models.py:75
+#: apps/api.py:447 apps/transport/models.py:75
 msgid "El miembro ya tiene transporte para esta actividad."
 msgstr "El membre ja té transport per a esta activitat."
 
-#: backend/apps/api.py:439 backend/apps/transport/models.py:77
+#: apps/api.py:449 apps/transport/models.py:77
 msgid "No quedan plazas disponibles."
 msgstr "No queden places disponibles."
 
-#: backend/apps/api.py:540
+#: apps/api.py:563
 msgid "Dispositivo no registrado."
 msgstr ""
 
-#: backend/apps/api.py:548
+#: apps/api.py:571
 msgid "Registra primero un dispositivo con notificaciones activadas."
 msgstr ""
 
-#: backend/apps/api.py:584 backend/config/panel.py:74
+#: apps/api.py:607 config/panel.py:164
 msgid "Adjunta un CSV o XLSX."
 msgstr "Adjunta un CSV o XLSX."
 
-#: backend/apps/associations/apps.py:8
+#: apps/associations/apps.py:8
 msgid "Asociaciones"
 msgstr ""
 
-#: backend/apps/associations/models.py:11 backend/apps/members/models.py:24
-#: backend/apps/members/models.py:49 backend/apps/members/models.py:90
-#: backend/apps/transport/models.py:22
+#: apps/associations/models.py:11 apps/members/models.py:24
+#: apps/members/models.py:49 apps/members/models.py:90
+#: apps/transport/models.py:22
 msgid "nombre"
 msgstr ""
 
-#: backend/apps/associations/models.py:12
+#: apps/associations/models.py:12
 msgid "identificador para URL"
 msgstr ""
 
-#: backend/apps/associations/models.py:13
+#: apps/associations/models.py:13
 msgid "logotipo"
 msgstr ""
 
-#: backend/apps/associations/models.py:15
+#: apps/associations/models.py:15
 msgid "color principal"
 msgstr ""
 
-#: backend/apps/associations/models.py:18
+#: apps/associations/models.py:18
 msgid "Usa un color hexadecimal, por ejemplo #1B4965."
 msgstr ""
 
-#: backend/apps/associations/models.py:21
+#: apps/associations/models.py:21
 msgid "color secundario"
 msgstr ""
 
-#: backend/apps/associations/models.py:24
+#: apps/associations/models.py:24
 msgid "Usa un color hexadecimal, por ejemplo #CAE9FF."
 msgstr ""
 
-#: backend/apps/associations/models.py:26
+#: apps/associations/models.py:26
 msgid "lema"
 msgstr ""
 
-#: backend/apps/associations/models.py:27
+#: apps/associations/models.py:27
 msgid "zona horaria"
 msgstr ""
 
-#: backend/apps/associations/models.py:28
+#: apps/associations/models.py:28
 msgid "activa"
 msgstr ""
 
-#: backend/apps/associations/models.py:34
+#: apps/associations/models.py:34
 msgid "asociaciones"
 msgstr ""
 
-#: backend/apps/associations/models.py:50
-#: backend/apps/communications/models.py:71
+#: apps/associations/models.py:50 apps/communications/models.py:71
 msgid "activo"
 msgstr ""
 
-#: backend/apps/associations/models.py:55
+#: apps/associations/models.py:55
 msgid "acceso a asociación"
 msgstr ""
 
-#: backend/apps/associations/models.py:56
+#: apps/associations/models.py:56
 msgid "accesos a asociaciones"
 msgstr ""
 
-#: backend/apps/associations/models.py:64
+#: apps/associations/models.py:64 templates/members/access_invitations.html:16
 msgid "Músico"
 msgstr ""
 
-#: backend/apps/associations/models.py:65
+#: apps/associations/models.py:65
 msgid "Junta"
 msgstr ""
 
-#: backend/apps/associations/models.py:66
+#: apps/associations/models.py:66
 msgid "Contratista/organización"
 msgstr ""
 
-#: backend/apps/associations/models.py:67
+#: apps/associations/models.py:67
 msgid "Dirección musical"
 msgstr ""
 
-#: backend/apps/associations/models.py:68
-#, fuzzy
-#| msgid "Django administration"
+#: apps/associations/models.py:68
 msgid "Administración"
-msgstr "Administració de Gesband"
+msgstr ""
 
-#: backend/apps/associations/models.py:69
+#: apps/associations/models.py:69
 msgid "Administración de plataforma"
 msgstr ""
 
-#: backend/apps/associations/models.py:70
+#: apps/associations/models.py:70
 msgid "Edición web"
 msgstr ""
 
-#: backend/apps/associations/models.py:76
+#: apps/associations/models.py:76
 msgid "acceso"
 msgstr ""
 
-#: backend/apps/associations/models.py:78
+#: apps/associations/models.py:78
 msgid "rol"
 msgstr ""
 
-#: backend/apps/associations/models.py:82
+#: apps/associations/models.py:82
 msgid "rol de asociación"
 msgstr ""
 
-#: backend/apps/associations/models.py:83
+#: apps/associations/models.py:83
 msgid "roles de asociación"
 msgstr ""
 
-#: backend/apps/associations/permissions.py:16
+#: apps/associations/permissions.py:21
 msgid "Autenticación requerida."
 msgstr "Cal autenticar-se."
 
-#: backend/apps/associations/permissions.py:22
+#: apps/associations/permissions.py:27
 msgid "No tienes acceso a esta asociación."
 msgstr "No tens accés a esta associació."
 
-#: backend/apps/associations/permissions.py:31
+#: apps/associations/permissions.py:36
 msgid "No tienes permisos para realizar esta acción."
 msgstr "No tens permisos per a realitzar esta acció."
 
-#: backend/apps/communications/apps.py:8
+#: apps/communications/apps.py:8
 msgid "Comunicaciones"
 msgstr ""
 
-#: backend/apps/communications/models.py:31
+#: apps/communications/models.py:31
 msgid "contenido"
 msgstr ""
 
-#: backend/apps/communications/models.py:32
+#: apps/communications/models.py:32
 msgid "enlace interno"
 msgstr ""
 
-#: backend/apps/communications/models.py:33
+#: apps/communications/models.py:33
 msgid "clave de deduplicación"
 msgstr ""
 
-#: backend/apps/communications/models.py:34
+#: apps/communications/models.py:34
 msgid "fecha de lectura"
 msgstr ""
 
-#: backend/apps/communications/models.py:40
-#: backend/apps/communications/models.py:90
+#: apps/communications/models.py:40 apps/communications/models.py:90
 msgid "aviso"
 msgstr ""
 
-#: backend/apps/communications/models.py:41
+#: apps/communications/models.py:41
 msgid "avisos"
 msgstr ""
 
-#: backend/apps/communications/models.py:46
+#: apps/communications/models.py:46
 msgid "Android"
 msgstr ""
 
-#: backend/apps/communications/models.py:47
+#: apps/communications/models.py:47
 msgid "iOS"
 msgstr ""
 
-#: backend/apps/communications/models.py:50
+#: apps/communications/models.py:50
 msgid "Desconocido"
 msgstr ""
 
-#: backend/apps/communications/models.py:51
+#: apps/communications/models.py:51
 msgid "Concedido"
 msgstr ""
 
-#: backend/apps/communications/models.py:52
+#: apps/communications/models.py:52
 msgid "Denegado"
 msgstr ""
 
-#: backend/apps/communications/models.py:53
+#: apps/communications/models.py:53
 msgid "Provisional"
 msgstr ""
 
-#: backend/apps/communications/models.py:54
+#: apps/communications/models.py:54
 msgid "Desactivado"
 msgstr ""
 
-#: backend/apps/communications/models.py:63
+#: apps/communications/models.py:63
 msgid "identificador de instalación"
 msgstr ""
 
-#: backend/apps/communications/models.py:64
+#: apps/communications/models.py:64
 msgid "plataforma"
 msgstr ""
 
-#: backend/apps/communications/models.py:65
+#: apps/communications/models.py:65
 msgid "token push"
 msgstr ""
 
-#: backend/apps/communications/models.py:67
+#: apps/communications/models.py:67
 msgid "permiso"
 msgstr ""
 
-#: backend/apps/communications/models.py:69
+#: apps/communications/models.py:69
 msgid "última recepción"
 msgstr ""
 
-#: backend/apps/communications/models.py:70
+#: apps/communications/models.py:70
 msgid "última conexión"
 msgstr ""
 
-#: backend/apps/communications/models.py:75
+#: apps/communications/models.py:75
 msgid "dispositivo registrado"
 msgstr ""
 
-#: backend/apps/communications/models.py:76
+#: apps/communications/models.py:76
 msgid "dispositivos registrados"
 msgstr ""
 
-#: backend/apps/communications/models.py:81
+#: apps/communications/models.py:81
 msgid "Push"
 msgstr ""
 
-#: backend/apps/communications/models.py:82
+#: apps/communications/models.py:82
 msgid "Correo"
 msgstr ""
 
-#: backend/apps/communications/models.py:86
+#: apps/communications/models.py:86
+#: templates/members/access_invitations.html:46
 msgid "Enviada"
 msgstr ""
 
-#: backend/apps/communications/models.py:87 backend/apps/members/models.py:148
+#: apps/communications/models.py:87 apps/members/models.py:148
 msgid "Fallida"
 msgstr "Fallida"
 
-#: backend/apps/communications/models.py:98
+#: apps/communications/models.py:98
 msgid "dispositivo"
 msgstr ""
 
-#: backend/apps/communications/models.py:100
+#: apps/communications/models.py:100
 msgid "canal"
 msgstr ""
 
-#: backend/apps/communications/models.py:102
+#: apps/communications/models.py:102
 msgid "identificador del proveedor"
 msgstr ""
 
-#: backend/apps/communications/models.py:103
+#: apps/communications/models.py:103
 msgid "error"
 msgstr ""
 
-#: backend/apps/communications/models.py:104
+#: apps/communications/models.py:104
 msgid "intentos"
 msgstr ""
 
-#: backend/apps/communications/models.py:105
+#: apps/communications/models.py:105
 msgid "último intento"
 msgstr ""
 
-#: backend/apps/communications/models.py:110
+#: apps/communications/models.py:110
 msgid "entrega de aviso"
 msgstr ""
 
-#: backend/apps/communications/models.py:111
+#: apps/communications/models.py:111
 msgid "entregas de avisos"
 msgstr ""
 
-#: backend/apps/members/apps.py:8
+#: apps/members/apps.py:8
 msgid "Miembros"
 msgstr ""
 
-#: backend/apps/members/images.py:14
+#: apps/members/images.py:14
 msgid "La foto supera 5 MB."
 msgstr ""
 
-#: backend/apps/members/images.py:21
+#: apps/members/images.py:21
 msgid "La imagen tiene demasiados píxeles."
 msgstr ""
 
-#: backend/apps/members/images.py:27
+#: apps/members/images.py:27
 msgid "El fichero no es una imagen válida."
 msgstr ""
 
-#: backend/apps/members/models.py:30 backend/apps/members/models.py:47
+#: apps/members/models.py:30 apps/members/models.py:47
 msgid "cuerda"
 msgstr ""
 
-#: backend/apps/members/models.py:31
+#: apps/members/models.py:31
 msgid "cuerdas"
 msgstr ""
 
-#: backend/apps/members/models.py:54 backend/apps/members/models.py:124
-#, fuzzy
-#| msgid "Instrument"
+#: apps/members/models.py:54 apps/members/models.py:124
 msgid "instrumento"
-msgstr "Instrument"
+msgstr ""
 
-#: backend/apps/members/models.py:55
-#, fuzzy
-#| msgid "Instrument"
+#: apps/members/models.py:55
 msgid "instrumentos"
-msgstr "Instrument"
+msgstr ""
 
-#: backend/apps/members/models.py:69
+#: apps/members/models.py:69
 msgid "Músico socio"
 msgstr ""
 
-#: backend/apps/members/models.py:70
+#: apps/members/models.py:70
 msgid "Socio colaborador/mecenas"
 msgstr ""
 
-#: backend/apps/members/models.py:71
+#: apps/members/models.py:71
 msgid "Colaborador musical externo"
 msgstr ""
 
-#: backend/apps/members/models.py:74
-#, fuzzy
-#| msgid "Action"
+#: apps/members/models.py:74
 msgid "Activo"
-msgstr "Acció"
+msgstr ""
 
-#: backend/apps/members/models.py:75
+#: apps/members/models.py:75
 msgid "Inactivo"
 msgstr ""
 
-#: backend/apps/members/models.py:89
+#: apps/members/models.py:89
 msgid "identificador externo"
 msgstr ""
 
-#: backend/apps/members/models.py:91
+#: apps/members/models.py:91
 msgid "apellidos"
 msgstr ""
 
-#: backend/apps/members/models.py:92 backend/config/panel.py:24
+#: apps/members/models.py:92 config/panel.py:38
 msgid "DNI/NIE"
 msgstr ""
 
-#: backend/apps/members/models.py:93
+#: apps/members/models.py:93
 msgid "dirección"
 msgstr ""
 
-#: backend/apps/members/models.py:94
+#: apps/members/models.py:94
 msgid "teléfono"
 msgstr ""
 
-#: backend/apps/members/models.py:98
+#: apps/members/models.py:98
 msgid "foto"
 msgstr ""
 
-#: backend/apps/members/models.py:110
+#: apps/members/models.py:110
 msgid "miembros"
 msgstr ""
 
-#: backend/apps/members/models.py:126
+#: apps/members/models.py:126
 msgid "principal"
 msgstr ""
 
-#: backend/apps/members/models.py:133
+#: apps/members/models.py:133
 msgid "instrumento de miembro"
 msgstr ""
 
-#: backend/apps/members/models.py:134
+#: apps/members/models.py:134
 msgid "instrumentos de miembros"
 msgstr ""
 
-#: backend/apps/members/models.py:140
+#: apps/members/models.py:140
 msgid "El instrumento pertenece a otra asociación."
 msgstr "L'instrument pertany a una altra associació."
 
-#: backend/apps/members/models.py:145
+#: apps/members/models.py:145
 msgid "Subido"
 msgstr "Pujat"
 
-#: backend/apps/members/models.py:146
+#: apps/members/models.py:146
 msgid "Previsualización"
 msgstr "Previsualització"
 
-#: backend/apps/members/models.py:147
+#: apps/members/models.py:147
 msgid "Confirmada"
 msgstr "Confirmada"
 
-#: backend/apps/members/models.py:158
+#: apps/members/models.py:158
 msgid "creado por"
 msgstr ""
 
-#: backend/apps/members/models.py:160
+#: apps/members/models.py:160
 msgid "nombre de archivo"
 msgstr ""
 
-#: backend/apps/members/models.py:161
+#: apps/members/models.py:161
 msgid "huella del contenido"
 msgstr ""
 
-#: backend/apps/members/models.py:163
+#: apps/members/models.py:163
 msgid "fichero original temporal"
 msgstr "fitxer original temporal"
 
-#: backend/apps/members/models.py:165
+#: apps/members/models.py:165
 msgid "columnas de origen"
 msgstr "columnes d'origen"
 
-#: backend/apps/members/models.py:167
+#: apps/members/models.py:167
 msgid "asignación de columnas"
 msgstr ""
 
-#: backend/apps/members/models.py:168
+#: apps/members/models.py:168
 msgid "previsualización"
 msgstr ""
 
-#: backend/apps/members/models.py:169
+#: apps/members/models.py:169
 msgid "resultado"
 msgstr ""
 
-#: backend/apps/members/models.py:171
+#: apps/members/models.py:171
 msgid "fecha de confirmación"
 msgstr ""
 
-#: backend/apps/members/models.py:176
+#: apps/members/models.py:176
 msgid "lote de importación"
 msgstr ""
 
-#: backend/apps/members/models.py:177
+#: apps/members/models.py:177
 msgid "lotes de importación"
 msgstr ""
 
-#: backend/apps/members/services.py:24
+#: apps/members/services.py:69
 msgid "El fichero supera 5 MB."
 msgstr "El fitxer supera 5 MB."
 
-#: backend/apps/members/services.py:30
+#: apps/members/services.py:75
 msgid "El CSV debe estar codificado en UTF-8."
 msgstr "El CSV ha d'estar codificat en UTF-8."
 
-#: backend/apps/members/services.py:43
+#: apps/members/services.py:88
 msgid "El fichero XLSX no es válido."
 msgstr "El fitxer XLSX no és vàlid."
 
-#: backend/apps/members/services.py:45
+#: apps/members/services.py:90
 msgid "Solo se admiten ficheros CSV o XLSX."
 msgstr "Només s'admeten fitxers CSV o XLSX."
 
-#: backend/apps/members/services.py:47
+#: apps/members/services.py:92
 msgid "Todas las columnas deben tener un nombre."
 msgstr "Totes les columnes han de tindre un nom."
 
-#: backend/apps/members/services.py:49
+#: apps/members/services.py:94
 msgid "Los nombres de columna no pueden repetirse."
 msgstr "Els noms de columna no poden repetir-se."
 
-#: backend/apps/members/services.py:51
+#: apps/members/services.py:96
 msgid "El fichero no contiene filas de datos."
 msgstr "El fitxer no conté files de dades."
 
-#: backend/apps/members/services.py:53
+#: apps/members/services.py:98
 #, python-format
 msgid "El fichero supera el límite de %(limit)s filas."
 msgstr "El fitxer supera el límit de %(limit)s files."
 
-#: backend/apps/members/services.py:63
+#: apps/members/services.py:108
 #, python-format
 msgid "Campos de destino no permitidos: %(fields)s."
 msgstr "Camps de destinació no permesos: %(fields)s."
 
-#: backend/apps/members/services.py:68
+#: apps/members/services.py:113
 #, python-format
 msgid "Columnas de origen desconocidas: %(fields)s."
 msgstr "Columnes d'origen desconegudes: %(fields)s."
 
-#: backend/apps/members/services.py:72
+#: apps/members/services.py:117
 msgid "Cada campo de destino solo puede asignarse una vez."
 msgstr "Cada camp de destinació només pot assignar-se una vegada."
 
-#: backend/apps/members/services.py:79
+#: apps/members/services.py:119
+msgid "Asigna una columna al campo Nombre."
+msgstr ""
+
+#: apps/members/services.py:123
+msgid "Asigna Apellidos (juntos) o Primer apellido."
+msgstr ""
+
+#: apps/members/services.py:125
+msgid "Usa Apellidos (juntos) o los apellidos separados, pero no ambos."
+msgstr ""
+
+#: apps/members/services.py:127
+msgid "El Segundo apellido requiere asignar también el Primer apellido."
+msgstr ""
+
+#: apps/members/services.py:134
 msgid "Falta el nombre."
 msgstr "Falta el nom."
 
-#: backend/apps/members/services.py:81
+#: apps/members/services.py:140
+msgid "Falta el primer apellido."
+msgstr ""
+
+#: apps/members/services.py:142
 msgid "Faltan los apellidos."
 msgstr "Falten els cognoms."
 
-#: backend/apps/members/services.py:83
+#: apps/members/services.py:144
 msgid "Tipo de miembro no válido."
 msgstr "Tipus de membre no vàlid."
 
-#: backend/apps/members/services.py:87
+#: apps/members/services.py:148
 msgid "Identificador externo duplicado en el fichero."
 msgstr "Identificador extern duplicat en el fitxer."
 
-#: backend/apps/members/services.py:100
+#: apps/members/services.py:161
 msgid "Genera la previsualización antes de confirmar."
 msgstr "Genera la previsualització abans de confirmar."
 
-#: backend/apps/transport/apps.py:8
+#: apps/members/services.py:163
+msgid "No hay filas válidas que confirmar. Corrige el mapeo o el fichero."
+msgstr ""
+
+#: apps/transport/apps.py:8
 msgid "Transporte"
 msgstr ""
 
-#: backend/apps/transport/models.py:13
+#: apps/transport/models.py:13
 msgid "Coche"
 msgstr ""
 
-#: backend/apps/transport/models.py:14
+#: apps/transport/models.py:14
 msgid "Autobús"
 msgstr ""
 
-#: backend/apps/transport/models.py:15
+#: apps/transport/models.py:15
 msgid "Otro"
 msgstr ""
 
-#: backend/apps/transport/models.py:23
+#: apps/transport/models.py:23
 msgid "punto de encuentro"
 msgstr ""
 
-#: backend/apps/transport/models.py:24
+#: apps/transport/models.py:24
 msgid "hora de salida"
 msgstr ""
 
-#: backend/apps/transport/models.py:25
+#: apps/transport/models.py:25
 msgid "plazas"
 msgstr ""
 
-#: backend/apps/transport/models.py:32
+#: apps/transport/models.py:32
 msgid "conductor"
 msgstr ""
 
-#: backend/apps/transport/models.py:36 backend/apps/transport/models.py:51
+#: apps/transport/models.py:36 apps/transport/models.py:51
 msgid "transporte"
 msgstr ""
 
-#: backend/apps/transport/models.py:37
+#: apps/transport/models.py:37
 msgid "transportes"
 msgstr ""
 
-#: backend/apps/transport/models.py:41
+#: apps/transport/models.py:41
 msgid "Debe haber al menos una plaza."
 msgstr ""
 
-#: backend/apps/transport/models.py:65
+#: apps/transport/models.py:65
 msgid "asignación de transporte"
 msgstr ""
 
-#: backend/apps/transport/models.py:66
+#: apps/transport/models.py:66
 msgid "asignaciones de transporte"
 msgstr ""
 
-#: backend/config/panel.py:21
+#: config/panel.py:33
 msgid "Identificador externo"
 msgstr "Identificador extern"
 
-#: backend/config/panel.py:22
+#: config/panel.py:34
 msgid "Nombre"
 msgstr ""
 
-#: backend/config/panel.py:23
-msgid "Apellidos"
+#: config/panel.py:35
+msgid "Apellidos (juntos)"
 msgstr ""
 
-#: backend/config/panel.py:25
+#: config/panel.py:36
+msgid "Primer apellido"
+msgstr ""
+
+#: config/panel.py:37
+msgid "Segundo apellido"
+msgstr ""
+
+#: config/panel.py:39
 msgid "Dirección"
 msgstr "Adreça"
 
-#: backend/config/panel.py:26
+#: config/panel.py:40
 msgid "Teléfono"
 msgstr "Telèfon"
 
-#: backend/config/panel.py:27
+#: config/panel.py:41 templates/members/access_invitations.html:17
 msgid "Correo electrónico"
 msgstr "Correu electrònic"
 
-#: backend/config/panel.py:28
+#: config/panel.py:42
 msgid "Tipo de miembro"
 msgstr "Tipus de membre"
 
-#: backend/config/panel.py:44
+#: config/panel.py:58
 msgid "No tienes permisos para acceder al panel de la junta."
 msgstr "No tens permisos per a accedir al panell de la junta."
 
-#: backend/config/panel.py:87
+#: config/panel.py:102
+msgid "Invitación revocada."
+msgstr ""
+
+#: config/panel.py:130
+#, python-format
+msgid "Se han enviado %(count)s invitaciones."
+msgstr ""
+
+#: config/panel.py:134
+#, python-format
+msgid "%(count)s invitaciones no pudieron enviarse; puedes reenviarlas."
+msgstr ""
+
+#: config/panel.py:139
+#, python-format
+msgid ""
+"No se enviaron %(count)s selecciones porque ya tienen cuenta o no son "
+"elegibles."
+msgstr ""
+
+#: config/panel.py:177
 msgid "Este fichero ya se había cargado; se muestra el lote existente."
 msgstr "Este fitxer ja s'havia carregat; es mostra el lot existent."
 
-#: backend/config/panel.py:120
+#: config/panel.py:213
 msgid "El fichero temporal ya no está disponible."
 msgstr "El fitxer temporal ja no està disponible."
 
-#: backend/config/panel.py:126
+#: config/panel.py:219
 msgid "El fichero temporal no coincide con la carga original."
 msgstr "El fitxer temporal no coincideix amb la càrrega original."
 
-#: backend/config/panel.py:135
+#: config/panel.py:228
 msgid "Previsualización generada; el censo todavía no se ha modificado."
 msgstr "Previsualització generada; el cens encara no s'ha modificat."
 
-#: backend/config/panel.py:147
+#: config/panel.py:240
 #, python-format
-msgid "Importación confirmada: %(created)s altas, %(updated)s actualizaciones y %(rejected)s rechazos."
-msgstr "Importació confirmada: %(created)s altes, %(updated)s actualitzacions i %(rejected)s rebutjos."
+msgid ""
+"Importación confirmada: %(created)s altas, %(updated)s actualizaciones y "
+"%(rejected)s rechazos."
+msgstr ""
+"Importació confirmada: %(created)s altes, %(updated)s actualitzacions i "
+"%(rejected)s rebutjos."
 
-#: backend/config/panel.py:185
-msgid "Actividad publicada."
+#: config/panel.py:286
+#, python-format
+msgid "Actividad publicada. Se ha avisado a %(notified)s personas convocadas."
+msgstr "Activitat publicada. S'ha avisat %(notified)s persones convocades."
+
+#: config/panel.py:297
+#, python-format
+msgid "Actividad cancelada. Se ha avisado a %(notified)s personas convocadas."
+msgstr "Activitat cancel·lada. S'ha avisat %(notified)s persones convocades."
+
+#: config/panel.py:325
+#, python-format
+msgid ""
+"Convocatoria preparada para %(eligible)s músicos activos: %(created)s nuevas "
+"y %(existing)s ya existentes."
 msgstr ""
 
-#: backend/config/panel.py:191
+#: config/panel.py:335
 msgid "Asistencia actualizada."
 msgstr ""
 
-#: backend/templates/activities/detail.html:5
+#: config/panel.py:361
+msgid "Actividad actualizada. No había nada que avisar."
+msgstr "Activitat actualitzada. No hi havia res a avisar."
+
+#: config/panel.py:367
+#, python-format
+msgid ""
+"Actividad actualizada. Se ha avisado a %(notified)s personas y se han "
+"anulado %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar "
+"de nuevo."
+msgstr "Activitat actualitzada. S'ha avisat %(notified)s persones i s'han anul·lat %(reset)s respostes: el canvi de data o lloc obliga a confirmar de nou."
+
+#: config/panel.py:376
+#, python-format
+msgid ""
+"Actividad actualizada. Se ha avisado a %(notified)s personas convocadas."
+msgstr "Activitat actualitzada. S'ha avisat %(notified)s persones convocades."
+
+#: config/panel.py:382
+msgid ""
+"El plazo de respuesta ya ha terminado, así que nadie puede volver a "
+"confirmar. Amplíalo para recoger las respuestas."
+msgstr "El termini de resposta ja ha acabat, així que ningú pot tornar a confirmar. Amplia'l per a arreplegar les respostes."
+
+#: templates/accounts/activate_invitation.html:7
+msgid "Activa tu cuenta"
+msgstr ""
+
+#: templates/accounts/activate_invitation.html:13
+#, python-format
+msgid "Vas a activar el acceso de %(member)s a %(association)s."
+msgstr ""
+
+#: templates/accounts/activate_invitation.html:17
+msgid "Contraseña"
+msgstr ""
+
+#: templates/accounts/activate_invitation.html:19
+msgid "Repite la contraseña"
+msgstr ""
+
+#: templates/accounts/activate_invitation.html:21
+msgid "Crear cuenta"
+msgstr ""
+
+#: templates/accounts/activation_complete.html:4
+msgid "Cuenta activada"
+msgstr ""
+
+#: templates/accounts/activation_complete.html:4
+msgid ""
+"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la "
+"contraseña que acabas de crear."
+msgstr ""
+
+#: templates/accounts/invitation_invalid.html:4
+msgid "Invitación no disponible"
+msgstr ""
+
+#: templates/accounts/invitation_invalid.html:4
+msgid ""
+"El enlace ha caducado, ya se utilizó o fue revocado. Solicita una nueva "
+"invitación a la asociación."
+msgstr ""
+
+#: templates/activities/detail.html:5
 msgid "Back"
 msgstr "Enrere"
 
-#: backend/templates/activities/detail.html:12
+#: templates/activities/detail.html:16
 msgid "Publish activity"
 msgstr "Publica l'activitat"
 
-#: backend/templates/activities/detail.html:15
+#: templates/activities/detail.html:21
+msgid "Cambiar la ficha"
+msgstr "Canviar la fitxa"
+
+#: templates/activities/detail.html:24
+msgid ""
+"La actividad está publicada: cada cambio se avisa a quien esté convocado. "
+"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas "
+"ya dadas y obliga a confirmar de nuevo."
+msgstr "L'activitat està publicada: cada canvi s'avisa a qui estiga convocat. Canviar la data, l'hora de concentració o el lloc anul·la les respostes ja donades i obliga a confirmar de nou."
+
+#: templates/activities/detail.html:31
+msgid "Guardar y avisar"
+msgstr "Guardar i avisar"
+
+#: templates/activities/detail.html:35
+msgid "Cancelar la actividad"
+msgstr "Cancel·lar l'activitat"
+
+#: templates/activities/detail.html:39
+msgid "Motivo (opcional, se incluye en el aviso)"
+msgstr "Motiu (opcional, s'inclou en l'avís)"
+
+#: templates/activities/detail.html:43
+msgid "Cancelar y avisar"
+msgstr "Cancel·lar i avisar"
+
+#: templates/activities/detail.html:47
+msgid "Convocar músicos"
+msgstr ""
+
+#: templates/activities/detail.html:49
+#, python-format
+msgid ""
+"\n"
+"    Hay %(musician_count)s músico activo disponible.\n"
+"  "
+msgid_plural ""
+"\n"
+"    Hay %(musician_count)s músicos activos disponibles.\n"
+"  "
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/activities/detail.html:59
+msgid "Actividad obligatoria: una ausencia deberá justificarse"
+msgstr ""
+
+#: templates/activities/detail.html:63
+msgid "Convocar a todos los músicos activos"
+msgstr ""
+
+#: templates/activities/detail.html:68
 msgid "Invitations"
 msgstr "Convocatòries"
 
-#: backend/templates/activities/detail.html:19
+#: templates/activities/detail.html:72
 msgid "Musician"
 msgstr "Músic"
 
-#: backend/templates/activities/detail.html:20
+#: templates/activities/detail.html:73
 msgid "Response"
 msgstr "Resposta"
 
-#: backend/templates/activities/detail.html:21
-#: backend/templates/activities/detail.html:41
+#: templates/activities/detail.html:74 templates/activities/detail.html:94
 msgid "Attendance"
 msgstr "Assistència"
 
-#: backend/templates/activities/detail.html:22
+#: templates/activities/detail.html:75
 msgid "Action"
 msgstr "Acció"
 
-#: backend/templates/activities/detail.html:34
+#: templates/activities/detail.html:87
 msgid "Not recorded"
 msgstr "Sense registrar"
 
-#: backend/templates/activities/detail.html:42
+#: templates/activities/detail.html:95
 msgid "Present"
 msgstr "Present"
 
-#: backend/templates/activities/detail.html:43
+#: templates/activities/detail.html:96
 msgid "Absent"
 msgstr "Absent"
 
-#: backend/templates/activities/detail.html:44
+#: templates/activities/detail.html:97
 msgid "Excused"
 msgstr "Absència justificada"
 
-#: backend/templates/activities/detail.html:46
+#: templates/activities/detail.html:99
 msgid "Save"
 msgstr "Guarda"
 
-#: backend/templates/activities/detail.html:51
+#: templates/activities/detail.html:104
 msgid "There are no invited members."
 msgstr "No hi ha membres convocats."
 
-#: backend/templates/admin/base_site.html:5
+#: templates/admin/base_site.html:5
 msgid "Django site admin"
 msgstr "Administració de Gesband"
 
-#: backend/templates/admin/base_site.html:8
+#: templates/admin/base_site.html:8
 msgid "Django administration"
 msgstr "Administració de Gesband"
 
-#: backend/templates/admin/base_site.html:18
-#: backend/templates/registration/login.html:23
-#: backend/templates/shared/base.html:38
+#: templates/admin/base_site.html:18 templates/registration/login.html:23
+#: templates/shared/base.html:38
 msgid "Language"
 msgstr "Idioma"
 
-#: backend/templates/admin/base_site.html:24
-#: backend/templates/registration/login.html:29
-#: backend/templates/shared/base.html:44
+#: templates/admin/base_site.html:24 templates/registration/login.html:29
+#: templates/shared/base.html:44
 msgid "Change"
 msgstr "Canvia"
 
-#: backend/templates/members/import_detail.html:3
-#: backend/templates/members/import_detail.html:6
+#: templates/members/access_invitations.html:3
+#: templates/members/access_invitations.html:6
+msgid "Accesos de músicos"
+msgstr ""
+
+#: templates/members/access_invitations.html:5
+msgid "Volver al censo"
+msgstr ""
+
+#: templates/members/access_invitations.html:7
+msgid ""
+"Envía un enlace personal para que cada músico cree su contraseña. Reenviar "
+"invalida el enlace anterior."
+msgstr ""
+
+#: templates/members/access_invitations.html:15
+msgid "Seleccionar"
+msgstr ""
+
+#: templates/members/access_invitations.html:18
+msgid "Estado de acceso"
+msgstr ""
+
+#: templates/members/access_invitations.html:19
+msgid "Acción"
+msgstr ""
+
+#: templates/members/access_invitations.html:27
+#, python-format
+msgid "Seleccionar a %(member)s"
+msgstr ""
+
+#: templates/members/access_invitations.html:34
+msgid "Cuenta activa"
+msgstr ""
+
+#: templates/members/access_invitations.html:36
+msgid "Sin correo"
+msgstr ""
+
+#: templates/members/access_invitations.html:40
+msgid "Revocada"
+msgstr ""
+
+#: templates/members/access_invitations.html:42
+msgid "Caducada"
+msgstr ""
+
+#: templates/members/access_invitations.html:44
+msgid "Error de envío"
+msgstr ""
+
+#: templates/members/access_invitations.html:48
+msgid "Sin invitar"
+msgstr ""
+
+#: templates/members/access_invitations.html:53
+msgid "Revocar"
+msgstr ""
+
+#: templates/members/access_invitations.html:58
+msgid "No hay músicos activos."
+msgstr ""
+
+#: templates/members/access_invitations.html:63
+msgid "Enviar o reenviar a seleccionados"
+msgstr ""
+
+#: templates/members/access_invitations.html:64
+msgid "Enviar o reenviar a todos los elegibles"
+msgstr ""
+
+#: templates/members/import_detail.html:3
+#: templates/members/import_detail.html:6
 msgid "Member import"
 msgstr "Importació de membres"
 
-#: backend/templates/members/import_detail.html:5
+#: templates/members/import_detail.html:5
 msgid "Back to imports"
 msgstr "Tornar a importacions"
 
-#: backend/templates/members/import_detail.html:10
-msgid "Choose which census field corresponds to each source column. Leave columns you do not need unassigned."
-msgstr "Tria quin camp del cens correspon a cada columna d'origen. Deixa sense assignar les columnes que no necessites."
+#: templates/members/import_detail.html:10
+msgid ""
+"Choose which census field corresponds to each source column. Leave columns "
+"you do not need unassigned."
+msgstr ""
+"Tria quin camp del cens correspon a cada columna d'origen. Deixa sense "
+"assignar les columnes que no necessites."
 
-#: backend/templates/members/import_detail.html:16
+#: templates/members/import_detail.html:16
 msgid "Source column"
 msgstr "Columna d'origen"
 
-#: backend/templates/members/import_detail.html:16
+#: templates/members/import_detail.html:16
 msgid "Census field"
 msgstr "Camp del cens"
 
-#: backend/templates/members/import_detail.html:23
+#: templates/members/import_detail.html:23
 msgid "Do not import"
 msgstr "No importar"
 
-#: backend/templates/members/import_detail.html:31
+#: templates/members/import_detail.html:31
 msgid "Generate preview"
 msgstr "Generar previsualització"
 
-#: backend/templates/members/import_detail.html:37
-msgid "No member has been created or updated yet. Rows with errors will be rejected when you confirm."
-msgstr "Encara no s'ha creat ni actualitzat cap membre. Les files amb errors es rebutjaran en confirmar."
+#: templates/members/import_detail.html:37
+msgid ""
+"No member has been created or updated yet. Rows with errors will be rejected "
+"when you confirm."
+msgstr ""
+"Encara no s'ha creat ni actualitzat cap membre. Les files amb errors es "
+"rebutjaran en confirmar."
 
-#: backend/templates/members/import_detail.html:40
+#: templates/members/import_detail.html:40
 msgid "created"
 msgstr "altes"
 
-#: backend/templates/members/import_detail.html:41
+#: templates/members/import_detail.html:41
 msgid "updated"
 msgstr "actualitzacions"
 
-#: backend/templates/members/import_detail.html:42
+#: templates/members/import_detail.html:42
 msgid "rejected"
 msgstr "rebutjos"
 
-#: backend/templates/members/import_detail.html:47
+#: templates/members/import_detail.html:47
 msgid "Row"
 msgstr "Fila"
 
-#: backend/templates/members/import_detail.html:47
+#: templates/members/import_detail.html:47
 msgid "External ID"
 msgstr "Identificador extern"
 
-#: backend/templates/members/import_detail.html:47
-#: backend/templates/members/list.html:12
+#: templates/members/import_detail.html:47 templates/members/list.html:13
 msgid "Name"
 msgstr "Nom"
 
-#: backend/templates/members/import_detail.html:47
+#: templates/members/import_detail.html:47
 msgid "Result"
 msgstr "Resultat"
 
-#: backend/templates/members/import_detail.html:58
+#: templates/members/import_detail.html:58
 msgid "Created"
 msgstr "Creat"
 
-#: backend/templates/members/import_detail.html:59
+#: templates/members/import_detail.html:59
 msgid "Updated"
 msgstr "Actualitzat"
 
-#: backend/templates/members/import_detail.html:60
+#: templates/members/import_detail.html:60
 msgid "Rejected"
 msgstr "Rebutjat"
 
-#: backend/templates/members/import_detail.html:61
+#: templates/members/import_detail.html:61
 msgid "Ready"
 msgstr "Preparat"
 
-#: backend/templates/members/import_detail.html:72
+#: templates/members/import_detail.html:73
 msgid "Confirm import"
 msgstr "Confirmar importació"
 
-#: backend/templates/members/import_start.html:3
-#: backend/templates/members/import_start.html:5
-#: backend/templates/members/list.html:7
+#: templates/members/import_detail.html:76
+msgid "No hay filas válidas para confirmar. Corrige el mapeo o el fichero."
+msgstr ""
+
+#: templates/members/import_start.html:3 templates/members/import_start.html:5
+#: templates/members/list.html:7
 msgid "Import members"
 msgstr "Importar membres"
 
-#: backend/templates/members/import_start.html:6
-msgid "Upload a CSV or XLSX file, map its columns and review every row before changing the census."
-msgstr "Puja un fitxer CSV o XLSX, associa les columnes i revisa cada fila abans de modificar el cens."
+#: templates/members/import_start.html:6
+msgid ""
+"Upload a CSV or XLSX file, map its columns and review every row before "
+"changing the census."
+msgstr ""
+"Puja un fitxer CSV o XLSX, associa les columnes i revisa cada fila abans de "
+"modificar el cens."
 
-#: backend/templates/members/import_start.html:9
+#: templates/members/import_start.html:9
 msgid "Download CSV template"
 msgstr "Descarregar plantilla CSV"
 
-#: backend/templates/members/import_start.html:16
+#: templates/members/import_start.html:16
 msgid "CSV or XLSX file"
 msgstr "Fitxer CSV o XLSX"
 
-#: backend/templates/members/import_start.html:19
+#: templates/members/import_start.html:19
 msgid "Upload and map columns"
 msgstr "Pujar i associar columnes"
 
-#: backend/templates/members/import_start.html:22
+#: templates/members/import_start.html:22
 msgid "Recent imports"
 msgstr "Importacions recents"
 
-#: backend/templates/members/import_start.html:25
+#: templates/members/import_start.html:25
 msgid "File"
 msgstr "Fitxer"
 
-#: backend/templates/members/import_start.html:25
-#: backend/templates/shared/dashboard.html:22
+#: templates/members/import_start.html:25 templates/shared/dashboard.html:22
 msgid "Date"
 msgstr "Data"
 
-#: backend/templates/members/import_start.html:25
-#: backend/templates/members/list.html:15
-#: backend/templates/shared/dashboard.html:24
+#: templates/members/import_start.html:25 templates/members/list.html:16
+#: templates/shared/dashboard.html:24
 msgid "Status"
 msgstr "Estat"
 
-#: backend/templates/members/import_start.html:37
+#: templates/members/import_start.html:37
 msgid "There are no imports yet."
 msgstr "Encara no hi ha importacions."
 
-#: backend/templates/members/list.html:3 backend/templates/members/list.html:5
-#: backend/templates/shared/base.html:34
+#: templates/members/list.html:3 templates/members/list.html:5
+#: templates/shared/base.html:34
 msgid "Members"
 msgstr "Membres"
 
-#: backend/templates/members/list.html:13
+#: templates/members/list.html:8
+msgid "Gestionar accesos"
+msgstr ""
+
+#: templates/members/list.html:14
 msgid "Type"
 msgstr "Tipus"
 
-#: backend/templates/members/list.html:14
+#: templates/members/list.html:15
 msgid "Instrument"
 msgstr "Instrument"
 
-#: backend/templates/members/list.html:27
+#: templates/members/list.html:28
 msgid "No instrument"
 msgstr "Sense instrument"
 
-#: backend/templates/members/list.html:33
+#: templates/members/list.html:34
 msgid "There are no members."
 msgstr "No hi ha membres."
 
-#: backend/templates/registration/login.html:8
-#: backend/templates/registration/login.html:17
+#: templates/registration/login.html:8 templates/registration/login.html:17
 msgid "Log in"
 msgstr "Inicia la sessió"
 
-#: backend/templates/registration/login.html:13
+#: templates/registration/login.html:13
 msgid "Access for board members and musicians"
 msgstr "Accés per a la junta i els músics"
 
-#: backend/templates/shared/base.html:32
+#: templates/shared/base.html:32
 msgid "Main navigation"
 msgstr "Navegació principal"
 
-#: backend/templates/shared/base.html:33
+#: templates/shared/base.html:33
 msgid "Home"
 msgstr "Inici"
 
-#: backend/templates/shared/base.html:46
+#: templates/shared/base.html:46
 msgid "Log out"
 msgstr "Tanca la sessió"
 
-#: backend/templates/shared/dashboard.html:5
+#: templates/shared/dashboard.html:5
 #, python-format
 msgid "%(association_name)s dashboard"
 msgstr "Tauler de %(association_name)s"
 
-#: backend/templates/shared/dashboard.html:9
+#: templates/shared/dashboard.html:9
 msgid "active member"
 msgid_plural "active members"
 msgstr[0] "membre actiu"
 msgstr[1] "membres actius"
 
-#: backend/templates/shared/dashboard.html:13
+#: templates/shared/dashboard.html:13
 msgid "recent activity"
 msgid_plural "recent activities"
 msgstr[0] "activitat recent"
 msgstr[1] "activitats recents"
 
-#: backend/templates/shared/dashboard.html:16
+#: templates/shared/dashboard.html:16
 msgid "Activities"
 msgstr "Activitats"
 
-#: backend/templates/shared/dashboard.html:21
+#: templates/shared/dashboard.html:21
 msgid "Activity"
 msgstr "Activitat"
 
-#: backend/templates/shared/dashboard.html:23
+#: templates/shared/dashboard.html:23
 msgid "Invited"
 msgstr "Persones convocades"
 
-#: backend/templates/shared/dashboard.html:39
+#: templates/shared/dashboard.html:39
 msgid "There are no activities yet."
 msgstr "Encara no hi ha activitats."

@@ -11,7 +11,16 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 
+from rest_framework.exceptions import ValidationError as DRFValidationError
+
+from apps.activities.forms import ActivityChangeForm
 from apps.activities.models import Activity
+from apps.activities.services import (
+    announce_activity_change,
+    cancel_activity,
+    changed_activity_fields,
+    publish_activity,
+)
 from apps.accounts.models import AccessInvitation
 from apps.accounts.services import deliver_access_invitation, issue_access_invitation, revoke_access_invitation
 from apps.associations.models import AssociationAccess, AssociationRole
@@ -267,16 +276,40 @@ def member_import_template(request):
 def activity_detail(request, activity_id):
     association = _association_for(request)
     activity = get_object_or_404(Activity.objects.prefetch_related("invitations__member", "invitations__attendance"), id=activity_id, association=association)
+    change_form = ActivityChangeForm(instance=activity)
     if request.method == "POST":
         if "publish" in request.POST:
-            activity.status = Activity.Status.PUBLISHED
-            activity.version += 1
-            activity.save(update_fields=["status", "version", "updated_at"])
-            messages.success(request, _("Actividad publicada."))
+            result = publish_activity(activity, request.user)
+            activity = result["activity"]
+            messages.success(
+                request,
+                _("Actividad publicada. Se ha avisado a %(notified)s personas convocadas.") % result,
+            )
+        elif "cancel" in request.POST:
+            try:
+                result = cancel_activity(activity, request.user, reason=request.POST.get("reason", ""))
+            except DRFValidationError as error:
+                messages.error(request, " ".join(error.detail))
+                return redirect("activity-detail", activity_id=activity.id)
+            activity = result["activity"]
+            messages.success(
+                request,
+                _("Actividad cancelada. Se ha avisado a %(notified)s personas convocadas.") % result,
+            )
+        elif "save_changes" in request.POST:
+            # El formulario escribe sobre `activity` al validar, asi que la
+            # comparacion necesita una copia anterior recien leida.
+            before = Activity.objects.get(pk=activity.pk)
+            change_form = ActivityChangeForm(request.POST, instance=activity)
+            if not change_form.is_valid():
+                return _render_activity_detail(request, association, activity, change_form)
+            changed = changed_activity_fields(before, change_form.cleaned_data)
+            activity = change_form.save()
+            notice = announce_activity_change(activity, changed, request.user)
+            _report_change_notice(request, notice)
+            change_form = ActivityChangeForm(instance=activity)
         elif "invite_all_musicians" in request.POST:
-            from apps.activities.services import create_activity_notifications, invite_members
-            from apps.communications.models import Notification
-            from apps.communications.tasks import queue_notification_task
+            from apps.activities.services import invite_members, notify_activity
 
             result = invite_members(
                 activity,
@@ -285,12 +318,7 @@ def activity_detail(request, activity_id):
             )
             activity = result["activity"]
             if activity.status == Activity.Status.PUBLISHED:
-                create_activity_notifications(activity, _("Nueva convocatoria"), activity.title)
-                notification_ids = Notification.objects.filter(activity=activity).values_list("id", flat=True)
-                for notification_id in notification_ids:
-                    transaction.on_commit(
-                        lambda notification_id=notification_id: queue_notification_task.delay(notification_id)
-                    )
+                notify_activity(activity, _("Nueva convocatoria"), activity.title)
             messages.success(
                 request,
                 _(
@@ -306,6 +334,10 @@ def activity_detail(request, activity_id):
             record_attendance(invitation, request.user, request.POST.get("attendance", "present"))
             messages.success(request, _("Asistencia actualizada."))
         return redirect("activity-detail", activity_id=activity.id)
+    return _render_activity_detail(request, association, activity, change_form)
+
+
+def _render_activity_detail(request, association, activity, change_form):
     active_musicians_count = Member.objects.filter(
         association=association,
         status=Member.Status.ACTIVE,
@@ -318,5 +350,36 @@ def activity_detail(request, activity_id):
             "association": association,
             "activity": activity,
             "active_musicians_count": active_musicians_count,
+            "change_form": change_form,
         },
     )
+
+
+def _report_change_notice(request, notice):
+    """Cuenta a la junta que ha pasado con el cambio que acaba de guardar."""
+    if not notice["fields"]:
+        messages.success(request, _("Actividad actualizada. No había nada que avisar."))
+        return
+    if notice["reset"]:
+        messages.success(
+            request,
+            _(
+                "Actividad actualizada. Se ha avisado a %(notified)s personas y se han "
+                "anulado %(reset)s respuestas: el cambio de fecha o lugar obliga a "
+                "confirmar de nuevo."
+            )
+            % notice,
+        )
+    else:
+        messages.success(
+            request,
+            _("Actividad actualizada. Se ha avisado a %(notified)s personas convocadas.") % notice,
+        )
+    if notice["deadline_passed"]:
+        messages.warning(
+            request,
+            _(
+                "El plazo de respuesta ya ha terminado, así que nadie puede volver a "
+                "confirmar. Amplíalo para recoger las respuestas."
+            ),
+        )

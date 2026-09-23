@@ -125,6 +125,39 @@ ahora la unica definicion que leen el anuncio y la comprobacion, de modo que no
 puedan volver a separarse. Cubierto por `backend/tests/test_role_permissions.py`,
 que recorre los siete roles.
 
+### Aviso al modificar, publicar o cancelar una actividad
+
+Una actividad publicada se podia editar sin que nadie se enterara, y no habia
+forma de cancelarla avisando. Ahora:
+
+- Cambiar titulo, inicio, final, concentracion, lugar, uniforme, plazo o
+  asistencia obligatoria avisa a quien esta convocado.
+- Cambiar inicio, concentracion o lugar ademas devuelve las respuestas a
+  pendiente y pide reconfirmar; la respuesta anulada queda en el historial.
+- El estado deja de ser escribible con `PATCH`. Se cambia con `publish` o con
+  `cancel`, que avisan; cancelar exige un motivo, como pedia el contrato.
+- Publicar avisa a quien se convoco mientras la actividad era borrador.
+- El panel de la junta incorpora el formulario de cambio y el de cancelacion, y
+  advierte si el plazo de respuesta ya vencio cuando se anulan las respuestas.
+
+Razonamiento en
+[docs/decisions/0003-aviso-de-cambios-en-actividades.md](docs/decisions/0003-aviso-de-cambios-en-actividades.md).
+Cubierto por `backend/tests/test_activity_changes.py`, que recorre API, panel y
+los tres idiomas.
+
+### Los avisos por correo no salian
+
+`deliver_email_task` estaba definida y no la invocaba nadie: las entregas de
+correo se quedaban en `pending` indefinidamente. `queue_notification_deliveries`
+las encola ahora al confirmar la transaccion, y solo las pendientes.
+
+### Catalogos de traduccion
+
+Las cadenas nuevas estan traducidas a valenciano e ingles. Al regenerar los
+catalogos, `msgmerge` habia propuesto conjeturas *fuzzy* equivocadas —
+`Concentración` como «Administració de Gesband»—; no llegaban a compilarse, pero
+se han vaciado para que los catalogos digan lo que es cierto.
+
 ## 5. Correcciones aplicadas el 22/09/2026
 
 En `backend/tests/test_mvp.py`, que impedían ejecutar la suite completa:
