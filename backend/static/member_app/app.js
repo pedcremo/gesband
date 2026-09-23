@@ -1,10 +1,22 @@
 /* Cliente web del musico. Habla con /api/v1/ desde el mismo origen.
-   Sin framework ni paso de compilacion: es una herramienta de desarrollo. */
+   Sin framework ni paso de compilacion: es una herramienta de desarrollo.
+
+   La identidad visual la pone cada asociacion (`primary_color`, `secondary_color`,
+   `logo_url`, `motto`). Ver `aplicarMarca`: el color elegido nunca se usa tal cual
+   para texto, sino corregido hasta que contrasta lo suficiente con el fondo, que es
+   el limite de legibilidad que pide ANALISIS.md 2.2. */
 (() => {
   "use strict";
 
   const API = "/api/v1";
-  const STORE = { token: "gesband.token", association: "gesband.association", lang: "gesband.lang" };
+  const STORE = {
+    token: "gesband.token",
+    association: "gesband.association",
+    lang: "gesband.lang",
+    branding: "gesband.branding",
+  };
+
+  const DEFAULT_BRAND = { primary_color: "#1B4965", secondary_color: "#CAE9FF" };
 
   const STRINGS = {
     es: {
@@ -32,7 +44,8 @@
       offline: "Sin conexión. Se muestra lo último que se descargó.",
       loadFailed: "No se han podido cargar los datos.",
       instruments: "Instrumentos", phone: "Teléfono", noInstruments: "Sin instrumentos asignados.",
-      language: "Idioma",
+      language: "Idioma", settings: "Ajustes", today: "Hoy", tomorrow: "Mañana",
+      greeting: "Hola, {name}",
     },
     ca: {
       appName: "Gesband", agenda: "Agenda", inbox: "Avisos", profile: "La meua fitxa",
@@ -59,7 +72,8 @@
       offline: "Sense connexió. Es mostra l'últim que es va descarregar.",
       loadFailed: "No s'han pogut carregar les dades.",
       instruments: "Instruments", phone: "Telèfon", noInstruments: "Sense instruments assignats.",
-      language: "Idioma",
+      language: "Idioma", settings: "Ajustos", today: "Hui", tomorrow: "Demà",
+      greeting: "Hola, {name}",
     },
     en: {
       appName: "Gesband", agenda: "Agenda", inbox: "Notices", profile: "My details",
@@ -86,7 +100,8 @@
       offline: "Offline. Showing the last downloaded data.",
       loadFailed: "The data could not be loaded.",
       instruments: "Instruments", phone: "Phone", noInstruments: "No instruments assigned.",
-      language: "Language",
+      language: "Language", settings: "Settings", today: "Today", tomorrow: "Tomorrow",
+      greeting: "Hello, {name}",
     },
   };
 
@@ -94,6 +109,7 @@
   const write = (key, value) => {
     try { value === null ? localStorage.removeItem(key) : localStorage.setItem(key, value); } catch { /* modo privado */ }
   };
+  const readJSON = (key) => { try { return JSON.parse(read(key) || "null"); } catch { return null; } };
 
   const state = {
     token: read(STORE.token),
@@ -107,6 +123,11 @@
     activity: null,
     banner: null,
     busy: false,
+    loading: false,
+    /* Lo ultimo que se supo de la asociacion: pinta el acceso con su marca
+       antes de que haya sesion con la que preguntarla. */
+    branding: readJSON(STORE.branding),
+    logo: null,
   };
 
   const t = (key) => STRINGS[state.lang][key] ?? key;
@@ -115,15 +136,174 @@
   const esc = (value) =>
     String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  /* --- color de la asociacion --- */
+
+  const parseHex = (value) => {
+    const match = /^#?([0-9a-f]{6})$/i.exec(String(value ?? "").trim());
+    if (!match) return null;
+    const number = parseInt(match[1], 16);
+    return { r: (number >> 16) & 255, g: (number >> 8) & 255, b: number & 255 };
+  };
+  const toHex = (c) =>
+    "#" + [c.r, c.g, c.b].map((v) => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, "0")).join("");
+  const mix = (a, b, amount) => ({
+    r: a.r + (b.r - a.r) * amount,
+    g: a.g + (b.g - a.g) * amount,
+    b: a.b + (b.b - a.b) * amount,
+  });
+  const channel = (value) => {
+    const v = value / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance = (c) => 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b);
+  const contrast = (a, b) => {
+    const one = luminance(a);
+    const two = luminance(b);
+    return (Math.max(one, two) + 0.05) / (Math.min(one, two) + 0.05);
+  };
+
+  const WHITE = { r: 255, g: 255, b: 255 };
+  const BLACK = { r: 0, g: 0, b: 0 };
+
+  /** El texto que se lee sobre un fondo de marca: blanco o casi negro, el que mas contraste dé. */
+  const inkOn = (background) => (contrast(background, WHITE) >= contrast(background, { r: 16, g: 24, b: 29 }) ? WHITE : { r: 16, g: 24, b: 29 });
+
+  /** Acerca el color a blanco o a negro hasta que se lea sobre todos los fondos dados. */
+  function legible(color, backgrounds, target = 4.5) {
+    const towards = luminance(backgrounds[0]) > 0.5 ? BLACK : WHITE;
+    let candidate = color;
+    for (let step = 0; step <= 20; step += 1) {
+      if (backgrounds.every((background) => contrast(candidate, background) >= target)) return candidate;
+      candidate = mix(color, towards, step / 20);
+    }
+    return towards;
+  }
+
+  const prefersDark = () => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+
+  function aplicarMarca(brand) {
+    const style = document.documentElement.style;
+    const dark = prefersDark();
+    const surface = dark ? { r: 0x13, g: 0x1c, b: 0x22 } : WHITE;
+
+    const primary = parseHex(brand?.primary_color) || parseHex(DEFAULT_BRAND.primary_color);
+    const secondary = parseHex(brand?.secondary_color) || parseHex(DEFAULT_BRAND.secondary_color);
+
+    const soft = mix(primary, surface, dark ? 0.84 : 0.9);
+    const text = legible(primary, [surface, soft]);
+
+    style.setProperty("--brand", toHex(primary));
+    style.setProperty("--brand-ink", toHex(inkOn(primary)));
+    style.setProperty("--brand-deep", toHex(mix(primary, BLACK, 0.3)));
+    style.setProperty("--brand-text", toHex(text));
+    style.setProperty("--brand-soft", toHex(soft));
+    style.setProperty("--accent", toHex(secondary));
+    style.setProperty("--accent-ink", toHex(inkOn(secondary)));
+
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", toHex(primary));
+  }
+
+  /** Guarda marca y logotipo para que el acceso ya tenga la cara de la banda. */
+  function recordarMarca(assoc, logoDataUrl) {
+    if (!assoc) return;
+    const stored = {
+      name: assoc.name,
+      motto: assoc.motto || "",
+      primary_color: assoc.primary_color,
+      secondary_color: assoc.secondary_color,
+      logo: logoDataUrl ?? (state.branding?.name === assoc.name ? state.branding.logo : null),
+    };
+    state.branding = stored;
+    write(STORE.branding, JSON.stringify(stored));
+  }
+
+  async function cargarLogotipo(assoc) {
+    if (state.logo) { URL.revokeObjectURL(state.logo); state.logo = null; }
+    if (!assoc?.logo_url) { recordarMarca(assoc, null); return; }
+    try {
+      const response = await fetch(assoc.logo_url, { headers: { Authorization: `Token ${state.token}` } });
+      if (!response.ok) return;
+      const blob = await response.blob();
+      state.logo = URL.createObjectURL(blob);
+      /* Solo se guarda si cabe holgadamente en localStorage. */
+      if (blob.size <= 120 * 1024) {
+        const reader = new FileReader();
+        reader.onload = () => recordarMarca(assoc, String(reader.result));
+        reader.readAsDataURL(blob);
+      } else {
+        recordarMarca(assoc, null);
+      }
+    } catch { /* el logotipo no es critico */ }
+  }
+
+  const initials = (name) =>
+    String(name || "")
+      .split(/\s+/)
+      .filter((word) => word.length > 2 || /^[A-ZÀ-Ý]/.test(word))
+      .slice(0, 2)
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase() || "♪";
+
+  const logoMark = (name, source, extra = "") => {
+    const classes = `logo${extra ? ` ${extra}` : ""}`;
+    return source
+      ? `<img class="${classes}" src="${esc(source)}" alt="">`
+      : `<span class="${classes}" aria-hidden="true">${esc(initials(name))}</span>`;
+  };
+
+  /* --- fechas --- */
+
+  const zone = () => association()?.timezone || undefined;
+
   function formatDate(value, withTime = true) {
     if (!value) return "—";
-    const zone = association()?.timezone || undefined;
     const options = withTime
-      ? { dateStyle: "full", timeStyle: "short", timeZone: zone }
-      : { dateStyle: "full", timeZone: zone };
+      ? { dateStyle: "full", timeStyle: "short", timeZone: zone() }
+      : { dateStyle: "full", timeZone: zone() };
     try { return new Intl.DateTimeFormat(state.lang, options).format(new Date(value)); }
     catch { return new Date(value).toLocaleString(); }
   }
+
+  const parts = (value, options) => {
+    try { return new Intl.DateTimeFormat(state.lang, { ...options, timeZone: zone() }).formatToParts(new Date(value)); }
+    catch { return new Intl.DateTimeFormat(state.lang, options).formatToParts(new Date(value)); }
+  };
+  const part = (value, options, type) => parts(value, options).find((item) => item.type === type)?.value ?? "";
+
+  /** Dia natural en la zona de la asociacion, comparable como texto. */
+  const dayKey = (value) => {
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: zone(), year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value)); }
+    catch { return new Date(value).toISOString().slice(0, 10); }
+  };
+
+  function relativeDay(value) {
+    const now = new Date();
+    const key = dayKey(value);
+    if (key === dayKey(now)) return t("today");
+    if (key === dayKey(new Date(now.getTime() + 86400000))) return t("tomorrow");
+    return "";
+  }
+
+  const monthLabel = (value) => {
+    const label = `${part(value, { month: "long" }, "month")} ${part(value, { year: "numeric" }, "year")}`;
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  };
+
+  const shortDateTime = (value) => {
+    try {
+      return new Intl.DateTimeFormat(state.lang, {
+        day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: zone(),
+      }).format(new Date(value));
+    } catch { return formatDate(value); }
+  };
+
+  const time = (value) => {
+    try { return new Intl.DateTimeFormat(state.lang, { timeStyle: "short", timeZone: zone() }).format(new Date(value)); }
+    catch { return ""; }
+  };
+
+  /* --- api --- */
 
   async function api(path, { method = "GET", body, association: scoped = true } = {}) {
     const headers = { "Accept-Language": state.lang };
@@ -155,28 +335,15 @@
     return Array.isArray(first) ? String(first[0]) : String(first ?? t("loadFailed"));
   };
 
-  /* --- vistas --- */
+  /* --- piezas --- */
 
-  function viewLogin() {
-    return `
-      <header class="bar"><h1>${esc(t("appName"))}</h1>${languageSelect()}</header>
-      <main>
-        ${state.banner ? banner() : ""}
-        <form class="stack" data-form="login">
-          <div>
-            <label for="email">${esc(t("email"))}</label>
-            <input id="email" name="email" type="email" autocomplete="username" required autocapitalize="none" spellcheck="false">
-          </div>
-          <div>
-            <label for="password">${esc(t("password"))}</label>
-            <input id="password" name="password" type="password" autocomplete="current-password" required>
-          </div>
-          <button class="button" type="submit"${state.busy ? " disabled" : ""}>
-            ${esc(state.busy ? t("signingIn") : t("signIn"))}
-          </button>
-        </form>
-      </main>`;
-  }
+  const banner = () => `
+    <p class="notice${state.banner.kind === "error" ? " error" : ""}">
+      <span class="note-dot"></span><span>${esc(state.banner.text)}</span>
+    </p>`;
+
+  const inlineNotice = (text, kind = "") => `
+    <span class="notice${kind ? ` ${kind}` : ""}"><span class="note-dot"></span><span>${esc(text)}</span></span>`;
 
   const languageSelect = () => `
     <select data-action="language" aria-label="${esc(t("language"))}">
@@ -185,23 +352,68 @@
       ).join("")}
     </select>`;
 
-  const banner = () => `<p class="notice${state.banner.kind === "error" ? " error" : ""}">${esc(state.banner.text)}</p>`;
+  const empty = (mark, text) => `
+    <div class="empty">
+      <div class="empty__mark" aria-hidden="true">${mark}</div>
+      <p>${esc(text)}</p>
+    </div>`;
+
+  const skeleton = () => `<div class="skeleton" aria-hidden="true"><span></span><span></span><span></span></div>`;
+
+  /* --- vistas --- */
+
+  function viewLogin() {
+    const brand = state.branding;
+    return `
+      <div class="auth">
+        <div class="auth__brand">
+          ${logoMark(brand?.name, brand?.logo, "logo--xl")}
+          <h1>${esc(brand?.name || t("appName"))}</h1>
+          ${brand?.motto ? `<p class="motto">${esc(brand.motto)}</p>` : ""}
+        </div>
+        ${state.banner ? banner() : ""}
+        <form class="stack" data-form="login">
+          <div class="field">
+            <label for="email">${esc(t("email"))}</label>
+            <input id="email" name="email" type="email" autocomplete="username" required autocapitalize="none" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="password">${esc(t("password"))}</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="button" type="submit"${state.busy ? " disabled" : ""}>
+            ${esc(state.busy ? t("signingIn") : t("signIn"))}
+          </button>
+        </form>
+        <div class="auth__foot">
+          ${languageSelect()}
+          ${brand?.name ? `<p class="wordmark">${esc(t("appName"))}</p>` : ""}
+        </div>
+      </div>`;
+  }
 
   function shell(content) {
     const unread = state.notifications.filter((item) => !item.read_at).length;
+    const current = association();
     const picker = state.associations.length > 1
-      ? `<select data-action="association" aria-label="${esc(t("association"))}">
+      ? `<select class="picker" data-action="association" aria-label="${esc(t("association"))}">
            ${state.associations.map((item) =>
              `<option value="${esc(item.id)}"${item.id === state.associationId ? " selected" : ""}>${esc(item.name)}</option>`
            ).join("")}
          </select>`
       : "";
+    const name = state.account?.display_name || "";
     return `
-      <header class="bar">
-        <h1>${esc(association()?.name || t("appName"))}</h1>
-        ${picker}${languageSelect()}
-        <button data-action="signout">${esc(t("signOut"))}</button>
-        <span class="who">${esc(state.account?.display_name || "")}</span>
+      <header class="topbar">
+        <div class="topbar__row">
+          ${logoMark(current?.name, state.logo)}
+          <div class="topbar__id">
+            <h1>${esc(current?.name || t("appName"))}</h1>
+            ${current?.motto ? `<p class="motto">${esc(current.motto)}</p>` : ""}
+          </div>
+        </div>
+        ${name ? `<p class="greeting">${esc(t("greeting").replace("{name}", name))}</p>` : ""}
+        ${picker}
       </header>
       <nav class="tabs">
         <button data-tab="agenda"${state.tab === "agenda" ? ' aria-current="page"' : ""}>${esc(t("agenda"))}</button>
@@ -211,24 +423,46 @@
       <main>${state.banner ? banner() : ""}${content}</main>`;
   }
 
+  function activityCard(activity) {
+    const mine = activity.invitations?.[0];
+    const response = mine?.response || "pending";
+    const cancelled = activity.status === "cancelled";
+    const when = relativeDay(activity.starts_at);
+    const chips = [
+      `<span class="chip ${esc(response)}">${esc(t(response))}</span>`,
+      cancelled ? `<span class="chip cancelled">${esc(t("cancelled"))}</span>` : "",
+      activity.is_mandatory ? `<span class="chip mandatory">${esc(t("mandatory"))}</span>` : "",
+    ].filter(Boolean).join("");
+
+    return `
+      <button class="card act act--${esc(cancelled ? "cancelled" : response)}" data-activity="${esc(activity.id)}">
+        <span class="date">
+          <span class="date__dow">${esc(part(activity.starts_at, { weekday: "short" }, "weekday"))}</span>
+          <span class="date__day">${esc(part(activity.starts_at, { day: "numeric" }, "day"))}</span>
+          <span class="date__mon">${esc(part(activity.starts_at, { month: "short" }, "month"))}</span>
+        </span>
+        <span class="act__body">
+          <span class="act__meta">${esc(t(activity.kind))}${when ? ` · ${esc(when)}` : ""} · ${esc(time(activity.starts_at))}</span>
+          <span class="act__title">${esc(activity.title)}</span>
+          ${activity.location ? `<span class="act__where">${esc(activity.location)}</span>` : ""}
+          <span class="chips">${chips}</span>
+          ${mine?.needs_reconfirmation ? inlineNotice(t("reconfirm")) : ""}
+        </span>
+      </button>`;
+  }
+
   function viewAgenda() {
-    if (!state.activities.length) return shell(`<p class="empty">${esc(t("noActivities"))}</p>`);
-    const cards = state.activities.map((activity) => {
-      const mine = activity.invitations?.[0];
-      const chips = [
-        `<span class="chip ${esc(mine?.response || "pending")}">${esc(t(mine?.response || "pending"))}</span>`,
-        activity.status === "cancelled" ? `<span class="chip cancelled">${esc(t("cancelled"))}</span>` : "",
-        activity.is_mandatory ? `<span class="chip mandatory">${esc(t("mandatory"))}</span>` : "",
-      ].join(" ");
-      return `
-        <button class="card" data-activity="${esc(activity.id)}">
-          <h3>${esc(activity.title)}</h3>
-          <p class="when">${esc(t(activity.kind))} · ${esc(formatDate(activity.starts_at))}</p>
-          <p>${chips}</p>
-          ${mine?.needs_reconfirmation ? `<p class="notice">${esc(t("reconfirm"))}</p>` : ""}
-        </button>`;
+    if (state.loading && !state.activities.length) return shell(skeleton());
+    if (!state.activities.length) return shell(empty("♪", t("noActivities")));
+
+    let month = "";
+    const blocks = state.activities.map((activity) => {
+      const label = monthLabel(activity.starts_at);
+      const heading = label === month ? "" : `<h2 class="month">${esc(label)}</h2>`;
+      month = label;
+      return heading + activityCard(activity);
     });
-    return shell(cards.join(""));
+    return shell(blocks.join(""));
   }
 
   function viewActivity() {
@@ -248,65 +482,89 @@
     ].filter(Boolean);
 
     const programme = activity.programme?.length
-      ? `<h3>${esc(t("programme"))}</h3><ol>${activity.programme.map((item) =>
-          `<li>${esc(item.title)}${item.notes ? ` <span class="muted">— ${esc(item.notes)}</span>` : ""}</li>`).join("")}</ol>`
+      ? `<h3 class="section-title">${esc(t("programme"))}</h3>
+         <ol class="programme">${activity.programme.map((item) =>
+           `<li><span>${esc(item.title)}${item.notes ? ` <span class="muted">— ${esc(item.notes)}</span>` : ""}</span></li>`).join("")}</ol>`
       : "";
 
     const answer = mine
-      ? `<h3>${esc(t("yourAnswer"))}: <span class="chip ${esc(mine.response)}">${esc(t(mine.response))}</span></h3>
-         ${mine.response_note ? `<p class="muted">${esc(t("note"))}: ${esc(mine.response_note)}</p>` : ""}
-         ${closed ? "" : `
-           <form class="stack" data-form="respond" data-invitation="${esc(mine.id)}">
-             ${activity.is_mandatory ? `
-               <div>
-                 <label for="note">${esc(t("reasonLabel"))}</label>
-                 <textarea id="note" name="note" rows="2" maxlength="500"></textarea>
-               </div>` : ""}
-             <div class="actions">
-               <button class="button" type="submit" name="response" value="accepted"${state.busy ? " disabled" : ""}>${esc(t("accept"))}</button>
-               <button class="button danger" type="submit" name="response" value="declined"${state.busy ? " disabled" : ""}>${esc(t("decline"))}</button>
-             </div>
-           </form>`}`
+      ? `<section class="answer">
+           <div class="answer__head">
+             <h3>${esc(t("yourAnswer"))}</h3>
+             <span class="chip ${esc(mine.response)}">${esc(t(mine.response))}</span>
+           </div>
+           ${mine.response_note ? `<p class="muted">${esc(t("note"))}: ${esc(mine.response_note)}</p>` : ""}
+           ${closed ? "" : `
+             <form class="stack" data-form="respond" data-invitation="${esc(mine.id)}">
+               ${activity.is_mandatory ? `
+                 <div class="field">
+                   <label for="note">${esc(t("reasonLabel"))}</label>
+                   <textarea id="note" name="note" rows="2" maxlength="500"></textarea>
+                 </div>` : ""}
+               <div class="actions">
+                 <button class="button" type="submit" name="response" value="accepted"${state.busy ? " disabled" : ""}>${esc(t("accept"))}</button>
+                 <button class="button ghost" type="submit" name="response" value="declined"${state.busy ? " disabled" : ""}>${esc(t("decline"))}</button>
+               </div>
+             </form>`}
+         </section>`
       : "";
 
     return shell(`
       <button class="back" data-action="agenda">← ${esc(t("back"))}</button>
-      <h2>${esc(activity.title)}</h2>
-      <p>
-        <span class="chip">${esc(t(activity.kind))}</span>
-        ${activity.is_mandatory ? `<span class="chip mandatory">${esc(t("mandatory"))}</span>` : ""}
-      </p>
-      ${activity.status === "cancelled" ? `<p class="notice error">${esc(t("cancelledNotice"))}</p>` : ""}
-      ${mine?.needs_reconfirmation ? `<p class="notice">${esc(t("reconfirm"))}</p>` : ""}
-      ${deadlinePassed && activity.status === "published" ? `<p class="notice">${esc(t("deadlinePassed"))}</p>` : ""}
-      <dl class="facts">${facts.map(([term, value]) => `<dt>${esc(term)}</dt><dd>${esc(value)}</dd>`).join("")}</dl>
-      ${programme}
-      ${answer}`);
+      <article class="detail">
+        <p class="detail__kicker">${esc(t(activity.kind))}${activity.is_mandatory ? ` · ${esc(t("mandatory"))}` : ""}</p>
+        <h2>${esc(activity.title)}</h2>
+        ${activity.status === "cancelled" ? inlineNotice(t("cancelledNotice"), "error") : ""}
+        ${mine?.needs_reconfirmation ? inlineNotice(t("reconfirm")) : ""}
+        ${deadlinePassed && activity.status === "published" ? inlineNotice(t("deadlinePassed")) : ""}
+        <dl class="facts">${facts.map(([term, value]) => `<div><dt>${esc(term)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>
+        ${programme}
+        ${answer}
+      </article>`);
   }
 
   function viewInbox() {
-    if (!state.notifications.length) return shell(`<p class="empty">${esc(t("noNotices"))}</p>`);
+    if (state.loading && !state.notifications.length) return shell(skeleton());
+    if (!state.notifications.length) return shell(empty("✉", t("noNotices")));
     return shell(state.notifications.map((notice) => `
-      <button class="card${notice.read_at ? "" : " unread"}" data-notification="${esc(notice.id)}">
-        <h3>${esc(notice.title)}</h3>
-        <p class="when">${esc(formatDate(notice.created_at))}</p>
-        <p>${esc(notice.body).replace(/\n/g, "<br>")}</p>
+      <button class="card act act--${notice.read_at ? "read" : "unread"}" data-notification="${esc(notice.id)}">
+        <span class="act__body">
+          <span class="act__meta act__meta--plain">${esc(shortDateTime(notice.created_at))}</span>
+          <span class="act__title">${esc(notice.title)}</span>
+          <span class="act__where">${esc(notice.body).replace(/\n/g, "<br>")}</span>
+        </span>
       </button>`).join(""));
   }
 
   function viewProfile() {
     const member = state.member;
-    if (!member) return shell(`<p class="empty">${esc(t("loadFailed"))}</p>`);
+    const settings = `
+      <section class="settings">
+        <h3>${esc(t("settings"))}</h3>
+        <div class="field">
+          <label for="lang">${esc(t("language"))}</label>
+          ${languageSelect().replace("<select", '<select id="lang"')}
+        </div>
+        <button class="button quiet" data-action="signout">${esc(t("signOut"))}</button>
+      </section>`;
+
+    if (!member) return shell(empty("!", t("loadFailed")) + settings);
+
+    const full = `${member.first_name} ${member.last_name}`.trim();
     const instruments = member.instruments?.length
       ? member.instruments.map((item) => esc(item.name || item)).join(", ")
-      : t("noInstruments");
+      : esc(t("noInstruments"));
     return shell(`
-      <h2>${esc(`${member.first_name} ${member.last_name}`.trim())}</h2>
+      <div class="profile__head">
+        <span class="avatar" aria-hidden="true">${esc(initials(full))}</span>
+        <h2>${esc(full)}</h2>
+      </div>
       <dl class="facts">
-        <dt>${esc(t("email"))}</dt><dd>${esc(member.email || "—")}</dd>
-        <dt>${esc(t("phone"))}</dt><dd>${esc(member.phone || "—")}</dd>
-        <dt>${esc(t("instruments"))}</dt><dd>${instruments}</dd>
-      </dl>`);
+        <div><dt>${esc(t("email"))}</dt><dd>${esc(member.email || "—")}</dd></div>
+        <div><dt>${esc(t("phone"))}</dt><dd>${esc(member.phone || "—")}</dd></div>
+        <div><dt>${esc(t("instruments"))}</dt><dd>${instruments}</dd></div>
+      </dl>
+      ${settings}`);
   }
 
   /* --- datos --- */
@@ -323,9 +581,14 @@
       state.associationId = state.associations[0].id;
       write(STORE.association, state.associationId);
     }
+    const current = association();
+    aplicarMarca(current);
+    recordarMarca(current);
+    await cargarLogotipo(current);
   }
 
   async function loadTab() {
+    state.loading = true;
     try {
       if (state.tab === "agenda") {
         const page = await api("/activities/");
@@ -340,12 +603,15 @@
     } catch (error) {
       if (error.message === "unauthorized") return;
       state.banner = { kind: "error", text: navigator.onLine ? problem(error) : t("offline") };
+    } finally {
+      state.loading = false;
     }
   }
 
   function signOut({ silent = false } = {}) {
     state.token = null; state.account = null; state.activities = []; state.notifications = [];
     state.activity = null; state.member = null;
+    if (state.logo) { URL.revokeObjectURL(state.logo); state.logo = null; }
     write(STORE.token, null);
     if (!silent) state.banner = null;
     render();
@@ -397,7 +663,12 @@
     if (select.dataset.action === "association") {
       state.associationId = select.value; write(STORE.association, state.associationId);
       state.activity = null;
-      render(); await loadTab(); render();
+      const current = association();
+      aplicarMarca(current);
+      recordarMarca(current);
+      render();
+      await Promise.all([cargarLogotipo(current), loadTab()]);
+      render();
     }
   });
 
@@ -455,8 +726,11 @@
   });
 
   window.addEventListener("online", () => { state.banner = null; render(); });
+  window.matchMedia?.("(prefers-color-scheme: dark)")
+    .addEventListener?.("change", () => aplicarMarca(association() || state.branding));
 
   document.documentElement.lang = state.lang;
+  aplicarMarca(state.branding);
   render();
   if (state.token) {
     loadSession()

@@ -1,3 +1,5 @@
+import mimetypes
+
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -34,10 +36,18 @@ class AccountSerializer(serializers.Serializer):
 
 class AssociationSerializer(serializers.ModelSerializer):
     permissions = serializers.SerializerMethodField()
+    logo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Association
-        fields = ["id", "name", "slug", "logo", "primary_color", "secondary_color", "motto", "timezone", "permissions"]
+        fields = ["id", "name", "slug", "logo_url", "primary_color", "secondary_color", "motto", "timezone", "permissions"]
+
+    def get_logo_url(self, obj):
+        """El logotipo vive en media privada: se sirve por la API, como la foto del musico."""
+        request = self.context.get("request")
+        if obj.logo and request:
+            return request.build_absolute_uri(f"/api/v1/associations/{obj.pk}/logo/")
+        return None
 
     def get_permissions(self, obj):
         request = self.context.get("request")
@@ -276,6 +286,17 @@ class AssociationViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Association.objects.filter(id__in=accessible_association_ids(self.request.user), is_active=True)
+
+    @decorators.action(detail=True, methods=["get"], url_path="logo")
+    def logo(self, request, pk=None):
+        """Solo lo ve quien pertenece a la asociacion: `get_queryset` ya filtra por acceso."""
+        association = self.get_object()
+        if not association.logo:
+            return response.Response(status=404)
+        from django.http import FileResponse
+
+        content_type = mimetypes.guess_type(association.logo.name)[0] or "application/octet-stream"
+        return FileResponse(association.logo.open("rb"), content_type=content_type)
 
 
 class ScopedViewSet(viewsets.ModelViewSet):

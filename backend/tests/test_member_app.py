@@ -1,12 +1,19 @@
+import base64
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.utils import timezone
 
 from apps.activities.models import Activity, Invitation
 from apps.associations.models import Association, AssociationAccess, AssociationRole
 from apps.members.models import Member
+
+# PNG de 1x1 para no depender de ficheros de prueba en disco.
+PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+)
 
 
 class MemberAppShellTests(TestCase):
@@ -35,6 +42,62 @@ class MemberAppShellTests(TestCase):
     def test_the_shell_is_not_cached_by_intermediaries(self):
         page = self.client.get("/app/")
         self.assertIn("no-cache", page["Cache-Control"])
+
+
+class AssociationBrandingTests(TestCase):
+    """La app se viste con la marca de cada asociacion: README, requisito del promotor."""
+
+    def setUp(self):
+        self.account = get_user_model().objects.create_user(
+            username="musico@example.invalid", email="musico@example.invalid", password="secret-password"
+        )
+        self.association = Association.objects.create(
+            name="Banda Test", slug="banda-test",
+            primary_color="#7A1F2B", secondary_color="#E8C87D", motto="La música que ens uneix",
+        )
+        access = AssociationAccess.objects.create(association=self.association, account=self.account)
+        AssociationRole.objects.create(access=access, role=AssociationRole.Role.MEMBER)
+        self.api = Client()
+        self.api.force_login(self.account)
+
+    def association_payload(self):
+        response = self.api.get("/api/v1/auth/me")
+        self.assertEqual(response.status_code, 200)
+        return response.json()["associations"][0]
+
+    def test_the_session_carries_the_colours_and_the_motto(self):
+        payload = self.association_payload()
+        self.assertEqual(payload["primary_color"], "#7A1F2B")
+        self.assertEqual(payload["secondary_color"], "#E8C87D")
+        self.assertEqual(payload["motto"], "La música que ens uneix")
+
+    def test_without_a_logo_the_url_is_null(self):
+        """El contrato pide `logo_url`; el campo crudo apuntaba a una ruta que nadie sirve."""
+        payload = self.association_payload()
+        self.assertIsNone(payload["logo_url"])
+        self.assertNotIn("logo", payload)
+
+    def test_the_logo_is_served_by_the_api_because_the_media_is_private(self):
+        self.association.logo.save("logo.png", SimpleUploadedFile("logo.png", PNG, "image/png"), save=True)
+        self.addCleanup(self.association.logo.delete, save=False)
+
+        url = self.association_payload()["logo_url"]
+        self.assertTrue(url.endswith(f"/api/v1/associations/{self.association.id}/logo/"))
+
+        served = self.api.get(f"/api/v1/associations/{self.association.id}/logo/")
+        self.assertEqual(served.status_code, 200)
+        self.assertEqual(served["Content-Type"], "image/png")
+        self.assertEqual(b"".join(served.streaming_content), PNG)
+
+    def test_a_stranger_cannot_read_the_logo(self):
+        self.association.logo.save("logo.png", SimpleUploadedFile("logo.png", PNG, "image/png"), save=True)
+        self.addCleanup(self.association.logo.delete, save=False)
+
+        stranger = Client()
+        stranger.force_login(get_user_model().objects.create_user(
+            username="fora@example.invalid", email="fora@example.invalid", password="secret-password"
+        ))
+        self.assertEqual(stranger.get(f"/api/v1/associations/{self.association.id}/logo/").status_code, 404)
 
 
 class MemberAppReconfirmationSignalTests(TestCase):
