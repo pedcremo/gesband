@@ -1,6 +1,6 @@
 # Instrucciones de prueba del MVP
 
-Estado a 22 de septiembre de 2026. Complementa a [README.md](README.md) (cómo
+Estado a 23 de septiembre de 2026. Complementa a [README.md](README.md) (cómo
 levantar el entorno) y a [AGENTS.md](AGENTS.md) (reglas de trabajo).
 
 ## 1. Cuentas de prueba por rol
@@ -83,11 +83,8 @@ pueden borrar sin tocar el censo real.
 
 Ninguno introducido por la siembra; son del código anterior.
 
-1. **`DJANGO_DEBUG` no hace efecto en Docker.** `infra/.env` define
-   `DJANGO_DEBUG=true`, pero `backend/config/settings.py:8` solo activa DEBUG con
-   el valor exacto `"1"`. El entorno de desarrollo corre con DEBUG desactivado.
-   Sin decidir: corregir la lectura del valor o ajustar el `.env`. Mientras tanto,
-   los comandos de siembra necesitan `--force` en ese entorno.
+1. ~~**`DJANGO_DEBUG` no hace efecto en Docker.**~~ Resuelto el 23/09/2026: ver
+   el apartado 4.
 2. **Incoherencia de permisos en `platform` y `web_editor`.** `/api/v1/auth/me`
    les anuncia `activities.view` y `notifications.view`, pero
    `ScopedViewSet.check_access` (`backend/apps/api.py:261`) les responde 403
@@ -95,7 +92,23 @@ Ninguno introducido por la siembra; son del código anterior.
    el serializador promete de más, o esos roles deberían implicar lectura de
    miembro.
 
-## 4. Correcciones aplicadas el 22/09/2026
+## 4. Correcciones aplicadas el 23/09/2026
+
+### Lectura de las variables booleanas de entorno
+
+`backend/config/settings.py` leia los cuatro interruptores comparando con la
+cadena exacta `"1"`, mientras que `infra/.env` y `infra/compose.yaml` escriben
+`true`. El efecto era que `DJANGO_DEBUG`, `CELERY_TASK_ALWAYS_EAGER`,
+`FCM_ENABLED` y `DJANGO_SECURE_COOKIES` se quedaban en falso en silencio; el
+entorno Docker de desarrollo corria con DEBUG desactivado y la siembra exigia
+`--force`.
+
+Ahora un ayudante `env_flag` acepta `1/true/yes/on` y `0/false/no/off` sin
+distinguir mayusculas ni espacios, trata el valor vacio como ausente y detiene el
+arranque con `ImproperlyConfigured` ante un valor no reconocido, para que una
+errata no vuelva a leerse como falso. Cubierto por `backend/tests/test_settings.py`.
+
+## 5. Correcciones aplicadas el 22/09/2026
 
 En `backend/tests/test_mvp.py`, que impedían ejecutar la suite completa:
 

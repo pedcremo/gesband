@@ -2,10 +2,35 @@ import os
 from pathlib import Path
 from urllib.parse import urlparse
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TRUE_VALUES = {"1", "true", "yes", "on"}
+FALSE_VALUES = {"0", "false", "no", "off"}
+
+
+def env_flag(name, default):
+    """Lee una variable de entorno booleana.
+
+    Acepta 1/true/yes/on y 0/false/no/off sin distinguir mayusculas, porque
+    infra/.env y compose.yaml escriben `true`. Un valor no reconocido detiene
+    el arranque en vez de interpretarse como falso en silencio.
+    """
+    value = os.getenv(name, "").strip().lower()
+    if not value:
+        return default
+    if value in TRUE_VALUES:
+        return True
+    if value in FALSE_VALUES:
+        return False
+    raise ImproperlyConfigured(
+        f"{name} debe ser uno de {sorted(TRUE_VALUES | FALSE_VALUES)}; recibido {os.environ[name]!r}."
+    )
+
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key-change-me")
-DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
+DEBUG = env_flag("DJANGO_DEBUG", True)
 ALLOWED_HOSTS = [item for item in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if item]
 CSRF_TRUSTED_ORIGINS = [item for item in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if item]
 
@@ -129,12 +154,12 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {"TITLE": "Gesband API", "VERSION": "1.0.0", "SERVE_INCLUDE_SCHEMA": False}
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "amqp://guest:guest@rabbitmq:5672//")
-CELERY_TASK_ALWAYS_EAGER = os.getenv("CELERY_TASK_ALWAYS_EAGER", "0") == "1"
+CELERY_TASK_ALWAYS_EAGER = env_flag("CELERY_TASK_ALWAYS_EAGER", False)
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Gesband <no-reply@example.invalid>")
 ACCESS_INVITATION_TTL_HOURS = int(os.getenv("ACCESS_INVITATION_TTL_HOURS", "168"))
-FCM_ENABLED = os.getenv("FCM_ENABLED", "0") == "1"
+FCM_ENABLED = env_flag("FCM_ENABLED", False)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SESSION_COOKIE_SECURE = os.getenv("DJANGO_SECURE_COOKIES", "0") == "1"
+SESSION_COOKIE_SECURE = env_flag("DJANGO_SECURE_COOKIES", False)
 CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
