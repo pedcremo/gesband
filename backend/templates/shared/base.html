@@ -1,0 +1,52 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Gesband{% endblock %}</title>
+  <style>
+    :root { --primary: {{ association.primary_color|default:'#1B4965' }}; --secondary: {{ association.secondary_color|default:'#CAE9FF' }}; }
+    body { font-family: system-ui,sans-serif; max-width: 1100px; margin: 0 auto; padding: 1rem; color: #19323c; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:3px solid var(--primary); padding-bottom:.8rem; }
+    nav { display:flex; align-items:center; flex-wrap:wrap; gap:.8rem; }
+    nav a { color:var(--primary); }
+    .language-selector { display:inline-flex; align-items:center; gap:.35rem; }
+    table { width:100%; border-collapse:collapse; } th,td { padding:.55rem; border-bottom:1px solid #ddd; text-align:left; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; } .card { padding:1rem; background:var(--secondary); border-radius:.5rem; }
+    .button { background:var(--primary); color:white; border:0; border-radius:.3rem; padding:.5rem .8rem; cursor:pointer; } .muted { color:#64747a; }
+    .actions { display:flex; flex-wrap:wrap; gap:.6rem; margin:1rem 0; align-items:center; }
+    .actions a.button { text-decoration:none; }
+    .errorlist,.errors { color:#9b1c1c; }
+    label { font-weight:600; } input,select { padding:.45rem; max-width:100%; }
+    .status { display:inline-block; padding:.2rem .45rem; border-radius:.3rem; background:#edf2f4; }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <strong>{{ association.name|default:'Gesband' }}</strong>
+    {% if association.motto %}<small> · {{ association.motto }}</small>{% endif %}
+  </div>
+  <nav aria-label="{% translate 'Main navigation' %}">
+    <a href="{% url 'panel' %}">{% translate "Home" %}</a>
+    <a href="{% url 'panel-members' %}?association_id={{ association.id }}">{% translate "Members" %}</a>
+    <form class="language-selector" action="{% url 'set_language' %}" method="post">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ request.get_full_path }}">
+      <label for="language">{% translate "Language" %}</label>
+      <select id="language" name="language">
+        <option value="es"{% if LANGUAGE_CODE == 'es' %} selected{% endif %}>Castellano</option>
+        <option value="ca"{% if LANGUAGE_CODE == 'ca' %} selected{% endif %}>Valencià</option>
+        <option value="en"{% if LANGUAGE_CODE == 'en' %} selected{% endif %}>English</option>
+      </select>
+      <button type="submit">{% translate "Change" %}</button>
+    </form>
+    <a href="{% url 'logout' %}">{% translate "Log out" %}</a>
+  </nav>
+</header>
+{% if messages %}{% for message in messages %}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}{% endif %}
+<main>{% block content %}{% endblock %}</main>
+</body>
+</html>

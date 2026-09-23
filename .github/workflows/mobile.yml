@@ -1,0 +1,79 @@
+name: Mobile CI
+
+on:
+  push:
+    paths:
+      - "mobile/**"
+      - ".github/workflows/mobile.yml"
+  pull_request:
+    paths:
+      - "mobile/**"
+      - ".github/workflows/mobile.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.mobile.outputs.ready }}
+      flutter_version: ${{ steps.mobile.outputs.flutter_version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: mobile
+        shell: bash
+        run: |
+          if [[ -f mobile/pubspec.yaml ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Aplicación móvil todavía no creada; CI queda preparada para activarse automáticamente."
+          fi
+
+          version=""
+          if [[ -f mobile/.flutter-version ]]; then
+            version="$(tr -d '[:space:]' < mobile/.flutter-version)"
+          elif [[ -f mobile/.fvmrc ]]; then
+            version="$(sed -n 's/.*"flutter"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' mobile/.fvmrc | head -n 1)"
+          fi
+          echo "flutter_version=${version}" >> "$GITHUB_OUTPUT"
+
+  mobile:
+    needs: detect
+    if: needs.detect.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar Flutter fijado
+        if: needs.detect.outputs.flutter_version != ''
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.detect.outputs.flutter_version }}
+          channel: stable
+          cache: true
+      - name: Configurar Flutter estable
+        if: needs.detect.outputs.flutter_version == ''
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Instalar dependencias
+        working-directory: mobile
+        run: flutter pub get
+      - name: Comprobar formato
+        working-directory: mobile
+        run: dart format --output=none --set-exit-if-changed .
+      - name: Analizar aplicación
+        working-directory: mobile
+        run: flutter analyze --fatal-infos --fatal-warnings
+      - name: Ejecutar pruebas móvil
+        working-directory: mobile
+        shell: bash
+        run: |
+          if [[ -d test ]] && find test -type f -name '*_test.dart' -print -quit | grep -q .; then
+            flutter test
+          else
+            echo "Aún no hay pruebas Dart; análisis y formato sí se han ejecutado."
+          fi

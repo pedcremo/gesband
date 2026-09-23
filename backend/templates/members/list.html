@@ -1,0 +1,38 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Members" %} · Gesband{% endblock %}
+{% block content %}
+<h1>{% translate "Members" %}</h1>
+<div class="actions">
+  <a class="button" href="{% url 'member-import-start' %}?association_id={{ association.id }}">{% translate "Import members" %}</a>
+  <a class="button" href="{% url 'member-access-invitations' %}?association_id={{ association.id }}">{% translate "Gestionar accesos" %}</a>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>{% translate "Name" %}</th>
+      <th>{% translate "Type" %}</th>
+      <th>{% translate "Instrument" %}</th>
+      <th>{% translate "Status" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+      <tr>
+        <td>{{ member.first_name }} {{ member.last_name }}</td>
+        <td>{{ member.get_kind_display }}</td>
+        <td>
+          {% for item in member.member_instruments.all %}
+            {{ item.instrument.name }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+            <span class="muted">{% translate "No instrument" %}</span>
+          {% endfor %}
+        </td>
+        <td>{{ member.get_status_display }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">{% translate "There are no members." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

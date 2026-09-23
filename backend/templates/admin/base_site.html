@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_("Django site admin") }}{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_("Django administration") }}</a></div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}
+<form action="{% url 'set_language' %}" method="post" style="display:flex;align-items:center;gap:.5rem;margin-inline-start:auto">
+  {% csrf_token %}
+  <input name="next" type="hidden" value="{{ request.get_full_path }}">
+  <label for="admin-language">{% translate "Language" %}</label>
+  <select id="admin-language" name="language">
+    <option value="es"{% if LANGUAGE_CODE == 'es' %} selected{% endif %}>Castellano</option>
+    <option value="ca"{% if LANGUAGE_CODE == 'ca' %} selected{% endif %}>Valencià</option>
+    <option value="en"{% if LANGUAGE_CODE == 'en' %} selected{% endif %}>English</option>
+  </select>
+  <button type="submit">{% translate "Change" %}</button>
+</form>
+{% endblock %}

@@ -1,0 +1,1228 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Gesband\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-22 09:01+0200\n"
+"PO-Revision-Date: 2026-09-21 10:00+0200\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: backend/apps/accounts/apps.py:8
+msgid "Cuentas"
+msgstr ""
+
+#: backend/apps/accounts/models.py:7 backend/apps/members/models.py:95
+msgid "correo electrónico"
+msgstr ""
+
+#: backend/apps/accounts/models.py:10 backend/apps/associations/models.py:48
+#: backend/apps/communications/models.py:20
+#: backend/apps/communications/models.py:61 backend/apps/members/models.py:87
+msgid "cuenta"
+msgstr ""
+
+#: backend/apps/accounts/models.py:11
+msgid "cuentas"
+msgstr ""
+
+#: backend/apps/activities/apps.py:8
+#, fuzzy
+#| msgid "Activities"
+msgid "Actividades"
+msgstr "Activities"
+
+#: backend/apps/activities/models.py:14
+msgid "Ensayo"
+msgstr ""
+
+#: backend/apps/activities/models.py:15
+msgid "Actuación"
+msgstr ""
+
+#: backend/apps/activities/models.py:18
+msgid "Borrador"
+msgstr ""
+
+#: backend/apps/activities/models.py:19
+msgid "Publicada"
+msgstr ""
+
+#: backend/apps/activities/models.py:20
+msgid "Cancelada"
+msgstr ""
+
+#: backend/apps/activities/models.py:21
+msgid "Completada"
+msgstr ""
+
+#: backend/apps/activities/models.py:23 backend/apps/activities/models.py:88
+#: backend/apps/associations/models.py:10
+#: backend/apps/communications/models.py:12
+#: backend/apps/communications/models.py:56 backend/apps/members/models.py:77
+#: backend/apps/members/models.py:150 backend/apps/transport/models.py:17
+msgid "identificador"
+msgstr ""
+
+#: backend/apps/activities/models.py:25 backend/apps/associations/models.py:33
+#: backend/apps/associations/models.py:42
+#: backend/apps/communications/models.py:14 backend/apps/members/models.py:22
+#: backend/apps/members/models.py:39 backend/apps/members/models.py:79
+#: backend/apps/members/models.py:152
+msgid "asociación"
+msgstr ""
+
+#: backend/apps/activities/models.py:27 backend/apps/members/models.py:96
+#: backend/apps/transport/models.py:21
+msgid "tipo"
+msgstr ""
+
+#: backend/apps/activities/models.py:28 backend/apps/activities/models.py:146
+#: backend/apps/communications/models.py:101 backend/apps/members/models.py:97
+#: backend/apps/members/models.py:166
+msgid "estado"
+msgstr ""
+
+#: backend/apps/activities/models.py:29 backend/apps/activities/models.py:72
+#: backend/apps/communications/models.py:30
+msgid "título"
+msgstr ""
+
+#: backend/apps/activities/models.py:30
+msgid "descripción"
+msgstr ""
+
+#: backend/apps/activities/models.py:31
+msgid "lugar"
+msgstr ""
+
+#: backend/apps/activities/models.py:32
+msgid "inicio"
+msgstr ""
+
+#: backend/apps/activities/models.py:33
+msgid "final"
+msgstr ""
+
+#: backend/apps/activities/models.py:34
+msgid "hora de concentración"
+msgstr ""
+
+#: backend/apps/activities/models.py:35
+msgid "plazo de respuesta"
+msgstr ""
+
+#: backend/apps/activities/models.py:36
+msgid "uniforme"
+msgstr ""
+
+#: backend/apps/activities/models.py:37
+msgid "versión"
+msgstr ""
+
+#: backend/apps/activities/models.py:42
+msgid "creada por"
+msgstr ""
+
+#: backend/apps/activities/models.py:44 backend/apps/activities/models.py:101
+#: backend/apps/activities/models.py:128 backend/apps/associations/models.py:29
+#: backend/apps/associations/models.py:51
+#: backend/apps/communications/models.py:35
+#: backend/apps/communications/models.py:106 backend/apps/members/models.py:99
+#: backend/apps/members/models.py:170
+msgid "fecha de creación"
+msgstr ""
+
+#: backend/apps/activities/models.py:45 backend/apps/activities/models.py:157
+#: backend/apps/members/models.py:100
+msgid "fecha de actualización"
+msgstr ""
+
+#: backend/apps/activities/models.py:50 backend/apps/activities/models.py:70
+#: backend/apps/activities/models.py:90
+#: backend/apps/communications/models.py:28 backend/apps/transport/models.py:19
+msgid "actividad"
+msgstr ""
+
+#: backend/apps/activities/models.py:51
+#, fuzzy
+#| msgid "Activities"
+msgid "actividades"
+msgstr "Activities"
+
+#: backend/apps/activities/models.py:56
+msgid "El final no puede ser anterior al inicio."
+msgstr ""
+
+#: backend/apps/activities/models.py:58
+msgid "La concentración no puede ser posterior al inicio."
+msgstr ""
+
+#: backend/apps/activities/models.py:60
+msgid "El plazo debe terminar antes de la actividad."
+msgstr ""
+
+#: backend/apps/activities/models.py:73
+msgid "notas"
+msgstr ""
+
+#: backend/apps/activities/models.py:74 backend/apps/members/models.py:25
+msgid "orden"
+msgstr ""
+
+#: backend/apps/activities/models.py:78
+msgid "elemento de repertorio"
+msgstr ""
+
+#: backend/apps/activities/models.py:79
+msgid "elementos de repertorio"
+msgstr ""
+
+#: backend/apps/activities/models.py:84
+#: backend/apps/communications/models.py:85
+msgid "Pendiente"
+msgstr ""
+
+#: backend/apps/activities/models.py:85
+msgid "Aceptada"
+msgstr ""
+
+#: backend/apps/activities/models.py:86
+msgid "Rechazada"
+msgstr ""
+
+#: backend/apps/activities/models.py:93 backend/apps/members/models.py:109
+#: backend/apps/members/models.py:118 backend/apps/transport/models.py:57
+msgid "miembro"
+msgstr ""
+
+#: backend/apps/activities/models.py:96 backend/apps/activities/models.py:120
+msgid "respuesta"
+msgstr ""
+
+#: backend/apps/activities/models.py:98
+msgid "nota de respuesta"
+msgstr ""
+
+#: backend/apps/activities/models.py:99
+msgid "fecha de respuesta"
+msgstr ""
+
+#: backend/apps/activities/models.py:100
+msgid "versión de la actividad"
+msgstr ""
+
+#: backend/apps/activities/models.py:105 backend/apps/activities/models.py:118
+#: backend/apps/activities/models.py:144
+msgid "convocatoria"
+msgstr ""
+
+#: backend/apps/activities/models.py:106
+msgid "convocatorias"
+msgstr ""
+
+#: backend/apps/activities/models.py:110 backend/apps/api.py:192
+#: backend/apps/transport/models.py:70
+msgid "El miembro pertenece a otra asociación."
+msgstr "The member belongs to another association."
+
+#: backend/apps/activities/models.py:121 backend/apps/activities/models.py:147
+msgid "nota"
+msgstr ""
+
+#: backend/apps/activities/models.py:126
+msgid "modificada por"
+msgstr ""
+
+#: backend/apps/activities/models.py:132
+msgid "cambio de respuesta"
+msgstr ""
+
+#: backend/apps/activities/models.py:133
+msgid "cambios de respuesta"
+msgstr ""
+
+#: backend/apps/activities/models.py:138
+msgid "Sin registrar"
+msgstr ""
+
+#: backend/apps/activities/models.py:139
+#, fuzzy
+#| msgid "Present"
+msgid "Presente"
+msgstr "Present"
+
+#: backend/apps/activities/models.py:140
+#, fuzzy
+#| msgid "Absent"
+msgid "Ausente"
+msgstr "Absent"
+
+#: backend/apps/activities/models.py:141
+msgid "Ausencia justificada"
+msgstr ""
+
+#: backend/apps/activities/models.py:154
+msgid "registrada por"
+msgstr ""
+
+#: backend/apps/activities/models.py:156
+msgid "fecha de registro"
+msgstr ""
+
+#: backend/apps/activities/models.py:160
+msgid "asistencia"
+msgstr ""
+
+#: backend/apps/activities/models.py:161
+msgid "asistencias"
+msgstr ""
+
+#: backend/apps/activities/services.py:15
+msgid "Solo la persona convocada puede responder."
+msgstr ""
+
+#: backend/apps/activities/services.py:17
+msgid "La actividad no admite respuestas."
+msgstr ""
+
+#: backend/apps/activities/services.py:19
+msgid "El plazo de respuesta ha terminado."
+msgstr ""
+
+#: backend/apps/activities/services.py:21
+msgid "Respuesta no válida."
+msgstr ""
+
+#: backend/apps/activities/services.py:34
+msgid "Estado de asistencia no válido."
+msgstr ""
+
+#: backend/apps/api.py:74 backend/apps/members/models.py:61
+msgid "La cuerda pertenece a otra asociación."
+msgstr "The section belongs to another association."
+
+#: backend/apps/api.py:173
+msgid "La actividad pertenece a otra asociación."
+msgstr "The activity belongs to another association."
+
+#: backend/apps/api.py:175 backend/apps/transport/models.py:43
+msgid "El conductor pertenece a otra asociación."
+msgstr "The driver belongs to another association."
+
+#: backend/apps/api.py:190
+msgid "El transporte pertenece a otra asociación."
+msgstr "The transport belongs to another association."
+
+#: backend/apps/api.py:212
+msgid "Credenciales no válidas."
+msgstr ""
+
+#: backend/apps/api.py:225
+msgid "Token de renovación no válido."
+msgstr ""
+
+#: backend/apps/api.py:257
+msgid "Es obligatorio seleccionar la asociación."
+msgstr ""
+
+#: backend/apps/api.py:308 backend/apps/api.py:343
+msgid "Adjunta una imagen."
+msgstr ""
+
+#: backend/apps/api.py:324
+msgid "No hay una ficha vinculada a esta cuenta."
+msgstr ""
+
+#: backend/apps/api.py:437 backend/apps/transport/models.py:75
+msgid "El miembro ya tiene transporte para esta actividad."
+msgstr "The member already has transport for this activity."
+
+#: backend/apps/api.py:439 backend/apps/transport/models.py:77
+msgid "No quedan plazas disponibles."
+msgstr "There are no seats available."
+
+#: backend/apps/api.py:540
+msgid "Dispositivo no registrado."
+msgstr ""
+
+#: backend/apps/api.py:548
+msgid "Registra primero un dispositivo con notificaciones activadas."
+msgstr ""
+
+#: backend/apps/api.py:584 backend/config/panel.py:74
+msgid "Adjunta un CSV o XLSX."
+msgstr "Attach a CSV or XLSX file."
+
+#: backend/apps/associations/apps.py:8
+msgid "Asociaciones"
+msgstr ""
+
+#: backend/apps/associations/models.py:11 backend/apps/members/models.py:24
+#: backend/apps/members/models.py:49 backend/apps/members/models.py:90
+#: backend/apps/transport/models.py:22
+msgid "nombre"
+msgstr ""
+
+#: backend/apps/associations/models.py:12
+msgid "identificador para URL"
+msgstr ""
+
+#: backend/apps/associations/models.py:13
+msgid "logotipo"
+msgstr ""
+
+#: backend/apps/associations/models.py:15
+msgid "color principal"
+msgstr ""
+
+#: backend/apps/associations/models.py:18
+msgid "Usa un color hexadecimal, por ejemplo #1B4965."
+msgstr ""
+
+#: backend/apps/associations/models.py:21
+msgid "color secundario"
+msgstr ""
+
+#: backend/apps/associations/models.py:24
+msgid "Usa un color hexadecimal, por ejemplo #CAE9FF."
+msgstr ""
+
+#: backend/apps/associations/models.py:26
+msgid "lema"
+msgstr ""
+
+#: backend/apps/associations/models.py:27
+msgid "zona horaria"
+msgstr ""
+
+#: backend/apps/associations/models.py:28
+msgid "activa"
+msgstr ""
+
+#: backend/apps/associations/models.py:34
+msgid "asociaciones"
+msgstr ""
+
+#: backend/apps/associations/models.py:50
+#: backend/apps/communications/models.py:71
+msgid "activo"
+msgstr ""
+
+#: backend/apps/associations/models.py:55
+msgid "acceso a asociación"
+msgstr ""
+
+#: backend/apps/associations/models.py:56
+msgid "accesos a asociaciones"
+msgstr ""
+
+#: backend/apps/associations/models.py:64
+msgid "Músico"
+msgstr ""
+
+#: backend/apps/associations/models.py:65
+msgid "Junta"
+msgstr ""
+
+#: backend/apps/associations/models.py:66
+msgid "Contratista/organización"
+msgstr ""
+
+#: backend/apps/associations/models.py:67
+msgid "Dirección musical"
+msgstr ""
+
+#: backend/apps/associations/models.py:68
+#, fuzzy
+#| msgid "Django administration"
+msgid "Administración"
+msgstr "Gesband administration"
+
+#: backend/apps/associations/models.py:69
+msgid "Administración de plataforma"
+msgstr ""
+
+#: backend/apps/associations/models.py:70
+msgid "Edición web"
+msgstr ""
+
+#: backend/apps/associations/models.py:76
+msgid "acceso"
+msgstr ""
+
+#: backend/apps/associations/models.py:78
+msgid "rol"
+msgstr ""
+
+#: backend/apps/associations/models.py:82
+msgid "rol de asociación"
+msgstr ""
+
+#: backend/apps/associations/models.py:83
+msgid "roles de asociación"
+msgstr ""
+
+#: backend/apps/associations/permissions.py:16
+msgid "Autenticación requerida."
+msgstr "Authentication required."
+
+#: backend/apps/associations/permissions.py:22
+msgid "No tienes acceso a esta asociación."
+msgstr "You do not have access to this association."
+
+#: backend/apps/associations/permissions.py:31
+msgid "No tienes permisos para realizar esta acción."
+msgstr "You do not have permission to perform this action."
+
+#: backend/apps/communications/apps.py:8
+msgid "Comunicaciones"
+msgstr ""
+
+#: backend/apps/communications/models.py:31
+msgid "contenido"
+msgstr ""
+
+#: backend/apps/communications/models.py:32
+msgid "enlace interno"
+msgstr ""
+
+#: backend/apps/communications/models.py:33
+msgid "clave de deduplicación"
+msgstr ""
+
+#: backend/apps/communications/models.py:34
+msgid "fecha de lectura"
+msgstr ""
+
+#: backend/apps/communications/models.py:40
+#: backend/apps/communications/models.py:90
+msgid "aviso"
+msgstr ""
+
+#: backend/apps/communications/models.py:41
+msgid "avisos"
+msgstr ""
+
+#: backend/apps/communications/models.py:46
+msgid "Android"
+msgstr ""
+
+#: backend/apps/communications/models.py:47
+msgid "iOS"
+msgstr ""
+
+#: backend/apps/communications/models.py:50
+msgid "Desconocido"
+msgstr ""
+
+#: backend/apps/communications/models.py:51
+msgid "Concedido"
+msgstr ""
+
+#: backend/apps/communications/models.py:52
+msgid "Denegado"
+msgstr ""
+
+#: backend/apps/communications/models.py:53
+msgid "Provisional"
+msgstr ""
+
+#: backend/apps/communications/models.py:54
+msgid "Desactivado"
+msgstr ""
+
+#: backend/apps/communications/models.py:63
+msgid "identificador de instalación"
+msgstr ""
+
+#: backend/apps/communications/models.py:64
+msgid "plataforma"
+msgstr ""
+
+#: backend/apps/communications/models.py:65
+msgid "token push"
+msgstr ""
+
+#: backend/apps/communications/models.py:67
+msgid "permiso"
+msgstr ""
+
+#: backend/apps/communications/models.py:69
+msgid "última recepción"
+msgstr ""
+
+#: backend/apps/communications/models.py:70
+msgid "última conexión"
+msgstr ""
+
+#: backend/apps/communications/models.py:75
+msgid "dispositivo registrado"
+msgstr ""
+
+#: backend/apps/communications/models.py:76
+msgid "dispositivos registrados"
+msgstr ""
+
+#: backend/apps/communications/models.py:81
+msgid "Push"
+msgstr ""
+
+#: backend/apps/communications/models.py:82
+msgid "Correo"
+msgstr ""
+
+#: backend/apps/communications/models.py:86
+msgid "Enviada"
+msgstr ""
+
+#: backend/apps/communications/models.py:87 backend/apps/members/models.py:148
+msgid "Fallida"
+msgstr "Failed"
+
+#: backend/apps/communications/models.py:98
+msgid "dispositivo"
+msgstr ""
+
+#: backend/apps/communications/models.py:100
+msgid "canal"
+msgstr ""
+
+#: backend/apps/communications/models.py:102
+msgid "identificador del proveedor"
+msgstr ""
+
+#: backend/apps/communications/models.py:103
+msgid "error"
+msgstr ""
+
+#: backend/apps/communications/models.py:104
+msgid "intentos"
+msgstr ""
+
+#: backend/apps/communications/models.py:105
+msgid "último intento"
+msgstr ""
+
+#: backend/apps/communications/models.py:110
+msgid "entrega de aviso"
+msgstr ""
+
+#: backend/apps/communications/models.py:111
+msgid "entregas de avisos"
+msgstr ""
+
+#: backend/apps/members/apps.py:8
+msgid "Miembros"
+msgstr ""
+
+#: backend/apps/members/images.py:14
+msgid "La foto supera 5 MB."
+msgstr ""
+
+#: backend/apps/members/images.py:21
+msgid "La imagen tiene demasiados píxeles."
+msgstr ""
+
+#: backend/apps/members/images.py:27
+msgid "El fichero no es una imagen válida."
+msgstr ""
+
+#: backend/apps/members/models.py:30 backend/apps/members/models.py:47
+msgid "cuerda"
+msgstr ""
+
+#: backend/apps/members/models.py:31
+msgid "cuerdas"
+msgstr ""
+
+#: backend/apps/members/models.py:54 backend/apps/members/models.py:124
+#, fuzzy
+#| msgid "Instrument"
+msgid "instrumento"
+msgstr "Instrument"
+
+#: backend/apps/members/models.py:55
+#, fuzzy
+#| msgid "Instrument"
+msgid "instrumentos"
+msgstr "Instrument"
+
+#: backend/apps/members/models.py:69
+msgid "Músico socio"
+msgstr ""
+
+#: backend/apps/members/models.py:70
+msgid "Socio colaborador/mecenas"
+msgstr ""
+
+#: backend/apps/members/models.py:71
+msgid "Colaborador musical externo"
+msgstr ""
+
+#: backend/apps/members/models.py:74
+#, fuzzy
+#| msgid "Action"
+msgid "Activo"
+msgstr "Action"
+
+#: backend/apps/members/models.py:75
+msgid "Inactivo"
+msgstr ""
+
+#: backend/apps/members/models.py:89
+msgid "identificador externo"
+msgstr ""
+
+#: backend/apps/members/models.py:91
+msgid "apellidos"
+msgstr ""
+
+#: backend/apps/members/models.py:92 backend/config/panel.py:24
+msgid "DNI/NIE"
+msgstr ""
+
+#: backend/apps/members/models.py:93
+msgid "dirección"
+msgstr ""
+
+#: backend/apps/members/models.py:94
+msgid "teléfono"
+msgstr ""
+
+#: backend/apps/members/models.py:98
+msgid "foto"
+msgstr ""
+
+#: backend/apps/members/models.py:110
+msgid "miembros"
+msgstr ""
+
+#: backend/apps/members/models.py:126
+msgid "principal"
+msgstr ""
+
+#: backend/apps/members/models.py:133
+msgid "instrumento de miembro"
+msgstr ""
+
+#: backend/apps/members/models.py:134
+msgid "instrumentos de miembros"
+msgstr ""
+
+#: backend/apps/members/models.py:140
+msgid "El instrumento pertenece a otra asociación."
+msgstr "The instrument belongs to another association."
+
+#: backend/apps/members/models.py:145
+msgid "Subido"
+msgstr "Uploaded"
+
+#: backend/apps/members/models.py:146
+msgid "Previsualización"
+msgstr "Preview"
+
+#: backend/apps/members/models.py:147
+msgid "Confirmada"
+msgstr "Confirmed"
+
+#: backend/apps/members/models.py:158
+msgid "creado por"
+msgstr ""
+
+#: backend/apps/members/models.py:160
+msgid "nombre de archivo"
+msgstr ""
+
+#: backend/apps/members/models.py:161
+msgid "huella del contenido"
+msgstr ""
+
+#: backend/apps/members/models.py:163
+msgid "fichero original temporal"
+msgstr "temporary original file"
+
+#: backend/apps/members/models.py:165
+msgid "columnas de origen"
+msgstr "source columns"
+
+#: backend/apps/members/models.py:167
+msgid "asignación de columnas"
+msgstr ""
+
+#: backend/apps/members/models.py:168
+msgid "previsualización"
+msgstr ""
+
+#: backend/apps/members/models.py:169
+msgid "resultado"
+msgstr ""
+
+#: backend/apps/members/models.py:171
+msgid "fecha de confirmación"
+msgstr ""
+
+#: backend/apps/members/models.py:176
+msgid "lote de importación"
+msgstr ""
+
+#: backend/apps/members/models.py:177
+msgid "lotes de importación"
+msgstr ""
+
+#: backend/apps/members/services.py:24
+msgid "El fichero supera 5 MB."
+msgstr "The file exceeds 5 MB."
+
+#: backend/apps/members/services.py:30
+msgid "El CSV debe estar codificado en UTF-8."
+msgstr "The CSV must be UTF-8 encoded."
+
+#: backend/apps/members/services.py:43
+msgid "El fichero XLSX no es válido."
+msgstr "The XLSX file is not valid."
+
+#: backend/apps/members/services.py:45
+msgid "Solo se admiten ficheros CSV o XLSX."
+msgstr "Only CSV or XLSX files are accepted."
+
+#: backend/apps/members/services.py:47
+msgid "Todas las columnas deben tener un nombre."
+msgstr "Every column must have a name."
+
+#: backend/apps/members/services.py:49
+msgid "Los nombres de columna no pueden repetirse."
+msgstr "Column names cannot be repeated."
+
+#: backend/apps/members/services.py:51
+msgid "El fichero no contiene filas de datos."
+msgstr "The file contains no data rows."
+
+#: backend/apps/members/services.py:53
+#, python-format
+msgid "El fichero supera el límite de %(limit)s filas."
+msgstr "The file exceeds the limit of %(limit)s rows."
+
+#: backend/apps/members/services.py:63
+#, python-format
+msgid "Campos de destino no permitidos: %(fields)s."
+msgstr "Destination fields not allowed: %(fields)s."
+
+#: backend/apps/members/services.py:68
+#, python-format
+msgid "Columnas de origen desconocidas: %(fields)s."
+msgstr "Unknown source columns: %(fields)s."
+
+#: backend/apps/members/services.py:72
+msgid "Cada campo de destino solo puede asignarse una vez."
+msgstr "Each destination field can only be mapped once."
+
+#: backend/apps/members/services.py:79
+msgid "Falta el nombre."
+msgstr "First name is missing."
+
+#: backend/apps/members/services.py:81
+msgid "Faltan los apellidos."
+msgstr "Last name is missing."
+
+#: backend/apps/members/services.py:83
+msgid "Tipo de miembro no válido."
+msgstr "Invalid member type."
+
+#: backend/apps/members/services.py:87
+msgid "Identificador externo duplicado en el fichero."
+msgstr "Duplicate external identifier in the file."
+
+#: backend/apps/members/services.py:100
+msgid "Genera la previsualización antes de confirmar."
+msgstr "Generate the preview before confirming."
+
+#: backend/apps/transport/apps.py:8
+msgid "Transporte"
+msgstr ""
+
+#: backend/apps/transport/models.py:13
+msgid "Coche"
+msgstr ""
+
+#: backend/apps/transport/models.py:14
+msgid "Autobús"
+msgstr ""
+
+#: backend/apps/transport/models.py:15
+msgid "Otro"
+msgstr ""
+
+#: backend/apps/transport/models.py:23
+msgid "punto de encuentro"
+msgstr ""
+
+#: backend/apps/transport/models.py:24
+msgid "hora de salida"
+msgstr ""
+
+#: backend/apps/transport/models.py:25
+msgid "plazas"
+msgstr ""
+
+#: backend/apps/transport/models.py:32
+msgid "conductor"
+msgstr ""
+
+#: backend/apps/transport/models.py:36 backend/apps/transport/models.py:51
+msgid "transporte"
+msgstr ""
+
+#: backend/apps/transport/models.py:37
+msgid "transportes"
+msgstr ""
+
+#: backend/apps/transport/models.py:41
+msgid "Debe haber al menos una plaza."
+msgstr ""
+
+#: backend/apps/transport/models.py:65
+msgid "asignación de transporte"
+msgstr ""
+
+#: backend/apps/transport/models.py:66
+msgid "asignaciones de transporte"
+msgstr ""
+
+#: backend/config/panel.py:21
+msgid "Identificador externo"
+msgstr "External identifier"
+
+#: backend/config/panel.py:22
+msgid "Nombre"
+msgstr ""
+
+#: backend/config/panel.py:23
+msgid "Apellidos"
+msgstr ""
+
+#: backend/config/panel.py:25
+msgid "Dirección"
+msgstr "Address"
+
+#: backend/config/panel.py:26
+msgid "Teléfono"
+msgstr "Phone"
+
+#: backend/config/panel.py:27
+msgid "Correo electrónico"
+msgstr "Email"
+
+#: backend/config/panel.py:28
+msgid "Tipo de miembro"
+msgstr "Member type"
+
+#: backend/config/panel.py:44
+msgid "No tienes permisos para acceder al panel de la junta."
+msgstr "You do not have permission to access the board panel."
+
+#: backend/config/panel.py:87
+msgid "Este fichero ya se había cargado; se muestra el lote existente."
+msgstr "This file was already uploaded; the existing batch is shown."
+
+#: backend/config/panel.py:120
+msgid "El fichero temporal ya no está disponible."
+msgstr "The temporary file is no longer available."
+
+#: backend/config/panel.py:126
+msgid "El fichero temporal no coincide con la carga original."
+msgstr "The temporary file does not match the original upload."
+
+#: backend/config/panel.py:135
+msgid "Previsualización generada; el censo todavía no se ha modificado."
+msgstr "Preview generated; the census has not been changed yet."
+
+#: backend/config/panel.py:147
+#, python-format
+msgid "Importación confirmada: %(created)s altas, %(updated)s actualizaciones y %(rejected)s rechazos."
+msgstr "Import confirmed: %(created)s created, %(updated)s updated and %(rejected)s rejected."
+
+#: backend/config/panel.py:185
+msgid "Actividad publicada."
+msgstr ""
+
+#: backend/config/panel.py:191
+msgid "Asistencia actualizada."
+msgstr ""
+
+#: backend/templates/activities/detail.html:5
+msgid "Back"
+msgstr "Back"
+
+#: backend/templates/activities/detail.html:12
+msgid "Publish activity"
+msgstr "Publish activity"
+
+#: backend/templates/activities/detail.html:15
+msgid "Invitations"
+msgstr "Invitations"
+
+#: backend/templates/activities/detail.html:19
+msgid "Musician"
+msgstr "Musician"
+
+#: backend/templates/activities/detail.html:20
+msgid "Response"
+msgstr "Response"
+
+#: backend/templates/activities/detail.html:21
+#: backend/templates/activities/detail.html:41
+msgid "Attendance"
+msgstr "Attendance"
+
+#: backend/templates/activities/detail.html:22
+msgid "Action"
+msgstr "Action"
+
+#: backend/templates/activities/detail.html:34
+msgid "Not recorded"
+msgstr "Not recorded"
+
+#: backend/templates/activities/detail.html:42
+msgid "Present"
+msgstr "Present"
+
+#: backend/templates/activities/detail.html:43
+msgid "Absent"
+msgstr "Absent"
+
+#: backend/templates/activities/detail.html:44
+msgid "Excused"
+msgstr "Excused absence"
+
+#: backend/templates/activities/detail.html:46
+msgid "Save"
+msgstr "Save"
+
+#: backend/templates/activities/detail.html:51
+msgid "There are no invited members."
+msgstr "There are no invited members."
+
+#: backend/templates/admin/base_site.html:5
+msgid "Django site admin"
+msgstr "Gesband administration"
+
+#: backend/templates/admin/base_site.html:8
+msgid "Django administration"
+msgstr "Gesband administration"
+
+#: backend/templates/admin/base_site.html:18
+#: backend/templates/registration/login.html:23
+#: backend/templates/shared/base.html:38
+msgid "Language"
+msgstr "Language"
+
+#: backend/templates/admin/base_site.html:24
+#: backend/templates/registration/login.html:29
+#: backend/templates/shared/base.html:44
+msgid "Change"
+msgstr "Change"
+
+#: backend/templates/members/import_detail.html:3
+#: backend/templates/members/import_detail.html:6
+msgid "Member import"
+msgstr "Member import"
+
+#: backend/templates/members/import_detail.html:5
+msgid "Back to imports"
+msgstr "Back to imports"
+
+#: backend/templates/members/import_detail.html:10
+msgid "Choose which census field corresponds to each source column. Leave columns you do not need unassigned."
+msgstr "Choose which census field corresponds to each source column. Leave columns you do not need unassigned."
+
+#: backend/templates/members/import_detail.html:16
+msgid "Source column"
+msgstr "Source column"
+
+#: backend/templates/members/import_detail.html:16
+msgid "Census field"
+msgstr "Census field"
+
+#: backend/templates/members/import_detail.html:23
+msgid "Do not import"
+msgstr "Do not import"
+
+#: backend/templates/members/import_detail.html:31
+msgid "Generate preview"
+msgstr "Generate preview"
+
+#: backend/templates/members/import_detail.html:37
+msgid "No member has been created or updated yet. Rows with errors will be rejected when you confirm."
+msgstr "No member has been created or updated yet. Rows with errors will be rejected when you confirm."
+
+#: backend/templates/members/import_detail.html:40
+msgid "created"
+msgstr "created"
+
+#: backend/templates/members/import_detail.html:41
+msgid "updated"
+msgstr "updated"
+
+#: backend/templates/members/import_detail.html:42
+msgid "rejected"
+msgstr "rejected"
+
+#: backend/templates/members/import_detail.html:47
+msgid "Row"
+msgstr "Row"
+
+#: backend/templates/members/import_detail.html:47
+msgid "External ID"
+msgstr "External ID"
+
+#: backend/templates/members/import_detail.html:47
+#: backend/templates/members/list.html:12
+msgid "Name"
+msgstr "Name"
+
+#: backend/templates/members/import_detail.html:47
+msgid "Result"
+msgstr "Result"
+
+#: backend/templates/members/import_detail.html:58
+msgid "Created"
+msgstr "Created"
+
+#: backend/templates/members/import_detail.html:59
+msgid "Updated"
+msgstr "Updated"
+
+#: backend/templates/members/import_detail.html:60
+msgid "Rejected"
+msgstr "Rejected"
+
+#: backend/templates/members/import_detail.html:61
+msgid "Ready"
+msgstr "Ready"
+
+#: backend/templates/members/import_detail.html:72
+msgid "Confirm import"
+msgstr "Confirm import"
+
+#: backend/templates/members/import_start.html:3
+#: backend/templates/members/import_start.html:5
+#: backend/templates/members/list.html:7
+msgid "Import members"
+msgstr "Import members"
+
+#: backend/templates/members/import_start.html:6
+msgid "Upload a CSV or XLSX file, map its columns and review every row before changing the census."
+msgstr "Upload a CSV or XLSX file, map its columns and review every row before changing the census."
+
+#: backend/templates/members/import_start.html:9
+msgid "Download CSV template"
+msgstr "Download CSV template"
+
+#: backend/templates/members/import_start.html:16
+msgid "CSV or XLSX file"
+msgstr "CSV or XLSX file"
+
+#: backend/templates/members/import_start.html:19
+msgid "Upload and map columns"
+msgstr "Upload and map columns"
+
+#: backend/templates/members/import_start.html:22
+msgid "Recent imports"
+msgstr "Recent imports"
+
+#: backend/templates/members/import_start.html:25
+msgid "File"
+msgstr "File"
+
+#: backend/templates/members/import_start.html:25
+#: backend/templates/shared/dashboard.html:22
+msgid "Date"
+msgstr "Date"
+
+#: backend/templates/members/import_start.html:25
+#: backend/templates/members/list.html:15
+#: backend/templates/shared/dashboard.html:24
+msgid "Status"
+msgstr "Status"
+
+#: backend/templates/members/import_start.html:37
+msgid "There are no imports yet."
+msgstr "There are no imports yet."
+
+#: backend/templates/members/list.html:3 backend/templates/members/list.html:5
+#: backend/templates/shared/base.html:34
+msgid "Members"
+msgstr "Members"
+
+#: backend/templates/members/list.html:13
+msgid "Type"
+msgstr "Type"
+
+#: backend/templates/members/list.html:14
+msgid "Instrument"
+msgstr "Instrument"
+
+#: backend/templates/members/list.html:27
+msgid "No instrument"
+msgstr "No instrument"
+
+#: backend/templates/members/list.html:33
+msgid "There are no members."
+msgstr "There are no members."
+
+#: backend/templates/registration/login.html:8
+#: backend/templates/registration/login.html:17
+msgid "Log in"
+msgstr "Log in"
+
+#: backend/templates/registration/login.html:13
+msgid "Access for board members and musicians"
+msgstr "Access for board members and musicians"
+
+#: backend/templates/shared/base.html:32
+msgid "Main navigation"
+msgstr "Main navigation"
+
+#: backend/templates/shared/base.html:33
+msgid "Home"
+msgstr "Home"
+
+#: backend/templates/shared/base.html:46
+msgid "Log out"
+msgstr "Log out"
+
+#: backend/templates/shared/dashboard.html:5
+#, python-format
+msgid "%(association_name)s dashboard"
+msgstr "%(association_name)s dashboard"
+
+#: backend/templates/shared/dashboard.html:9
+msgid "active member"
+msgid_plural "active members"
+msgstr[0] "active member"
+msgstr[1] "active members"
+
+#: backend/templates/shared/dashboard.html:13
+msgid "recent activity"
+msgid_plural "recent activities"
+msgstr[0] "recent activity"
+msgstr[1] "recent activities"
+
+#: backend/templates/shared/dashboard.html:16
+msgid "Activities"
+msgstr "Activities"
+
+#: backend/templates/shared/dashboard.html:21
+msgid "Activity"
+msgstr "Activity"
+
+#: backend/templates/shared/dashboard.html:23
+msgid "Invited"
+msgstr "Invited"
+
+#: backend/templates/shared/dashboard.html:39
+msgid "There are no activities yet."
+msgstr "There are no activities yet."

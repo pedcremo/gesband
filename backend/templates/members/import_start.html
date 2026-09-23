@@ -1,0 +1,39 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Import members" %} · Gesband{% endblock %}
+{% block content %}
+<h1>{% translate "Import members" %}</h1>
+<p>{% translate "Upload a CSV or XLSX file, map its columns and review every row before changing the census." %}</p>
+
+<div class="actions">
+  <a class="button" href="{% url 'member-import-template' %}?association_id={{ association.id }}">{% translate "Download CSV template" %}</a>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="hidden" name="association_id" value="{{ association.id }}">
+  <p>
+    <label for="member-import-file">{% translate "CSV or XLSX file" %}</label><br>
+    <input id="member-import-file" name="file" type="file" accept=".csv,.xlsx" required>
+  </p>
+  <button class="button" type="submit">{% translate "Upload and map columns" %}</button>
+</form>
+
+<h2>{% translate "Recent imports" %}</h2>
+{% if batches %}
+  <table>
+    <thead><tr><th>{% translate "File" %}</th><th>{% translate "Date" %}</th><th>{% translate "Status" %}</th></tr></thead>
+    <tbody>
+      {% for batch in batches %}
+        <tr>
+          <td><a href="{% url 'member-import-detail' batch.id %}?association_id={{ association.id }}">{{ batch.filename }}</a></td>
+          <td>{{ batch.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          <td>{{ batch.get_status_display }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="muted">{% translate "There are no imports yet." %}</p>
+{% endif %}
+{% endblock %}

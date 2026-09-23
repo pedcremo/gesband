@@ -1,0 +1,67 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Accesos de músicos" %} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
+<h1>{% translate "Accesos de músicos" %}</h1>
+<p>{% translate "Envía un enlace personal para que cada músico cree su contraseña. Reenviar invalida el enlace anterior." %}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="association_id" value="{{ association.id }}">
+  <table>
+    <thead>
+      <tr>
+        <th><span class="visually-hidden">{% translate "Seleccionar" %}</span></th>
+        <th>{% translate "Músico" %}</th>
+        <th>{% translate "Correo electrónico" %}</th>
+        <th>{% translate "Estado de acceso" %}</th>
+        <th>{% translate "Acción" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+        <tr>
+          <td>
+            {% if not row.member.account_id and row.member.email %}
+              <input type="checkbox" name="member_ids" value="{{ row.member.id }}" aria-label="{% blocktranslate with member=row.member %}Seleccionar a {{ member }}{% endblocktranslate %}">
+            {% endif %}
+          </td>
+          <td>{{ row.member }}</td>
+          <td>{{ row.member.email|default:"—" }}</td>
+          <td>
+            {% if row.member.account_id %}
+              <span class="status">{% translate "Cuenta activa" %}</span>
+            {% elif not row.member.email %}
+              <span class="errors">{% translate "Sin correo" %}</span>
+            {% elif row.invitation.accepted_at %}
+              <span class="status">{% translate "Aceptada" %}</span>
+            {% elif row.invitation.revoked_at %}
+              <span class="muted">{% translate "Revocada" %}</span>
+            {% elif row.invitation.expires_at and row.invitation.expires_at <= now %}
+              <span class="errors">{% translate "Caducada" %}</span>
+            {% elif row.invitation.last_send_error %}
+              <span class="errors">{% translate "Error de envío" %}</span>
+            {% elif row.invitation.sent_at %}
+              <span class="status">{% translate "Enviada" %}</span>
+            {% else %}
+              <span class="muted">{% translate "Sin invitar" %}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if row.invitation and not row.invitation.accepted_at and not row.invitation.revoked_at %}
+              <button class="button secondary" type="submit" name="revoke_id" value="{{ row.invitation.id }}">{% translate "Revocar" %}</button>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">{% translate "No hay músicos activos." %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="actions">
+    <button class="button" type="submit" name="action" value="invite_selected">{% translate "Enviar o reenviar a seleccionados" %}</button>
+    <button class="button" type="submit" name="action" value="invite_all">{% translate "Enviar o reenviar a todos los elegibles" %}</button>
+  </div>
+</form>
+{% endblock %}

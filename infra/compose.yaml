@@ -1,0 +1,143 @@
+name: ${COMPOSE_PROJECT_NAME:-gesband_dev}
+
+x-backend-environment: &backend-environment
+  DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings}
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-development-only-not-a-secret}
+  DJANGO_DEBUG: ${DJANGO_DEBUG:-true}
+  DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+  DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost:8080}
+  DATABASE_URL: postgresql://${POSTGRES_USER:-gesband}:${POSTGRES_PASSWORD:-development-password-change-me}@postgres:5432/${POSTGRES_DB:-gesband}
+  CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER:-gesband}:${RABBITMQ_DEFAULT_PASS:-development-password-change-me}@rabbitmq:5672//
+  EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+  PUSH_PROVIDER: ${PUSH_PROVIDER:-fake}
+  PRIVATE_MEDIA_ROOT: /app/var/private_media
+  STATIC_ROOT: /app/var/static
+
+x-backend: &backend
+  build:
+    context: ..
+    dockerfile: infra/docker/backend.Dockerfile
+  image: gesband-backend:local
+  restart: unless-stopped
+  environment: *backend-environment
+  volumes:
+    - private_media:/app/var/private_media
+    - static_files:/app/var/static
+  networks:
+    - application
+  init: true
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gesband}
+      POSTGRES_USER: ${POSTGRES_USER:-gesband}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-development-password-change-me}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - application
+
+  rabbitmq:
+    image: rabbitmq:4.1-alpine
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-gesband}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-development-password-change-me}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      - application
+
+  web:
+    <<: *backend
+    command: ["/app/infra/docker/start-web.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  worker:
+    <<: *backend
+    command: ["celery", "-A", "config", "worker", "-l", "info"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A config inspect ping --destination \"celery@$$HOSTNAME\" --timeout 5 | grep -q pong"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  proxy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    volumes:
+      - ./caddy/Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - static_files:/srv/static:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/proxy-health | grep -q '^ok$'"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    networks:
+      - application
+
+  maintenance:
+    image: alpine:3.22
+    profiles: ["tools"]
+    volumes:
+      - private_media:/data
+    networks:
+      - application
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["echo 'Usa los scripts de infra/scripts para copias y restauraciones.'"]
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  private_media:
+  static_files:
+  caddy_data:
+  caddy_config:
+
+networks:
+  application:
+    internal: false
+

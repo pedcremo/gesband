@@ -1,0 +1,78 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{{ activity.title }} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
+<h1>{{ activity.title }}</h1>
+<p>{{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }} · {{ activity.location }}</p>
+<p>{{ activity.uniform }}</p>
+{% if activity.is_mandatory %}
+  <p class="status">{% translate "Asistencia obligatoria" %}</p>
+{% endif %}
+{% if activity.status == 'draft' %}
+  <form method="post">
+    {% csrf_token %}
+    <button class="button" name="publish" value="1">{% translate "Publish activity" %}</button>
+  </form>
+{% endif %}
+<h2>{% translate "Convocar músicos" %}</h2>
+<p>
+  {% blocktranslate count musician_count=active_musicians_count %}
+    Hay {{ musician_count }} músico activo disponible.
+  {% plural %}
+    Hay {{ musician_count }} músicos activos disponibles.
+  {% endblocktranslate %}
+</p>
+<form method="post">
+  {% csrf_token %}
+  <label>
+    <input type="checkbox" name="is_mandatory" value="1"{% if activity.is_mandatory %} checked{% endif %}>
+    {% translate "Actividad obligatoria: una ausencia deberá justificarse" %}
+  </label>
+  <div class="actions">
+    <button class="button" name="invite_all_musicians" value="1">
+      {% translate "Convocar a todos los músicos activos" %}
+    </button>
+  </div>
+</form>
+<h2>{% translate "Invitations" %}</h2>
+<table>
+  <thead>
+    <tr>
+      <th>{% translate "Musician" %}</th>
+      <th>{% translate "Response" %}</th>
+      <th>{% translate "Attendance" %}</th>
+      <th>{% translate "Action" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for invitation in activity.invitations.all %}
+      <tr>
+        <td>{{ invitation.member }}</td>
+        <td>{{ invitation.get_response_display }}</td>
+        <td>
+          {% if invitation.attendance %}
+            {{ invitation.attendance.get_status_display }}
+          {% else %}
+            {% translate "Not recorded" %}
+          {% endif %}
+        </td>
+        <td>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="attendance_id" value="{{ invitation.id }}">
+            <select name="attendance" aria-label="{% translate 'Attendance' %}">
+              <option value="present">{% translate "Present" %}</option>
+              <option value="absent">{% translate "Absent" %}</option>
+              <option value="excused">{% translate "Excused" %}</option>
+            </select>
+            <button class="button">{% translate "Save" %}</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">{% translate "There are no invited members." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

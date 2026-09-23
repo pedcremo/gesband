@@ -1,0 +1,33 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% translate "Log in" %} · Gesband</title>
+</head>
+<body>
+<main style="max-width:25rem;margin:5rem auto;font-family:system-ui">
+  <h1>Gesband</h1>
+  <p>{% translate "Access for board members and musicians" %}</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% translate "Log in" %}</button>
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+  </form>
+  <form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+    <label for="language">{% translate "Language" %}</label>
+    <select id="language" name="language">
+      <option value="es"{% if LANGUAGE_CODE == 'es' %} selected{% endif %}>Castellano</option>
+      <option value="ca"{% if LANGUAGE_CODE == 'ca' %} selected{% endif %}>Valencià</option>
+      <option value="en"{% if LANGUAGE_CODE == 'en' %} selected{% endif %}>English</option>
+    </select>
+    <button type="submit">{% translate "Change" %}</button>
+  </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+	auto_https off
+	admin off
+}
+
+:8080 {
+	encode zstd gzip
+
+	route {
+		header {
+			X-Content-Type-Options nosniff
+			Referrer-Policy strict-origin-when-cross-origin
+			-Server
+		}
+
+		@proxy_health path /proxy-health
+		respond @proxy_health "ok" 200
+
+		handle_path /static/* {
+			root * /srv/static
+			file_server
+		}
+
+		handle {
+			reverse_proxy web:8000 {
+				health_uri /health/
+				health_interval 30s
+				health_timeout 5s
+				health_headers {
+					Host localhost
+				}
+			}
+		}
+	}
+}

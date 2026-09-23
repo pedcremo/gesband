@@ -1,0 +1,41 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{{ association.name }} · Gesband{% endblock %}
+{% block content %}
+<h1>{% blocktranslate with association_name=association.name %}{{ association_name }} dashboard{% endblocktranslate %}</h1>
+<div class="cards">
+  <div class="card">
+    <strong>{{ members_count }}</strong><br>
+    {% blocktranslate count member_count=members_count %}active member{% plural %}active members{% endblocktranslate %}
+  </div>
+  <div class="card">
+    <strong>{{ activities|length }}</strong><br>
+    {% blocktranslate count activity_count=activities|length %}recent activity{% plural %}recent activities{% endblocktranslate %}
+  </div>
+</div>
+<h2>{% translate "Activities" %}</h2>
+{% if activities %}
+  <table>
+    <thead>
+      <tr>
+        <th>{% translate "Activity" %}</th>
+        <th>{% translate "Date" %}</th>
+        <th>{% translate "Invited" %}</th>
+        <th>{% translate "Status" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for activity in activities %}
+        <tr>
+          <td><a href="{% url 'activity-detail' activity.id %}?association_id={{ association.id }}">{{ activity.title }}</a></td>
+          <td>{{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          <td>{{ activity.invited }}</td>
+          <td>{{ activity.get_status_display }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="muted">{% translate "There are no activities yet." %}</p>
+{% endif %}
+{% endblock %}
