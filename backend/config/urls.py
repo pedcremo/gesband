@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
 from django.urls import include, path
+from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
@@ -48,6 +49,8 @@ router.register("transports", TransportViewSet, basename="transport")
 router.register("transport-assignments", TransportAssignmentViewSet, basename="transport-assignment")
 
 urlpatterns = [
+    # La raiz lleva al panel; si no hay sesion, `login_required` pasa por el acceso.
+    path("", RedirectView.as_view(pattern_name="panel", permanent=False), name="home"),
     path("health/", lambda request: JsonResponse({"status": "ok"}), name="health"),
     path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", admin.site.urls),

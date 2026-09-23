@@ -4,8 +4,10 @@
 {% block content %}
 <h1>{% translate "Members" %}</h1>
 <div class="actions">
-  <a class="button" href="{% url 'member-import-start' %}?association_id={{ association.id }}">{% translate "Import members" %}</a>
-  <a class="button" href="{% url 'member-access-invitations' %}?association_id={{ association.id }}">{% translate "Gestionar accesos" %}</a>
+  {% if can_manage_census %}
+    <a class="button" href="{% url 'member-import-start' %}?association_id={{ association.id }}">{% translate "Import members" %}</a>
+    <a class="button" href="{% url 'member-access-invitations' %}?association_id={{ association.id }}">{% translate "Gestionar accesos" %}</a>
+  {% endif %}
 </div>
 <table>
   <thead>

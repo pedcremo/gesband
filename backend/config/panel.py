@@ -43,20 +43,45 @@ IMPORT_FIELDS = [
 ]
 
 
-def _association_for(request, roles=MANAGER_ROLES):
+def _access_for(request, roles=MANAGER_ROLES):
+    """Acceso de la cuenta a la asociación pedida con alguno de esos roles.
+
+    Falta de rol y falta de acceso responden igual, un 403: quien no puede entrar
+    tampoco tiene por qué averiguar si la asociación existe.
+    """
     association_id = request.GET.get("association_id") or request.POST.get("association_id")
-    access = AssociationAccess.objects.filter(
-        account=request.user,
-        is_active=True,
-        association__is_active=True,
-        role_assignments__role__in=roles,
-    ).distinct()
-    if association_id:
-        return get_object_or_404(access.select_related("association"), association_id=association_id).association
-    selected = access.select_related("association").first()
+    access = (
+        AssociationAccess.objects.filter(
+            account=request.user,
+            is_active=True,
+            association__is_active=True,
+            role_assignments__role__in=roles,
+        )
+        .distinct()
+        .select_related("association")
+    )
+    try:
+        selected = access.filter(association_id=association_id).first() if association_id else access.first()
+    except (ValueError, DjangoValidationError):
+        selected = None
     if not selected:
-        raise PermissionDenied(_("No tienes permisos para acceder al panel de la junta."))
-    return selected.association
+        raise PermissionDenied(_("No tienes permisos para acceder a esta parte del panel de la junta."))
+    return selected
+
+
+def _association_for(request, roles=MANAGER_ROLES):
+    return _access_for(request, roles).association
+
+
+def _roles_in(request, association):
+    """Roles de la cuenta en esa asociación, para decidir qué ofrecer."""
+    return set(
+        AssociationRole.objects.filter(
+            access__account=request.user,
+            access__association=association,
+            access__is_active=True,
+        ).values_list("role", flat=True)
+    )
 
 
 @login_required
@@ -76,7 +101,15 @@ def dashboard(request):
 def members(request):
     association = _association_for(request)
     member_list = Member.objects.filter(association=association).prefetch_related("member_instruments__instrument")
-    return render(request, "members/list.html", {"association": association, "members": member_list})
+    return render(
+        request,
+        "members/list.html",
+        {
+            "association": association,
+            "members": member_list,
+            "can_manage_census": AssociationRole.Role.ADMIN in _roles_in(request, association),
+        },
+    )
 
 
 @login_required

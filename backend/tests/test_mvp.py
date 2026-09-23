@@ -37,6 +37,32 @@ class MvpApiTests(APITestCase):
         self.token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
 
+    def test_logging_out_works_from_the_panel_bar(self):
+        web_client = Client()
+        web_client.force_login(self.user)
+        page = web_client.get(f"/panel/?association_id={self.association.id}")
+        self.assertContains(page, 'action="/accounts/logout/"')
+        self.assertContains(page, 'method="post"')
+
+        response = web_client.post("/accounts/logout/", follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [("/accounts/login/", 302)])
+        self.assertFalse(web_client.session.get("_auth_user_id"))
+
+    def test_the_root_url_leads_anonymous_visitors_to_the_login(self):
+        anonymous = Client()
+        response = anonymous.get("/", follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain[0][0], "/panel/")
+        self.assertIn("/accounts/login/", response.redirect_chain[-1][0])
+
+    def test_the_root_url_leads_a_board_member_to_the_panel(self):
+        web_client = Client()
+        web_client.force_login(self.user)
+        response = web_client.get("/", follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [("/panel/", 302)])
+
     def test_association_isolation(self):
         response = self.client.get("/api/v1/associations/")
         self.assertEqual(response.status_code, 200)
@@ -506,13 +532,13 @@ class MvpApiTests(APITestCase):
         response = web_client.get(
             f"/panel/members/access/?association_id={self.association.id}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
         response = web_client.post(
             f"/panel/members/access/?association_id={self.association.id}",
             {"association_id": str(self.association.id)},
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_web_import_previews_confirms_reports_and_is_idempotent(self):
         csv_content = (
@@ -735,4 +761,4 @@ class MvpApiTests(APITestCase):
         response = web_client.get(
             f"/panel/members/import/?association_id={self.association.id}"
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)

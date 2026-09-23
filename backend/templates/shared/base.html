@@ -21,6 +21,7 @@
     .errorlist,.errors { color:#9b1c1c; }
     label { font-weight:600; } input,select { padding:.45rem; max-width:100%; }
     .status { display:inline-block; padding:.2rem .45rem; border-radius:.3rem; background:#edf2f4; }
+    .logout { display:inline; } .link-button { background:none; border:0; padding:0; color:var(--primary); font:inherit; text-decoration:underline; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -43,7 +44,11 @@
       </select>
       <button type="submit">{% translate "Change" %}</button>
     </form>
-    <a href="{% url 'logout' %}">{% translate "Log out" %}</a>
+    {# LogoutView solo acepta POST desde Django 5: un enlace daria 405. #}
+    <form class="logout" action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="link-button">{% translate "Log out" %}</button>
+    </form>
   </nav>
 </header>
 {% if messages %}{% for message in messages %}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}{% endif %}
