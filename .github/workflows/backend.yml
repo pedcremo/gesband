@@ -101,6 +101,13 @@ jobs:
         run: |
           python manage.py check
           python manage.py makemigrations --check --dry-run
+      - name: Compilar traducciones
+        working-directory: backend
+        # Los .mo no se versionan; sin ellos las pruebas en valenciano e ingles fallan.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends gettext
+          python manage.py compilemessages
       - name: Ejecutar pruebas backend
         working-directory: backend
         run: |

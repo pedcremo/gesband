@@ -62,7 +62,7 @@ class AccessInvitation(models.Model):
                 name="unique_open_access_invitation_per_member",
             )
         ]
-        indexes = [models.Index(fields=["association", "email", "created_at"])]
+        indexes = [models.Index(fields=["association", "email", "created_at"], name="accounts_ac_associa_dfc729_idx")]
         verbose_name = _("invitación de acceso")
         verbose_name_plural = _("invitaciones de acceso")
 
