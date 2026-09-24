@@ -4,7 +4,7 @@ from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
 from apps.activities.models import Activity, Invitation
@@ -198,3 +198,114 @@ class LoginWithPanelSessionTests(TestCase):
         self.assertEqual(response.status_code, 200, response.content)
         self.assertIn("access_token", response.json())
 
+
+class MemberAppStringsTests(TestCase):
+    """Los tres idiomas del cliente tienen los mismos textos."""
+
+    def test_every_language_has_every_string(self):
+        import re
+
+        from django.contrib.staticfiles import finders
+
+        source = open(finders.find("member_app/app.js"), encoding="utf-8").read()
+        block = re.search(r"const STRINGS = \{(.*?)\n  \};", source, re.S).group(1)
+        languages = dict(re.findall(r"\n    (\w\w): \{(.*?)\n    \},", block, re.S))
+        self.assertEqual(set(languages), {"es", "ca", "en"})
+        keys = {code: set(re.findall(r"(\w+): \"", body)) for code, body in languages.items()}
+        self.assertIn("confirmWarning", keys["es"])
+        self.assertEqual(keys["ca"], keys["es"])
+        self.assertEqual(keys["en"], keys["es"])
+
+
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True, CELERY_TASK_EAGER_PROPAGATES=True)
+class MemberAppPollTests(TestCase):
+    """Lo que el cliente del musico lee de una encuesta, con el token de la app."""
+
+    def setUp(self):
+        from rest_framework.authtoken.models import Token
+
+        self.association = Association.objects.create(name="Banda Test", slug="banda-test")
+        self.clients = {}
+        self.members = {}
+        for name, role in [("junta", AssociationRole.Role.BOARD), ("ana", AssociationRole.Role.MEMBER),
+                           ("biel", AssociationRole.Role.MEMBER)]:
+            account = get_user_model().objects.create_user(
+                username=f"{name}@example.invalid", email=f"{name}@example.invalid", password="secret-password"
+            )
+            access = AssociationAccess.objects.create(association=self.association, account=account)
+            AssociationRole.objects.create(access=access, role=role)
+            self.members[name] = Member.objects.create(
+                association=self.association, account=account, first_name=name.title(), last_name="Test"
+            )
+            # La app manda el token y la asociacion como cabeceras, y la asociacion
+            # tambien en la consulta: se reproduce igual.
+            self.clients[name] = Client(
+                HTTP_AUTHORIZATION=f"Token {Token.objects.create(user=account).key}",
+                HTTP_X_ASSOCIATION_ID=str(self.association.id),
+            )
+
+        board = self.clients["junta"]
+        created = board.post(
+            "/api/v1/polls/",
+            {"question": "¿Viaje?", "closes_at": (timezone.now() + timedelta(days=2)).isoformat(),
+             "options": ["Valencia", "Alacant"]},
+            content_type="application/json",
+        )
+        self.assertEqual(created.status_code, 201, created.content)
+        self.poll = created.json()
+        board.post(
+            f"/api/v1/polls/{self.poll['id']}/recipients/",
+            {"member_ids": [str(self.members["ana"].id), str(self.members["biel"].id)]},
+            content_type="application/json",
+        )
+        self.assertEqual(board.post(f"/api/v1/polls/{self.poll['id']}/open/").status_code, 200)
+
+    def get(self, name, path):
+        response = self.clients[name].get(f"{path}?association_id={self.association.id}")
+        self.assertEqual(response.status_code, 200, response.content)
+        return response.json()
+
+    def vote(self, name, index):
+        return self.clients[name].post(
+            f"/api/v1/polls/{self.poll['id']}/vote/?association_id={self.association.id}",
+            {"option_id": self.poll["choices"][index]["id"]},
+            content_type="application/json",
+        )
+
+    def test_the_notice_carries_the_poll_it_opens(self):
+        notices = self.clients["ana"].get("/api/v1/notifications/").json()["results"]
+        self.assertEqual([notice["poll"] for notice in notices], [self.poll["id"]])
+        self.assertIsNone(notices[0]["activity"])
+
+    def test_the_list_says_what_is_waiting_for_a_vote(self):
+        listed = self.get("ana", "/api/v1/polls/")["results"]
+        self.assertEqual([(poll["id"], poll["can_vote"], poll["has_voted"]) for poll in listed],
+                         [(self.poll["id"], True, False)])
+
+    def test_after_voting_the_detail_does_not_depend_on_the_choice(self):
+        """La app muestra «Has votado» sin saber que se eligio: la API tampoco lo dice."""
+        self.assertEqual(self.vote("ana", 0).status_code, 201)
+        self.assertEqual(self.vote("biel", 1).status_code, 201)
+
+        ana = self.get("ana", f"/api/v1/polls/{self.poll['id']}/")
+        biel = self.get("biel", f"/api/v1/polls/{self.poll['id']}/")
+        self.assertEqual(ana, biel)
+        self.assertEqual((ana["has_voted"], ana["can_vote"], ana["results"]["kind"]), (True, False, "provisional"))
+        self.assertEqual([option["votes"] for option in ana["results"]["options"]], [1, 1])
+
+    def test_a_second_vote_answers_409_for_the_app_to_reload(self):
+        self.assertEqual(self.vote("ana", 0).status_code, 201)
+        self.assertEqual(self.vote("ana", 1).status_code, 409)
+
+    def test_after_the_deadline_the_member_waits_for_the_board(self):
+        from apps.polls.models import Poll
+
+        Poll.objects.filter(pk=self.poll["id"]).update(closes_at=timezone.now() - timedelta(minutes=1))
+        detail = self.get("ana", f"/api/v1/polls/{self.poll['id']}/")
+        self.assertEqual((detail["status"], detail["results"], detail["can_vote"]), ("open", None, False))
+
+        published = self.clients["junta"].post(f"/api/v1/polls/{self.poll['id']}/publish/")
+        self.assertEqual(published.status_code, 200, published.content)
+        detail = self.get("ana", f"/api/v1/polls/{self.poll['id']}/")
+        self.assertEqual((detail["status"], detail["results"]["kind"]), ("published", "final"))
+        self.assertEqual(detail["participation"], {"recipients": 2, "voted": 0})

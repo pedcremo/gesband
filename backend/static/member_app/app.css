@@ -148,6 +148,7 @@ img.logo--xl { padding: 8px; }
   display: flex; align-items: center; justify-content: center; gap: .4rem;
 }
 .tabs button:hover { color: var(--ink-soft); }
+@media (max-width: 380px) { .tabs button { font-size: .84rem; padding: .7rem .15rem; } }
 .tabs button[aria-current="page"] {
   color: var(--brand-text);
   border-bottom-color: var(--brand-text);
@@ -200,6 +201,7 @@ main { padding: 1.15rem; flex: 1; }
 .act--cancelled { --rail: var(--line-strong); }
 .act--unread    { --rail: var(--brand-text); }
 .act--read      { --rail: transparent; }
+.act--final     { --rail: var(--brand-text); }
 
 .date {
   flex: none;
@@ -242,6 +244,7 @@ main { padding: 1.15rem; flex: 1; }
 .chip.cancelled { background: var(--danger-soft); color: var(--danger); }
 .chip.pending   { background: var(--warn-soft);   color: var(--warn); }
 .chip.mandatory { background: var(--brand-soft);  color: var(--brand-text); }
+.chip.final     { background: var(--brand-soft);  color: var(--brand-text); }
 
 /* ---------- avisos ---------- */
 
@@ -255,6 +258,7 @@ main { padding: 1.15rem; flex: 1; }
   font-size: .88rem; line-height: 1.45;
 }
 .notice.error { border-left-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
+.notice.ok    { border-left-color: var(--ok);     background: var(--ok-soft);     color: var(--ok); }
 .card .notice { margin: .55rem 0 0; font-size: .82rem; }
 
 .note-dot { flex: none; width: .5rem; height: .5rem; margin-top: .45rem; border-radius: 50%; background: currentColor; }
@@ -314,6 +318,85 @@ main { padding: 1.15rem; flex: 1; }
 }
 .answer__head { display: flex; align-items: center; justify-content: space-between; gap: .7rem; margin-bottom: .85rem; }
 .answer__head h3 { font-size: 1rem; }
+
+/* ---------- encuestas ---------- */
+
+.chips--detail { margin: 0 0 .8rem; }
+.chips--detail:empty { display: none; }
+.notices:focus { outline: none; }
+.notices:focus-visible { outline: 2px solid var(--brand-text); outline-offset: 2px; }
+.detail h2:focus { outline: none; }
+.lead { margin: 0 0 .5rem; color: var(--ink-soft); overflow-wrap: anywhere; }
+
+.choices { border: 0; margin: 0; padding: 0; display: grid; gap: .5rem; min-width: 0; }
+.choices legend {
+  padding: 0; margin-bottom: .55rem;
+  font-family: var(--serif); font-size: 1rem; font-weight: 600;
+}
+.choice {
+  display: flex; align-items: center; gap: .75rem;
+  min-height: var(--tap);
+  padding: .7rem .85rem;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.choice:hover { border-color: var(--brand-text); }
+.choice input {
+  flex: none;
+  width: 1.2rem; height: 1.2rem; min-height: 0;
+  margin: 0; padding: 0;
+  accent-color: var(--brand-text);
+}
+.choice span { overflow-wrap: anywhere; }
+.choice:has(input:checked) { border-color: var(--brand-text); background: var(--brand-soft); font-weight: 600; }
+.choice:has(input:focus-visible) { outline: 2px solid var(--brand-text); outline-offset: 2px; }
+/* El anillo lo lleva la opcion entera; donde no hay :has() se queda el del propio radio. */
+@supports selector(:has(*)) { .choice input:focus-visible { outline: none; } }
+.confirm__hint { margin: 0; font-size: .85rem; }
+
+.confirm { border-color: var(--brand-text); }
+.confirm h3 { font-size: 1.05rem; margin-bottom: .6rem; }
+.confirm h3:focus { outline: none; }
+.confirm__choice { margin: 0 0 .8rem; overflow-wrap: anywhere; }
+.confirm .notice { margin-bottom: 1rem; }
+
+.tally {
+  margin-top: 1.4rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.tally--final { background: var(--brand-soft); border-color: transparent; }
+.tally__summary { margin: -.35rem 0 .9rem; font-size: .88rem; color: var(--ink-soft); }
+.tally__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+.tally__row {
+  display: grid; grid-template-columns: 1fr auto; gap: .15rem .7rem; align-items: baseline;
+}
+.tally__label { overflow-wrap: anywhere; }
+.tally__count { font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tally__bar {
+  grid-column: 1 / -1;
+  display: block; height: .5rem;
+  border-radius: 1rem;
+  background: var(--sunken);
+  overflow: hidden;
+}
+.tally--final .tally__bar { background: var(--surface); }
+.tally__bar > span {
+  display: block; height: 100%; min-width: 0;
+  border-radius: inherit;
+  background: var(--brand-text);
+  opacity: .55;
+  transition: width .4s ease;
+}
+.tally__row--lead .tally__label { font-weight: 650; }
+.tally__row--lead .tally__count { color: var(--brand-text); font-weight: 650; }
+.tally__row--lead .tally__bar > span { opacity: 1; }
+.tally:not(.tally--final) .tally__bar > span { opacity: .8; }
+.tally__hint { margin: .9rem 0 0; font-size: .82rem; }
 
 /* ---------- formularios ---------- */
 

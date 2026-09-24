@@ -46,6 +46,27 @@
       instruments: "Instrumentos", phone: "Teléfono", noInstruments: "Sin instrumentos asignados.",
       language: "Idioma", settings: "Ajustes", today: "Hoy", tomorrow: "Mañana",
       greeting: "Hola, {name}",
+      polls: "Encuestas", poll: "Encuesta", noPolls: "No tienes encuestas.",
+      pollsToVote: "Pendientes de tu voto", pollsOther: "Otras encuestas",
+      voteNow: "Por votar", voted: "Has votado", notVoted: "No votaste",
+      awaiting: "Pendiente de publicar", resultPublished: "Resultado publicado", pollCancelled: "Anulada",
+      closesOn: "Cierra {date}", closedOn: "Cerró {date}",
+      closesAt: "Cierre de la votación", publishedAt: "Resultado publicado el",
+      chooseOption: "Elige una opción", chooseFirst: "Elige una opción antes de votar.",
+      vote: "Votar", voting: "Votando…",
+      confirmTitle: "Confirma tu voto", confirmChoice: "Vas a votar",
+      confirmWarning: "El voto es anónimo y, una vez emitido, no se puede cambiar ni retirar.",
+      confirmVote: "Confirmar el voto", chooseAgain: "Elegir otra vez",
+      votedNotice: "Has votado. El voto es anónimo: nadie, tampoco esta aplicación, puede saber qué elegiste.",
+      alreadyVoted: "Ya habías votado en esta encuesta. El voto no se puede cambiar.",
+      awaitingNotice: "Votación cerrada, pendiente de publicar. La junta publicará el resultado.",
+      missedNotice: "La votación se cerró sin que votaras.",
+      cancelledPoll: "Esta encuesta se ha anulado.", reason: "Motivo",
+      provisional: "Recuento provisional", provisionalHint: "Puede cambiar hasta el cierre de la votación.",
+      finalResult: "Resultado definitivo",
+      votesCast: "Votos emitidos: {cast} de {recipients} convocados",
+      participation: "Han votado {voted} de {recipients} convocados",
+      turnout: "Participación", oneVote: "1 voto", votesCount: "{n} votos", noVotesYet: "Todavía no hay votos.",
     },
     ca: {
       appName: "Gesband", agenda: "Agenda", inbox: "Avisos", profile: "La meua fitxa",
@@ -74,6 +95,27 @@
       instruments: "Instruments", phone: "Telèfon", noInstruments: "Sense instruments assignats.",
       language: "Idioma", settings: "Ajustos", today: "Hui", tomorrow: "Demà",
       greeting: "Hola, {name}",
+      polls: "Enquestes", poll: "Enquesta", noPolls: "No tens enquestes.",
+      pollsToVote: "Pendents del teu vot", pollsOther: "Altres enquestes",
+      voteNow: "Per votar", voted: "Has votat", notVoted: "No vas votar",
+      awaiting: "Pendent de publicar", resultPublished: "Resultat publicat", pollCancelled: "Anul·lada",
+      closesOn: "Tanca {date}", closedOn: "Va tancar {date}",
+      closesAt: "Tancament de la votació", publishedAt: "Resultat publicat el",
+      chooseOption: "Tria una opció", chooseFirst: "Tria una opció abans de votar.",
+      vote: "Votar", voting: "Votant…",
+      confirmTitle: "Confirma el teu vot", confirmChoice: "Vas a votar",
+      confirmWarning: "El vot és anònim i, una vegada emés, no es pot canviar ni retirar.",
+      confirmVote: "Confirmar el vot", chooseAgain: "Triar una altra vegada",
+      votedNotice: "Has votat. El vot és anònim: ningú, tampoc aquesta aplicació, pot saber què vas triar.",
+      alreadyVoted: "Ja havies votat en aquesta enquesta. El vot no es pot canviar.",
+      awaitingNotice: "Votació tancada, pendent de publicar. La junta publicarà el resultat.",
+      missedNotice: "La votació es va tancar sense que votares.",
+      cancelledPoll: "Aquesta enquesta s'ha anul·lat.", reason: "Motiu",
+      provisional: "Recompte provisional", provisionalHint: "Pot canviar fins al tancament de la votació.",
+      finalResult: "Resultat definitiu",
+      votesCast: "Vots emesos: {cast} de {recipients} convocats",
+      participation: "Han votat {voted} de {recipients} convocats",
+      turnout: "Participació", oneVote: "1 vot", votesCount: "{n} vots", noVotesYet: "Encara no hi ha vots.",
     },
     en: {
       appName: "Gesband", agenda: "Agenda", inbox: "Notices", profile: "My details",
@@ -102,6 +144,27 @@
       instruments: "Instruments", phone: "Phone", noInstruments: "No instruments assigned.",
       language: "Language", settings: "Settings", today: "Today", tomorrow: "Tomorrow",
       greeting: "Hello, {name}",
+      polls: "Polls", poll: "Poll", noPolls: "You have no polls.",
+      pollsToVote: "Waiting for your vote", pollsOther: "Other polls",
+      voteNow: "To vote", voted: "You voted", notVoted: "You did not vote",
+      awaiting: "Awaiting publication", resultPublished: "Result published", pollCancelled: "Cancelled",
+      closesOn: "Closes {date}", closedOn: "Closed {date}",
+      closesAt: "Voting deadline", publishedAt: "Result published on",
+      chooseOption: "Choose an option", chooseFirst: "Choose an option before voting.",
+      vote: "Vote", voting: "Voting…",
+      confirmTitle: "Confirm your vote", confirmChoice: "You are voting for",
+      confirmWarning: "Your vote is anonymous and, once cast, cannot be changed or withdrawn.",
+      confirmVote: "Cast my vote", chooseAgain: "Choose again",
+      votedNotice: "You have voted. The vote is anonymous: nobody, not even this app, can tell what you chose.",
+      alreadyVoted: "You had already voted in this poll. The vote cannot be changed.",
+      awaitingNotice: "Voting closed, awaiting publication. The board will publish the result.",
+      missedNotice: "Voting closed before you voted.",
+      cancelledPoll: "This poll has been cancelled.", reason: "Reason",
+      provisional: "Provisional count", provisionalHint: "It may change until voting closes.",
+      finalResult: "Final result",
+      votesCast: "Votes cast: {cast} of {recipients} invited",
+      participation: "{voted} of {recipients} invited have voted",
+      turnout: "Turnout", oneVote: "1 vote", votesCount: "{n} votes", noVotesYet: "No votes yet.",
     },
   };
 
@@ -121,8 +184,20 @@
     activities: [],
     notifications: [],
     activity: null,
+    polls: [],
+    /* Encuesta abierta en detalle. `pollId` sin `poll` significa que se esta
+       descargando o que fallo la descarga. */
+    poll: null,
+    pollId: null,
+    /* La opcion marcada solo vive en memoria mientras se confirma: nunca se
+       guarda ni se muestra despues de votar, porque el voto es anonimo. */
+    pollChoice: null,
+    confirming: false,
     banner: null,
     busy: false,
+    /* Selector que recibe el foco tras pintar: el contenido se reemplaza entero
+       y sin esto un lector de pantalla se quedaria sin saber donde esta. */
+    focus: null,
     loading: false,
     /* Lo ultimo que se supo de la asociacion: pinta el acceso con su marca
        antes de que haya sesion con la que preguntarla. */
@@ -131,6 +206,8 @@
   };
 
   const t = (key) => STRINGS[state.lang][key] ?? key;
+  /** Texto con huecos `{nombre}`. */
+  const tf = (key, values) => t(key).replace(/\{(\w+)\}/g, (_, name) => String(values[name] ?? ""));
   const association = () => state.associations.find((item) => item.id === state.associationId) || state.associations[0];
 
   const esc = (value) =>
@@ -394,6 +471,7 @@
 
   function shell(content) {
     const unread = state.notifications.filter((item) => !item.read_at).length;
+    const toVote = state.polls.filter(votable).length;
     const current = association();
     const picker = state.associations.length > 1
       ? `<select class="picker" data-action="association" aria-label="${esc(t("association"))}">
@@ -418,6 +496,7 @@
       <nav class="tabs">
         <button data-tab="agenda"${state.tab === "agenda" ? ' aria-current="page"' : ""}>${esc(t("agenda"))}</button>
         <button data-tab="inbox"${state.tab === "inbox" ? ' aria-current="page"' : ""}>${esc(t("inbox"))}${unread ? `<span class="badge">${unread}</span>` : ""}</button>
+        ${canSeePolls() ? `<button data-tab="polls"${state.tab === "polls" ? ' aria-current="page"' : ""}>${esc(t("polls"))}${toVote ? `<span class="badge">${toVote}</span>` : ""}</button>` : ""}
         <button data-tab="profile"${state.tab === "profile" ? ' aria-current="page"' : ""}>${esc(t("profile"))}</button>
       </nav>
       <main>${state.banner ? banner() : ""}${content}</main>`;
@@ -510,7 +589,7 @@
       : "";
 
     return shell(`
-      <button class="back" data-action="agenda">← ${esc(t("back"))}</button>
+      <button class="back" data-action="back">← ${esc(t("back"))}</button>
       <article class="detail">
         <p class="detail__kicker">${esc(t(activity.kind))}${activity.is_mandatory ? ` · ${esc(t("mandatory"))}` : ""}</p>
         <h2>${esc(activity.title)}</h2>
@@ -534,6 +613,193 @@
           <span class="act__where">${esc(notice.body).replace(/\n/g, "<br>")}</span>
         </span>
       </button>`).join(""));
+  }
+
+
+  /* --- encuestas ---
+     El cliente nunca sabe que eligio la persona: la API solo dice si ha votado
+     (`has_voted`) y el recuento anonimo. Lo que se ve aqui sale de ahi. */
+
+  const canSeePolls = () => {
+    const granted = association()?.permissions;
+    return !Array.isArray(granted) || granted.includes("polls.view") || granted.includes("*");
+  };
+
+  const pollClosed = (poll) => new Date(poll.closes_at) <= new Date();
+  /** El servidor dice si se puede votar; el reloj local solo lo apaga antes. */
+  const votable = (poll) => Boolean(poll.can_vote) && poll.status === "open" && !pollClosed(poll);
+
+  /** Fase de la encuesta desde el punto de vista del musico. */
+  function pollPhase(poll) {
+    if (poll.status === "cancelled") return "cancelled";
+    if (poll.status === "published") return "published";
+    return pollClosed(poll) ? "awaiting" : "open";
+  }
+
+  function pollChip(poll) {
+    const phase = pollPhase(poll);
+    if (phase === "cancelled") return `<span class="chip cancelled">${esc(t("pollCancelled"))}</span>`;
+    if (phase === "published") return `<span class="chip final">${esc(t("resultPublished"))}</span>`;
+    const own = votable(poll)
+      ? `<span class="chip pending">${esc(t("voteNow"))}</span>`
+      : poll.has_voted ? `<span class="chip accepted">${esc(t("voted"))}</span>` : "";
+    return own + (phase === "awaiting" ? `<span class="chip">${esc(t("awaiting"))}</span>` : "");
+  }
+
+  function pollRail(poll) {
+    const phase = pollPhase(poll);
+    if (phase === "cancelled") return "cancelled";
+    if (votable(poll)) return "pending";
+    if (phase === "published") return "final";
+    return poll.has_voted ? "accepted" : "read";
+  }
+
+  function pollCard(poll) {
+    const when = tf(pollClosed(poll) ? "closedOn" : "closesOn", { date: shortDateTime(poll.closes_at) });
+    return `
+      <button class="card act act--${esc(pollRail(poll))}" data-poll="${esc(poll.id)}">
+        <span class="date">
+          <span class="date__dow">${esc(part(poll.closes_at, { weekday: "short" }, "weekday"))}</span>
+          <span class="date__day">${esc(part(poll.closes_at, { day: "numeric" }, "day"))}</span>
+          <span class="date__mon">${esc(part(poll.closes_at, { month: "short" }, "month"))}</span>
+        </span>
+        <span class="act__body">
+          <span class="act__meta act__meta--plain">${esc(when)}</span>
+          <span class="act__title">${esc(poll.question)}</span>
+          <span class="chips">${pollChip(poll)}</span>
+        </span>
+      </button>`;
+  }
+
+  const loadError = () => `
+    <div class="empty">
+      <div class="empty__mark" aria-hidden="true">!</div>
+      <p>${esc(t("loadFailed"))}</p>
+      <button class="button ghost" data-action="retry">${esc(t("retry"))}</button>
+    </div>`;
+
+  function viewPolls() {
+    if (state.loading && !state.polls.length) return shell(skeleton());
+    if (!state.polls.length) return shell(state.banner?.kind === "error" ? loadError() : empty("?", t("noPolls")));
+
+    const pending = state.polls.filter(votable);
+    const rest = state.polls.filter((poll) => !votable(poll));
+    const group = (title, items) => items.length
+      ? `<h2 class="month">${esc(title)}</h2>${items.map(pollCard).join("")}`
+      : "";
+    return shell(group(t("pollsToVote"), pending) + group(t("pollsOther"), rest));
+  }
+
+  const votesLabel = (n) => (n === 1 ? t("oneVote") : tf("votesCount", { n }));
+
+  function pollResults(poll) {
+    const results = poll.results;
+    if (!results) return "";
+    const final = results.kind === "final";
+    const cast = results.votes_cast || 0;
+    const top = Math.max(0, ...results.options.map((option) => option.votes));
+    const recipients = poll.participation?.recipients ?? 0;
+
+    const rows = results.options.map((option) => {
+      const share = cast ? Math.round((option.votes / cast) * 100) : 0;
+      const lead = final && option.votes > 0 && option.votes === top;
+      return `
+        <li class="tally__row${lead ? " tally__row--lead" : ""}">
+          <span class="tally__label">${esc(option.label)}</span>
+          <span class="tally__count">${esc(votesLabel(option.votes))} · ${share}%</span>
+          <span class="tally__bar" aria-hidden="true"><span style="width:${share}%"></span></span>
+        </li>`;
+    }).join("");
+
+    return `
+      <section class="tally${final ? " tally--final" : ""}" aria-labelledby="tally-title">
+        <div class="answer__head">
+          <h3 id="tally-title">${esc(t(final ? "finalResult" : "provisional"))}</h3>
+        </div>
+        <p class="tally__summary">${esc(tf("votesCast", { cast, recipients }))}</p>
+        ${cast ? `<ol class="tally__list">${rows}</ol>` : `<p class="muted">${esc(t("noVotesYet"))}</p>`}
+        ${final ? "" : `<p class="muted tally__hint">${esc(t("provisionalHint"))}</p>`}
+      </section>`;
+  }
+
+  function voteForm(poll) {
+    if (state.confirming) {
+      const choice = poll.choices.find((option) => option.id === state.pollChoice);
+      return `
+        <section class="answer confirm" aria-labelledby="confirm-title">
+          <h3 id="confirm-title" tabindex="-1">${esc(t("confirmTitle"))}</h3>
+          <p class="confirm__choice"><span class="muted">${esc(t("confirmChoice"))}:</span> <strong>${esc(choice?.label)}</strong></p>
+          ${inlineNotice(t("confirmWarning"))}
+          <form data-form="confirm-vote">
+            <div class="actions">
+              <button class="button" type="submit"${state.busy ? " disabled" : ""}>${esc(state.busy ? t("voting") : t("confirmVote"))}</button>
+              <button class="button ghost" type="button" data-action="vote-back"${state.busy ? " disabled" : ""}>${esc(t("chooseAgain"))}</button>
+            </div>
+          </form>
+        </section>`;
+    }
+    const options = poll.choices.map((option, index) => `
+      <label class="choice" for="choice-${index}">
+        <input type="radio" id="choice-${index}" name="option" value="${esc(option.id)}"${option.id === state.pollChoice ? " checked" : ""}>
+        <span>${esc(option.label)}</span>
+      </label>`).join("");
+    return `
+      <section class="answer">
+        <form class="stack" data-form="vote">
+          <fieldset class="choices">
+            <legend>${esc(t("chooseOption"))}</legend>
+            ${options}
+          </fieldset>
+          <p class="muted confirm__hint">${esc(t("confirmWarning"))}</p>
+          <div class="actions">
+            <button class="button" type="submit"${state.busy ? " disabled" : ""}>${esc(t("vote"))}</button>
+          </div>
+        </form>
+      </section>`;
+  }
+
+  function viewPoll() {
+    const poll = state.poll;
+    const back = `<button class="back" data-action="back">← ${esc(t("back"))}</button>`;
+    if (!poll) {
+      if (state.loading) return shell(back + skeleton());
+      return shell(back + loadError());
+    }
+
+    const phase = pollPhase(poll);
+    const recipients = poll.participation?.recipients ?? 0;
+    const facts = [
+      [t("closesAt"), formatDate(poll.closes_at)],
+      poll.published_at ? [t("publishedAt"), formatDate(poll.published_at)] : null,
+    ].filter(Boolean);
+
+    const notices = [];
+    if (phase === "cancelled") {
+      notices.push(inlineNotice(t("cancelledPoll"), "error"));
+    } else {
+      if (poll.has_voted) notices.push(inlineNotice(t("votedNotice"), "ok"));
+      else if (poll.has_voted === false && !votable(poll)) notices.push(inlineNotice(t("missedNotice")));
+      if (phase === "awaiting") notices.push(inlineNotice(t("awaitingNotice")));
+    }
+
+    return shell(`
+      ${back}
+      <article class="detail">
+        <p class="detail__kicker">${esc(t("poll"))}</p>
+        <h2 id="poll-title" tabindex="-1">${esc(poll.question)}</h2>
+        <div class="chips chips--detail">${pollChip(poll)}</div>
+        <div class="notices" id="poll-notices" tabindex="-1">${notices.join("")}</div>
+        ${poll.description ? `<p class="lead">${esc(poll.description).replace(/\n/g, "<br>")}</p>` : ""}
+        <dl class="facts">
+          ${facts.map(([term, value]) => `<div><dt>${esc(term)}</dt><dd>${esc(value)}</dd></div>`).join("")}
+          ${phase === "cancelled" && poll.cancel_reason
+            ? `<div><dt>${esc(t("reason"))}</dt><dd>${esc(poll.cancel_reason)}</dd></div>` : ""}
+          ${phase === "awaiting" && poll.participation
+            ? `<div><dt>${esc(t("turnout"))}</dt><dd>${esc(tf("participation", { voted: poll.participation.voted, recipients }))}</dd></div>` : ""}
+        </dl>
+        ${votable(poll) ? voteForm(poll) : ""}
+        ${pollResults(poll)}
+      </article>`);
   }
 
   function viewProfile() {
@@ -596,6 +862,9 @@
       } else if (state.tab === "inbox") {
         const page = await api("/notifications/", { association: false });
         state.notifications = page.results || page;
+      } else if (state.tab === "polls") {
+        const page = await api("/polls/");
+        state.polls = page.results || page;
       } else if (state.tab === "profile") {
         state.member = await api("/members/me/");
       }
@@ -608,9 +877,88 @@
     }
   }
 
+  /** Encuestas en segundo plano, para que la pestana diga cuantas esperan voto. */
+  async function refreshPolls() {
+    if (!canSeePolls()) { state.polls = []; return; }
+    try {
+      const page = await api("/polls/");
+      state.polls = page.results || page;
+    } catch { /* solo alimenta el contador */ }
+  }
+
+  function closePoll() {
+    state.poll = null; state.pollId = null; state.pollChoice = null; state.confirming = false;
+  }
+
+  async function openPoll(id) {
+    closePoll();
+    state.activity = null;
+    state.pollId = id;
+    state.poll = state.polls.find((item) => item.id === id) || null;
+    state.focus = "#poll-title";
+    state.banner = null;
+    state.loading = true;
+    render();
+    try {
+      const fresh = await api(`/polls/${id}/`);
+      if (state.pollId !== id) return;
+      state.poll = fresh;
+      state.polls = state.polls.some((item) => item.id === id)
+        ? state.polls.map((item) => (item.id === id ? fresh : item))
+        : state.polls;
+    } catch (error) {
+      if (error.message === "unauthorized" || state.pollId !== id) return;
+      state.banner = { kind: "error", text: navigator.onLine ? problem(error) : t("offline") };
+    } finally {
+      state.loading = false;
+    }
+    if (state.pollId === id) { state.focus = "#poll-title"; render(); }
+  }
+
+  async function openActivity(id) {
+    closePoll();
+    const known = state.activities.find((item) => item.id === id);
+    if (known) { state.activity = known; render(); return; }
+    try {
+      state.activity = await api(`/activities/${id}/`);
+      render();
+    } catch (error) {
+      if (error.message === "unauthorized") return;
+      state.banner = { kind: "error", text: navigator.onLine ? problem(error) : t("offline") };
+      render();
+    }
+  }
+
+  async function castVote() {
+    const poll = state.poll;
+    const optionId = state.pollChoice;
+    state.busy = true; state.banner = null; render();
+    try {
+      const fresh = await api(`/polls/${poll.id}/vote/`, { method: "POST", body: { option_id: optionId } });
+      state.poll = fresh;
+      state.focus = "#poll-notices";
+    } catch (error) {
+      if (error.message === "unauthorized") { state.busy = false; return; }
+      state.banner = {
+        kind: "error",
+        text: error.status === 409 ? t("alreadyVoted") : navigator.onLine ? problem(error) : t("offline"),
+      };
+      /* Otra pestana, otro dispositivo o el plazo: lo que manda es el servidor. */
+      try { state.poll = await api(`/polls/${poll.id}/`); } catch { /* se queda lo que habia */ }
+      state.focus = "#poll-title";
+    }
+    /* La eleccion se olvida pase lo que pase. */
+    state.pollChoice = null;
+    state.confirming = false;
+    state.busy = false;
+    state.polls = state.polls.map((item) => (item.id === state.poll.id ? state.poll : item));
+    render();
+  }
+
   function signOut({ silent = false } = {}) {
     state.token = null; state.account = null; state.activities = []; state.notifications = [];
-    state.activity = null; state.member = null;
+    state.activity = null; state.member = null; state.polls = [];
+    closePoll();
     if (state.logo) { URL.revokeObjectURL(state.logo); state.logo = null; }
     write(STORE.token, null);
     if (!silent) state.banner = null;
@@ -623,36 +971,60 @@
 
   function render() {
     if (!state.token) { root.innerHTML = viewLogin(); return; }
-    if (state.activity) { root.innerHTML = viewActivity(); return; }
-    root.innerHTML = { agenda: viewAgenda, inbox: viewInbox, profile: viewProfile }[state.tab]();
+    if (state.pollId) root.innerHTML = viewPoll();
+    else if (state.activity) root.innerHTML = viewActivity();
+    else root.innerHTML = { agenda: viewAgenda, inbox: viewInbox, polls: viewPolls, profile: viewProfile }[state.tab]();
+    if (state.focus) {
+      const target = root.querySelector(state.focus);
+      state.focus = null;
+      target?.focus();
+    }
   }
 
   root.addEventListener("click", async (event) => {
-    const target = event.target.closest("[data-tab], [data-activity], [data-notification], [data-action]");
+    const target = event.target.closest("[data-tab], [data-activity], [data-poll], [data-notification], [data-action]");
     if (!target) return;
 
     if (target.dataset.tab) {
-      state.tab = target.dataset.tab; state.activity = null;
+      state.tab = target.dataset.tab; state.activity = null; closePoll();
       render(); await loadTab(); render(); return;
     }
+    if (target.dataset.poll) { await openPoll(target.dataset.poll); return; }
     if (target.dataset.activity) {
       state.activity = state.activities.find((item) => item.id === target.dataset.activity);
       render(); return;
     }
     if (target.dataset.notification) {
       const id = target.dataset.notification;
+      const notice = state.notifications.find((item) => item.id === id);
       try {
         const fresh = await api(`/notifications/${id}/`, { association: false });
         state.notifications = state.notifications.map((item) => (item.id === fresh.id ? fresh : item));
-        render();
       } catch { /* leerlo no es critico */ }
+      /* Se abre por el campo, no por `deep_link`, cuyo formato es del cliente movil. */
+      if (notice?.poll) { await openPoll(notice.poll); return; }
+      if (notice?.activity) { await openActivity(notice.activity); return; }
+      render();
       return;
     }
     if (target.dataset.action === "signout") { signOut(); return; }
-    if (target.dataset.action === "agenda") { state.activity = null; render(); return; }
+    if (target.dataset.action === "back") {
+      const wasPoll = Boolean(state.pollId);
+      state.activity = null; closePoll(); state.banner = null; render();
+      if (wasPoll && state.tab === "polls") { await loadTab(); render(); }
+      return;
+    }
+    if (target.dataset.action === "retry") {
+      if (state.pollId) { await openPoll(state.pollId); return; }
+      state.banner = null; render(); await loadTab(); render(); return;
+    }
+    if (target.dataset.action === "vote-back") {
+      state.confirming = false; state.focus = 'input[name="option"]:checked'; render(); return;
+    }
   });
 
   root.addEventListener("change", async (event) => {
+    if (event.target.matches?.('input[name="option"]')) { state.pollChoice = event.target.value; return; }
     const select = event.target.closest("select[data-action]");
     if (!select) return;
     if (select.dataset.action === "language") {
@@ -662,12 +1034,12 @@
     }
     if (select.dataset.action === "association") {
       state.associationId = select.value; write(STORE.association, state.associationId);
-      state.activity = null;
+      state.activity = null; closePoll(); state.polls = [];
       const current = association();
       aplicarMarca(current);
       recordarMarca(current);
       render();
-      await Promise.all([cargarLogotipo(current), loadTab()]);
+      await Promise.all([cargarLogotipo(current), loadTab(), state.tab === "polls" ? null : refreshPolls()]);
       render();
     }
   });
@@ -690,12 +1062,30 @@
         write(STORE.token, state.token);
         await loadSession();
         state.busy = false;
-        render(); await loadTab(); render();
+        render(); await Promise.all([loadTab(), refreshPolls()]); render();
       } catch (error) {
         state.busy = false;
         state.banner = { kind: "error", text: error.status === 400 || error.status === 401 ? t("badCredentials") : problem(error) };
         render();
       }
+      return;
+    }
+
+    if (form.dataset.form === "vote") {
+      const picked = form.elements.option?.value || state.pollChoice;
+      if (!picked) {
+        state.banner = { kind: "error", text: t("chooseFirst") };
+        state.focus = 'input[name="option"]';
+        render(); return;
+      }
+      state.pollChoice = picked; state.confirming = true; state.banner = null;
+      state.focus = "#confirm-title";
+      render(); return;
+    }
+
+    if (form.dataset.form === "confirm-vote") {
+      if (!state.poll || !state.pollChoice) { state.confirming = false; render(); return; }
+      await castVote();
       return;
     }
 
@@ -734,7 +1124,7 @@
   render();
   if (state.token) {
     loadSession()
-      .then(() => { render(); return loadTab(); })
+      .then(() => { render(); return Promise.all([loadTab(), state.tab === "polls" ? null : refreshPolls()]); })
       .then(render)
       .catch(() => render());
   }
