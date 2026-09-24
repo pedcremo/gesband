@@ -1,6 +1,6 @@
 # Instrucciones de prueba del MVP
 
-Estado a 23 de septiembre de 2026. Complementa a [README.md](README.md) (cómo
+Estado a 24 de septiembre de 2026. Complementa a [README.md](README.md) (cómo
 levantar el entorno) y a [AGENTS.md](AGENTS.md) (reglas de trabajo).
 
 ## 1. Cuentas de prueba por rol
@@ -93,9 +93,69 @@ Ninguno introducido por la siembra; son del código anterior.
    23/09/2026: ver el apartado 4 y
    [docs/decisions/0002-alcance-de-lectura-por-rol.md](docs/decisions/0002-alcance-de-lectura-por-rol.md).
 
-No quedan puntos abiertos registrados.
+3. **Repertorio solo al crear.** El panel fija el repertorio al crear la actividad;
+   para cambiarlo después hay que usar la API o el Django Admin.
+4. **Push de encuestas en Flutter.** La app Flutter abre una encuesta desde su
+   lista, no desde una notificación push: el envío FCM todavía no existe en el
+   backend y el aviso solo lleva `activity_id` en los datos push.
+5. **Listas de la app web.** Encuestas, agenda y avisos leen solo la primera
+   página (50 elementos); no siguen `next`.
 
-## 4. Correcciones aplicadas el 23/09/2026
+## 4. Cambios del 24/09/2026
+
+### Qué probar con cada cuenta
+
+| Cuenta | Dónde | Qué hacer |
+| --- | --- | --- |
+| `prova-board` o `prova-admin` | Panel, `http://localhost:8080/panel/` | «Mi acceso»: roles y lo que puedes y no puedes hacer. «Nueva actividad»: crear un ensayo o una actuación con repertorio. En el detalle, publicar y convocar a todos o a una selección por cuerdas, instrumentos o personas. «Encuestas»: crear, elegir destinatarios, abrir, ver el provisional, publicar tras el plazo, anular. |
+| `prova-member` | App del músico, `http://localhost:8080/app/` | Pestaña «Encuestas»: votar con confirmación, ver «Has votado» y el provisional. Los avisos de encuesta y de convocatoria abren su detalle. |
+| `prova-member` | Panel | 403, con enlace a «Mi acceso». |
+
+Para ver el paso «pendiente de publicar» sin esperar al plazo, crea una encuesta con
+un cierre a pocos minutos vista.
+
+### Encuestas
+
+Implementadas según ANALISIS.md 3.7: servidor, API `/api/v1/polls/`, panel de la
+junta, app web del músico y cliente Flutter. El voto único y el anonimato se
+garantizan en el servidor. Las cuatro decisiones que quedaban abiertas y los
+límites del anonimato están en
+[docs/decisions/0007-encuestas-con-voto-unico-y-anonimo.md](docs/decisions/0007-encuestas-con-voto-unico-y-anonimo.md).
+Cubierto por `backend/tests/test_polls.py`, `backend/tests/test_panel_polls.py`,
+`backend/tests/test_member_app.py` y `mobile/test/polls_test.dart`.
+
+### Panel: crear actividades, convocar por selección y «Mi acceso»
+
+Hasta ahora una actividad solo se podía crear por la API o el Django Admin, y solo
+se podía convocar a todos los músicos activos. El panel permite ya crearla y
+convocar por cuerdas, instrumentos o personas. «Mi acceso» (`/panel/me/`) enseña
+los roles y una tabla de capacidades calculada con la misma función que usa
+`/api/v1/auth/me` (`permissions_for` en `backend/apps/associations/permissions.py`).
+Cubierto por `backend/tests/test_panel_activities.py`.
+
+### Error CSRF al entrar en la app con la sesión del panel abierta
+
+Con la cookie del panel en el navegador, `POST /api/v1/auth/login` pasaba por
+`SessionAuthentication`, que exige CSRF. El acceso y la renovación ya no autentican
+por sesión. Cubierto por `LoginWithPanelSessionTests`.
+
+### Datos de prueba en un PC nuevo
+
+La base de datos vive en un volumen de Docker de cada máquina: en un PC nuevo
+empieza vacía y las cuentas de prueba no existen. Para recrearlas:
+
+```bash
+docker compose --env-file infra/.env -f infra/compose.yaml exec web python manage.py shell -c \
+  "from apps.associations.models import Association; Association.objects.get_or_create(slug='AUMB', defaults={'name': 'AUMB Bocairent'})"
+docker compose --env-file infra/.env -f infra/compose.yaml exec web \
+    python manage.py seed_role_accounts --association AUMB --force
+```
+
+El censo real de 30 fichas no está en este repositorio. Las cuerdas (Metal,
+Madera, Percusión) y los instrumentos de las fichas DEMO del PC secundario se
+añadieron a mano para probar la convocatoria por selección.
+
+## 5. Correcciones aplicadas el 23/09/2026
 
 ### Lectura de las variables booleanas de entorno
 
@@ -158,7 +218,7 @@ catalogos, `msgmerge` habia propuesto conjeturas *fuzzy* equivocadas —
 `Concentración` como «Administració de Gesband»—; no llegaban a compilarse, pero
 se han vaciado para que los catalogos digan lo que es cierto.
 
-## 5. Correcciones aplicadas el 22/09/2026
+## 6. Correcciones aplicadas el 22/09/2026
 
 En `backend/tests/test_mvp.py`, que impedían ejecutar la suite completa:
 
