@@ -37,6 +37,7 @@ Future<void> main() async {
         ApiActivitiesRepository(api, AgendaCache(preferences)),
     profileRepository: ApiProfileRepository(api),
     inboxRepository: ApiInboxRepository(api),
+    pollsRepository: ApiPollsRepository(api),
     agendaCache: AgendaCache(preferences),
     notifications: notifications,
   );

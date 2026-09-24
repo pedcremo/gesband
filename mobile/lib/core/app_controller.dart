@@ -19,6 +19,7 @@ class AppController extends ChangeNotifier {
     required this.activitiesRepository,
     required this.profileRepository,
     required this.inboxRepository,
+    required this.pollsRepository,
     required this.agendaCache,
     required this.notifications,
   });
@@ -29,6 +30,7 @@ class AppController extends ChangeNotifier {
   final ActivitiesRepository activitiesRepository;
   final ProfileRepository profileRepository;
   final InboxRepository inboxRepository;
+  final PollsRepository pollsRepository;
   final AgendaCache agendaCache;
   final NotificationController notifications;
   final navigatorKey = GlobalKey<NavigatorState>();

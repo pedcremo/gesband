@@ -224,3 +224,48 @@ class ApiInboxRepository implements InboxRepository {
     );
   }
 }
+
+/// Ya habia un voto de esta cuenta: el servidor responde 409.
+class AlreadyVotedException implements Exception {
+  const AlreadyVotedException();
+}
+
+abstract interface class PollsRepository {
+  Future<List<Poll>> listMine(String associationId);
+  Future<Poll> getById(String associationId, String pollId);
+  Future<Poll> vote(String associationId, String pollId, String optionId);
+}
+
+class ApiPollsRepository implements PollsRepository {
+  ApiPollsRepository(this._api);
+
+  final ApiClient _api;
+
+  @override
+  Future<List<Poll>> listMine(String associationId) async =>
+      (await _api.getList('/polls/?association_id=$associationId'))
+          .map(Poll.fromJson)
+          .toList(growable: false);
+
+  @override
+  Future<Poll> getById(String associationId, String pollId) async =>
+      Poll.fromJson(await _api
+          .getObject('/polls/$pollId/?association_id=$associationId'));
+
+  @override
+  Future<Poll> vote(
+    String associationId,
+    String pollId,
+    String optionId,
+  ) async {
+    try {
+      return Poll.fromJson(await _api.postObject(
+        '/polls/$pollId/vote/?association_id=$associationId',
+        data: {'option_id': optionId},
+      ));
+    } on ApiException catch (error) {
+      if (error.statusCode == 409) throw const AlreadyVotedException();
+      rethrow;
+    }
+  }
+}

@@ -137,6 +137,78 @@ class AppStrings {
       en: 'You have a new notification.');
   String get open => _pick(es: 'Abrir', ca: 'Obri', en: 'Open');
 
+  // Encuestas
+  String get polls => _pick(es: 'Encuestas', ca: 'Enquestes', en: 'Polls');
+  String get poll => _pick(es: 'Encuesta', ca: 'Enquesta', en: 'Poll');
+  String get emptyPolls => _pick(
+      es: 'No tienes encuestas.',
+      ca: 'No tens enquestes.',
+      en: 'You have no polls.');
+  String get pollToVote => _pick(
+      es: 'Pendiente de votar', ca: 'Pendent de votar', en: 'Not voted yet');
+  String get pollVoted =>
+      _pick(es: 'Has votado', ca: 'Has votat', en: 'You have voted');
+  String get pollAwaitingPublication => _pick(
+      es: 'Votación cerrada, pendiente de publicar',
+      ca: 'Votació tancada, pendent de publicar',
+      en: 'Voting closed, results pending');
+  String get pollPublished => _pick(
+      es: 'Resultado publicado',
+      ca: 'Resultat publicat',
+      en: 'Results published');
+  String get pollCancelled => _pick(
+      es: 'Encuesta anulada', ca: 'Enquesta anul·lada', en: 'Poll cancelled');
+  String get pollOpen =>
+      _pick(es: 'Votación abierta', ca: 'Votació oberta', en: 'Voting open');
+  String pollClosesAt(String when) => _pick(
+      es: 'Se puede votar hasta $when',
+      ca: 'Es pot votar fins a $when',
+      en: 'Voting closes $when');
+  String get pollVote => _pick(es: 'Votar', ca: 'Vota', en: 'Vote');
+  String get pollChooseOption => _pick(
+      es: 'Elige una opción para votar.',
+      ca: 'Tria una opció per a votar.',
+      en: 'Choose an option to vote.');
+  String get pollConfirmTitle => _pick(
+      es: '¿Confirmas tu voto?',
+      ca: 'Confirmes el teu vot?',
+      en: 'Confirm your vote?');
+  String pollConfirmBody(String option) => _pick(
+      es: 'Vas a votar «$option». El voto es anónimo: una vez emitido nadie, '
+          'ni tú, puede saber qué elegiste, y por eso no se puede cambiar ni retirar.',
+      ca: 'Votaràs «$option». El vot és anònim: una vegada emés ningú, ni tu, '
+          'pot saber què vas triar, i per això no es pot canviar ni retirar.',
+      en: 'You are voting "$option". The vote is anonymous: once cast nobody, '
+          'not even you, can tell what you chose, so it cannot be changed or withdrawn.');
+  String get pollConfirm =>
+      _pick(es: 'Votar ahora', ca: 'Vota ara', en: 'Vote now');
+  String get pollAlreadyVoted => _pick(
+      es: 'Ya habías votado en esta encuesta.',
+      ca: 'Ja havies votat en aquesta enquesta.',
+      en: 'You had already voted in this poll.');
+  String get pollVoteFailed => _pick(
+      es: 'No se pudo registrar el voto.',
+      ca: 'No s’ha pogut registrar el vot.',
+      en: 'The vote could not be recorded.');
+  String get pollProvisional => _pick(
+      es: 'Recuento provisional',
+      ca: 'Recompte provisional',
+      en: 'Provisional count');
+  String get pollFinal => _pick(es: 'Resultado', ca: 'Resultat', en: 'Results');
+  String pollVotesCast(int cast, int recipients) => _pick(
+      es: '$cast votos de $recipients personas consultadas',
+      ca: '$cast vots de $recipients persones consultades',
+      en: '$cast votes from $recipients people asked');
+  String pollOptionVotes(int votes, int percent) => _pick(
+      es: '$votes · $percent %',
+      ca: '$votes · $percent %',
+      en: '$votes · $percent%');
+  String get pollAnonymousNote => _pick(
+      es: 'Voto anónimo: la aplicación no guarda qué has elegido.',
+      ca: 'Vot anònim: l’aplicació no guarda què has triat.',
+      en: 'Anonymous vote: the app does not keep what you chose.');
+  String get reason => _pick(es: 'Motivo', ca: 'Motiu', en: 'Reason');
+
   String permissionName(String name) => switch (name) {
         'notDetermined' => _pick(
             es: 'por determinar', ca: 'per determinar', en: 'not determined'),

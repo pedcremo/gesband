@@ -228,3 +228,123 @@ class InboxNotification {
   final bool isRead;
   final String? activityId;
 }
+
+enum PollStatus { draft, open, published, cancelled }
+
+enum PollResultKind { provisional, finalResult }
+
+class PollChoice {
+  const PollChoice({required this.id, required this.label});
+
+  factory PollChoice.fromJson(Map<String, dynamic> json) => PollChoice(
+        id: json['id'] as String,
+        label: json['label'] as String,
+      );
+
+  final String id;
+  final String label;
+}
+
+class PollTallyRow {
+  const PollTallyRow(
+      {required this.id, required this.label, required this.votes});
+
+  factory PollTallyRow.fromJson(Map<String, dynamic> json) => PollTallyRow(
+        id: json['id'] as String,
+        label: json['label'] as String,
+        votes: json['votes'] as int? ?? 0,
+      );
+
+  final String id;
+  final String label;
+  final int votes;
+}
+
+class PollResults {
+  const PollResults(
+      {required this.kind, required this.votesCast, required this.options});
+
+  factory PollResults.fromJson(Map<String, dynamic> json) => PollResults(
+        kind: json['kind'] == 'final'
+            ? PollResultKind.finalResult
+            : PollResultKind.provisional,
+        votesCast: json['votes_cast'] as int? ?? 0,
+        options: (json['options'] as List<dynamic>? ?? const [])
+            .map((item) => PollTallyRow.fromJson(item as Map<String, dynamic>))
+            .toList(growable: false),
+      );
+
+  final PollResultKind kind;
+  final int votesCast;
+  final List<PollTallyRow> options;
+}
+
+/// Encuesta tal como la ve la cuenta autenticada.
+///
+/// No hay ningun campo con la opcion elegida: el servidor no la conoce, porque
+/// la papeleta no guarda quien la emitio.
+class Poll {
+  const Poll({
+    required this.id,
+    required this.question,
+    required this.status,
+    required this.closesAt,
+    required this.choices,
+    required this.recipients,
+    required this.voted,
+    required this.canVote,
+    this.description,
+    this.results,
+    this.hasVoted,
+    this.publishedAt,
+    this.cancelReason,
+  });
+
+  factory Poll.fromJson(Map<String, dynamic> json) {
+    final participation =
+        json['participation'] as Map<String, dynamic>? ?? const {};
+    final description = json['description'] as String?;
+    final cancelReason = json['cancel_reason'] as String?;
+    return Poll(
+      id: json['id'] as String,
+      question: json['question'] as String,
+      description:
+          description == null || description.isEmpty ? null : description,
+      status: PollStatus.values.byName(json['status'] as String),
+      closesAt: DateTime.parse(json['closes_at'] as String).toLocal(),
+      publishedAt: json['published_at'] == null
+          ? null
+          : DateTime.parse(json['published_at'] as String).toLocal(),
+      cancelReason:
+          cancelReason == null || cancelReason.isEmpty ? null : cancelReason,
+      choices: (json['choices'] as List<dynamic>? ?? const [])
+          .map((item) => PollChoice.fromJson(item as Map<String, dynamic>))
+          .toList(growable: false),
+      results: json['results'] == null
+          ? null
+          : PollResults.fromJson(json['results'] as Map<String, dynamic>),
+      recipients: participation['recipients'] as int? ?? 0,
+      voted: participation['voted'] as int? ?? 0,
+      hasVoted: json['has_voted'] as bool?,
+      canVote: json['can_vote'] as bool? ?? false,
+    );
+  }
+
+  final String id;
+  final String question;
+  final String? description;
+  final PollStatus status;
+  final DateTime closesAt;
+  final DateTime? publishedAt;
+  final String? cancelReason;
+  final List<PollChoice> choices;
+  final PollResults? results;
+  final int recipients;
+  final int voted;
+  final bool? hasVoted;
+  final bool canVote;
+
+  /// Plazo vencido y resultado todavia sin publicar por la junta.
+  bool awaitingPublication(DateTime now) =>
+      status == PollStatus.open && !now.isBefore(closesAt);
+}

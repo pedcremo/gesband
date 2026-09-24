@@ -4,6 +4,7 @@ import '../../core/app_controller.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/localization/language_menu.dart';
 import '../../core/models/models.dart';
+import '../polls/polls_screen.dart';
 import 'activity_detail_screen.dart';
 
 class AgendaScreen extends StatefulWidget {
@@ -36,6 +37,14 @@ class _AgendaScreenState extends State<AgendaScreen> {
     final materialStrings = MaterialLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(association.name), actions: [
+        IconButton(
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (_) => PollsScreen(
+                      association: association,
+                      repository: widget.controller.pollsRepository,
+                    ))),
+            tooltip: strings.polls,
+            icon: const Icon(Icons.how_to_vote)),
         IconButton(
             onPressed: widget.controller.changeAssociation,
             tooltip: strings.changeAssociation,
