@@ -242,6 +242,9 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 
 class LoginView(APIView):
+    # Sin autenticacion: si el navegador trae la cookie del panel,
+    # SessionAuthentication exigiria CSRF a un formulario que no lo necesita.
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -256,6 +259,7 @@ class LoginView(APIView):
 
 
 class RefreshView(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):

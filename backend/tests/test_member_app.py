@@ -177,3 +177,24 @@ class MemberAppReconfirmationSignalTests(TestCase):
         payload = self.invitation_payload()
         self.assertEqual(payload["response"], "pending")
         self.assertTrue(payload["needs_reconfirmation"])
+
+
+class LoginWithPanelSessionTests(TestCase):
+    """Quien ya entro al panel en el mismo navegador tambien puede entrar en /app/."""
+
+    def test_the_api_login_ignores_the_panel_session_cookie(self):
+        account = get_user_model().objects.create_user(
+            username="junta@example.invalid", email="junta@example.invalid", password="secret-password"
+        )
+        browser = Client(enforce_csrf_checks=True)
+        browser.force_login(account)
+
+        response = browser.post(
+            "/api/v1/auth/login",
+            {"email": "junta@example.invalid", "password": "secret-password"},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertIn("access_token", response.json())
+
