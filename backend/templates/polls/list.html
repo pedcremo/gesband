@@ -1,0 +1,31 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Encuestas" %} · Gesband{% endblock %}
+{% block content %}
+<h1>{% translate "Encuestas" %}</h1>
+<div class="actions">
+  <a class="button" href="{% url 'panel-poll-new' %}?association_id={{ association.id }}">{% translate "Nueva encuesta" %}</a>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>{% translate "Enunciado" %}</th>
+      <th>{% translate "Estado" %}</th>
+      <th>{% translate "Cierre" %}</th>
+      <th>{% translate "Participación" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+      <tr>
+        <td><a href="{% url 'panel-poll-detail' poll_id=row.poll.id %}?association_id={{ association.id }}">{{ row.poll.question }}</a></td>
+        <td>{% include 'polls/_status.html' with poll=row.poll state=row.state %}</td>
+        <td>{{ row.poll.closes_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+        <td>{% if row.state == 'draft' %}<span class="muted">{% blocktranslate count count=row.poll.recipients_count %}{{ count }} destinatario{% plural %}{{ count }} destinatarios{% endblocktranslate %}</span>{% else %}{{ row.poll.voted_count }} / {{ row.poll.recipients_count }}{% endif %}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">{% translate "Todavía no hay encuestas." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

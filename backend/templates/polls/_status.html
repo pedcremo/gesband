@@ -1,0 +1,1 @@
+{% load i18n %}{% if state == 'awaiting' %}<span class="status">{% translate "Plazo vencido, pendiente de publicar" %}</span>{% else %}<span class="status">{{ poll.get_status_display }}</span>{% endif %}

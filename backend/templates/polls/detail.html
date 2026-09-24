@@ -1,0 +1,101 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{{ poll.question }} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel-polls' %}?association_id={{ association.id }}">← {% translate "Encuestas" %}</a></p>
+<h1>{{ poll.question }}</h1>
+{% if poll.description %}<p>{{ poll.description|linebreaksbr }}</p>{% endif %}
+<p>
+  {% include 'polls/_status.html' %}
+  {% translate "Cierre de la votación" %}: {{ poll.closes_at|date:"SHORT_DATETIME_FORMAT" }}
+</p>
+
+{% if state == 'draft' %}
+  <h2>{% translate "Corregir el borrador" %}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ poll_form.as_p }}
+    <div class="actions">
+      <button class="button" name="action" value="save_draft">{% translate "Guardar cambios" %}</button>
+    </div>
+  </form>
+
+  <h2>{% translate "A quién se consulta" %}</h2>
+  <p>
+    {% blocktranslate count count=participation.recipients %}Hay {{ count }} destinatario.{% plural %}Hay {{ count }} destinatarios.{% endblocktranslate %}
+  </p>
+  {% if draft_recipients %}
+    <p class="muted">{% for member in draft_recipients %}{{ member }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+  {% endif %}
+  <p class="muted">{% translate "La selección sustituye a la actual. Las personas marcadas son los destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus músicos activos." %}</p>
+  <form method="post">
+    {% csrf_token %}
+    <p><label>{{ recipient_form.all_active_musicians }} {{ recipient_form.all_active_musicians.label }}</label></p>
+    {% for field in recipient_form %}
+      {% if field.name != 'all_active_musicians' and field.field.choices %}
+        <fieldset>
+          <legend>{{ field.label }}</legend>
+          {{ field }}
+        </fieldset>
+      {% endif %}
+    {% endfor %}
+    <div class="actions">
+      <button class="button" name="action" value="set_recipients">{% translate "Guardar destinatarios" %}</button>
+    </div>
+  </form>
+
+  <h2>{% translate "Abrir la votación" %}</h2>
+  <p>
+    {% translate "Al abrirla ya no se puede corregir y se avisa a las personas consultadas. El voto es anónimo: nadie, tampoco la junta, puede saber qué ha votado cada persona. Por eso un voto emitido no se puede cambiar ni retirar." %}
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="actions">
+      <button class="button" name="action" value="open">{% translate "Abrir votación y avisar" %}</button>
+    </div>
+  </form>
+
+  <h2>{% translate "Borrar el borrador" %}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="actions">
+      <button class="button" name="action" value="delete_draft">{% translate "Borrar borrador" %}</button>
+    </div>
+  </form>
+
+{% elif state == 'open' %}
+  <p class="card">
+    {% blocktranslate with voted=participation.voted recipients=participation.recipients %}Han votado {{ voted }} de {{ recipients }} personas consultadas.{% endblocktranslate %}
+    {% translate "Mientras se vota no se muestra quién ha votado: junto al recuento provisional delataría el voto de cada persona." %}
+  </p>
+  {% if results %}{% include 'polls/_results.html' %}{% endif %}
+  {% include 'polls/_cancel.html' %}
+
+{% elif state == 'awaiting' %}
+  <p class="card">{% translate "El plazo de votación ha terminado. Revisa el recuento y la participación antes de publicar el resultado." %}</p>
+  {% if results %}{% include 'polls/_results.html' %}{% endif %}
+  {% include 'polls/_roll.html' %}
+  <h2>{% translate "Publicar el resultado" %}</h2>
+  <p>{% translate "La publicación es definitiva: el recuento queda como resultado de la encuesta y se avisa a las personas consultadas." %}</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="actions">
+      <button class="button" name="action" value="publish">{% translate "Publicar resultado" %}</button>
+    </div>
+  </form>
+  {% include 'polls/_cancel.html' %}
+
+{% elif state == 'published' %}
+  <p>{% translate "Resultado publicado el" %} {{ poll.published_at|date:"SHORT_DATETIME_FORMAT" }}.</p>
+  {% if results %}{% include 'polls/_results.html' %}{% endif %}
+  <details>
+    <summary>{% translate "Quién ha votado" %}</summary>
+    {% include 'polls/_roll.html' %}
+  </details>
+
+{% elif state == 'cancelled' %}
+  <p>{% translate "Anulada el" %} {{ poll.cancelled_at|date:"SHORT_DATETIME_FORMAT" }}.</p>
+  <p>{% translate "Motivo" %}: {{ poll.cancel_reason }}</p>
+  <p class="muted">{% translate "Una encuesta anulada no tiene resultado." %}</p>
+{% endif %}
+{% endblock %}

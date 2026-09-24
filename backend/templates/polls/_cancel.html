@@ -1,0 +1,13 @@
+{% load i18n %}
+<h2>{% translate "Anular la encuesta" %}</h2>
+<p class="muted">{% translate "Una encuesta anulada no tiene resultado: el recuento deja de mostrarse. Se avisa a las personas consultadas con el motivo." %}</p>
+<form method="post">
+  {% csrf_token %}
+  <p>
+    <label for="cancel-reason">{% translate "Motivo (se incluye en el aviso)" %}</label>
+    <input type="text" id="cancel-reason" name="reason" maxlength="500" required>
+  </p>
+  <div class="actions">
+    <button class="button" name="action" value="cancel">{% translate "Anular y avisar" %}</button>
+  </div>
+</form>

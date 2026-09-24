@@ -1,0 +1,23 @@
+{% load i18n %}
+<h2>{% if results.kind == 'final' %}{% translate "Resultado definitivo" %}{% else %}{% translate "Recuento provisional" %}{% endif %}</h2>
+<table>
+  <thead>
+    <tr>
+      <th>{% translate "Opción" %}</th>
+      <th>{% translate "Votos" %}</th>
+      <th>%</th>
+      <th aria-hidden="true"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for option in results.options %}
+      <tr>
+        <td>{{ option.label }}</td>
+        <td>{{ option.votes }}</td>
+        <td>{{ option.percent }} %</td>
+        <td aria-hidden="true" style="width:40%"><div style="background:var(--primary);height:.8rem;border-radius:.2rem;width:{{ option.percent }}%"></div></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p>{% blocktranslate with cast=results.votes_cast recipients=participation.recipients %}Votos emitidos: {{ cast }} de {{ recipients }} personas consultadas.{% endblocktranslate %}</p>

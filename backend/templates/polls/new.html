@@ -1,0 +1,16 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Nueva encuesta" %} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel-polls' %}?association_id={{ association.id }}">← {% translate "Encuestas" %}</a></p>
+<h1>{% translate "Nueva encuesta" %}</h1>
+<p class="muted">{% translate "Se guarda en borrador. Podrás corregirla y elegir a quién se consulta antes de abrir la votación." %}</p>
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="association_id" value="{{ association.id }}">
+  {{ form.as_p }}
+  <div class="actions">
+    <button class="button" type="submit">{% translate "Guardar borrador" %}</button>
+  </div>
+</form>
+{% endblock %}

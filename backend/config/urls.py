@@ -9,6 +9,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
 from apps.polls.api import PollViewSet
+from apps.polls.views import poll_create, poll_detail, poll_list
 from apps.accounts.views import activate_invitation, activation_complete
 from apps.api import (
     ActivityViewSet,
@@ -76,6 +77,9 @@ urlpatterns = [
     path("panel/me/", my_access, name="panel-my-access"),
     path("panel/activities/new/", activity_create, name="activity-create"),
     path("panel/activities/<uuid:activity_id>/", activity_detail, name="activity-detail"),
+    path("panel/polls/", poll_list, name="panel-polls"),
+    path("panel/polls/new/", poll_create, name="panel-poll-new"),
+    path("panel/polls/<uuid:poll_id>/", poll_detail, name="panel-poll-detail"),
     path("api/v1/auth/login", LoginView.as_view(), name="api-login"),
     path("api/v1/auth/refresh", RefreshView.as_view(), name="api-refresh"),
     path("api/v1/auth/logout", LogoutView.as_view(), name="api-logout"),
