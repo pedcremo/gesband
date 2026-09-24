@@ -46,12 +46,14 @@ backend/
     activities/                 Ensayos, actuaciones, convocatorias y asistencia
     transport/                  Transporte y asignaciones por actividad
     communications/             Avisos, entregas, dispositivos y trabajos de envío
+    polls/                      Encuestas a los miembros con voto único y anónimo
     website/                    Complemento futuro; no crear por anticipación
   templates/
     shared/                     Base del panel y componentes comunes
     members/                    Pantallas del censo
     activities/                 Pantallas de actividades
     transport/                  Pantallas de transporte
+    polls/                      Pantallas de encuestas
   tests/integration/            Recorridos que cruzan módulos
 mobile/
   lib/

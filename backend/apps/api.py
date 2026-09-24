@@ -63,9 +63,9 @@ class AssociationSerializer(serializers.ModelSerializer):
         # asociacion; `activities.view` depende de participar en la banda.
         permissions = {"association.view", "notifications.view", "devices.manage_own"}
         if roles.intersection(PARTICIPANT_ROLES):
-            permissions |= {"activities.view"}
+            permissions |= {"activities.view", "polls.view"}
         if roles.intersection(MANAGER_ROLES):
-            permissions |= {"members.view", "members.manage", "activities.manage", "attendance.manage", "transport.manage"}
+            permissions |= {"members.view", "members.manage", "activities.manage", "attendance.manage", "transport.manage", "polls.manage"}
         if AssociationRole.Role.ADMIN in roles:
             permissions |= {"association.manage", "imports.manage"}
         return sorted(permissions)
@@ -237,7 +237,7 @@ class TransportAssignmentSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ["id", "title", "body", "deep_link", "activity", "read_at", "created_at"]
+        fields = ["id", "title", "body", "deep_link", "activity", "poll", "read_at", "created_at"]
         read_only_fields = fields
 
 
@@ -622,7 +622,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ("-created_at", "-id")
 
     def get_queryset(self):
-        return Notification.objects.filter(account=self.request.user).select_related("activity")
+        return Notification.objects.filter(account=self.request.user).select_related("activity", "poll")
 
     def retrieve(self, request, *args, **kwargs):
         obj = self.get_object()

@@ -8,6 +8,7 @@ from config.member_app import member_app, member_app_manifest, member_app_servic
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
+from apps.polls.api import PollViewSet
 from apps.accounts.views import activate_invitation, activation_complete
 from apps.api import (
     ActivityViewSet,
@@ -48,6 +49,7 @@ router.register("notifications", NotificationViewSet, basename="notification")
 router.register("sections", SectionViewSet, basename="section")
 router.register("instruments", InstrumentViewSet, basename="instrument")
 router.register("transports", TransportViewSet, basename="transport")
+router.register("polls", PollViewSet, basename="poll")
 router.register("transport-assignments", TransportAssignmentViewSet, basename="transport-assignment")
 
 urlpatterns = [

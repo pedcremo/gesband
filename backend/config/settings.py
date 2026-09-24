@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.activities",
     "apps.transport",
     "apps.communications",
+    "apps.polls",
 ]
 
 MIDDLEWARE = [

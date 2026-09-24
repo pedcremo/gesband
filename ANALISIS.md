@@ -164,14 +164,18 @@ vista de todos y quien responde tarde ya sabe lo que han dicho los demás.
 - El resultado publicado queda consultable después, con la fecha de cierre y el
   número de votos emitidos sobre el de convocados.
 
-Decisiones que quedan abiertas y no impiden documentar el requisito:
+Decisiones tomadas al implementarla el 24/09/2026, razonadas en
+[docs/decisions/0007-encuestas-con-voto-unico-y-anonimo.md](docs/decisions/0007-encuestas-con-voto-unico-y-anonimo.md):
 
-- Tipos de pregunta admitidos. La propuesta mínima es opción única; opción
-  múltiple y orden de preferencia se evaluarán al implementarla.
-- Si la junta puede ver el recuento provisional cuando los miembros no, o si
-  ambos ven lo mismo mientras está abierta.
-- Si una encuesta puede anularse una vez abierta y qué se conserva si se anula.
-- Si el plazo vencido sin publicar oculta también el provisional.
+- Tipo de pregunta: opción única. Opción múltiple y orden de preferencia, cuando
+  haya un caso real.
+- Mientras se vota, junta y destinatarios ven el mismo recuento provisional. La
+  junta no ve quién ha votado hasta que vence el plazo, porque cruzarlo con el
+  provisional delataría votos.
+- Una encuesta abierta se puede anular con motivo y aviso; su recuento deja de
+  mostrarse a todos. Un resultado publicado no se anula.
+- Con el plazo vencido y sin publicar, los destinatarios ven «pendiente de
+  publicar» y solo la junta ve el recuento y la participación nominal.
 
 El anonimato tiene una consecuencia que conviene aceptar por escrito: una vez
 emitido, un voto no se puede modificar ni retirar a petición de quien lo emitió,

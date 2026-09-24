@@ -23,6 +23,7 @@ tags:
   - name: Transport
   - name: Notifications
   - name: Devices
+  - name: Polls
 security:
   - bearerAuth: []
 paths:
@@ -130,7 +131,7 @@ paths:
                     email: marina@example.invalid
                     locale: ca-ES-valencia
                     associations:
-                      - {id: 10000000-0000-4000-8000-000000000001, name: Unió Musical Exemple, permissions: [association.view, activities.view, notifications.view, devices.manage_own]}
+                      - {id: 10000000-0000-4000-8000-000000000001, name: Unió Musical Exemple, permissions: [association.view, activities.view, notifications.view, devices.manage_own, polls.view, polls.manage]}
                       - {id: 10000000-0000-4000-8000-000000000002, name: Banda La Mostra, permissions: [association.view, members.view, activities.view]}
         '401': {$ref: '#/components/responses/Unauthorized'}
   /associations:
@@ -979,6 +980,173 @@ paths:
           description: Confirmación registrada.
           content: {application/json: {schema: {$ref: '#/components/schemas/PushTest'}}}
         '409': {$ref: '#/components/responses/Conflict'}
+  /polls:
+    get:
+      tags: [Polls]
+      operationId: listPolls
+      summary: Encuestas de la asociación activa.
+      description: |
+        La junta ve todas. Un miembro ve solo aquellas en las que es destinatario y que
+        ya se abrieron; nunca los borradores.
+      x-permissions: [polls.view]
+      parameters:
+        - {$ref: '#/components/parameters/AssociationId'}
+        - {$ref: '#/components/parameters/PageCursor'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200':
+          description: Encuestas visibles para la cuenta.
+          content: {application/json: {schema: {$ref: '#/components/schemas/PollPage'}}}
+    post:
+      tags: [Polls]
+      operationId: createPoll
+      summary: Crea una encuesta en borrador.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/AssociationId'}
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/PollInput'}}}
+      responses:
+        '201':
+          description: Borrador creado.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /polls/{pollId}:
+    get:
+      tags: [Polls]
+      operationId: getPoll
+      summary: Detalle con el recuento que la cuenta puede ver en este momento.
+      x-permissions: [polls.view]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      responses:
+        '200':
+          description: Encuesta.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+    patch:
+      tags: [Polls]
+      operationId: updatePollDraft
+      summary: Corrige un borrador. Una encuesta abierta no se modifica.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/PollInput'}}}
+      responses:
+        '200':
+          description: Borrador actualizado.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
+    delete:
+      tags: [Polls]
+      operationId: deletePollDraft
+      summary: Borra un borrador. Una encuesta abierta se anula, no se borra.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      responses:
+        '204': {description: Borrador eliminado.}
+        '400': {$ref: '#/components/responses/ValidationError'}
+  /polls/{pollId}/recipients:
+    post:
+      tags: [Polls]
+      operationId: setPollRecipients
+      summary: Sustituye los destinatarios de un borrador por personas, instrumentos o cuerdas.
+      description: Solo cuentan fichas activas de la propia asociación; los identificadores ajenos se ignoran.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/InvitationSelection'}}}
+      responses:
+        '200':
+          description: Número de destinatarios resultante.
+          content:
+            application/json:
+              schema: {type: object, required: [recipients], properties: {recipients: {type: integer, minimum: 0}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
+  /polls/{pollId}/open:
+    post:
+      tags: [Polls]
+      operationId: openPoll
+      summary: Abre la votación y avisa a los destinatarios.
+      description: Exige al menos dos opciones, algún destinatario y un cierre posterior a ahora.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      responses:
+        '200':
+          description: Votación abierta.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
+  /polls/{pollId}/vote:
+    post:
+      tags: [Polls]
+      operationId: castPollVote
+      summary: Emite el voto de la cuenta autenticada. Una sola vez y sin posibilidad de cambiarlo.
+      description: |
+        El servidor registra por separado que la persona ha votado y una papeleta sin
+        votante ni fecha. Por eso la respuesta no dice qué se eligió y ninguna operación
+        posterior puede decirlo.
+      x-permissions: [polls.view]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [option_id], properties: {option_id: {$ref: '#/components/schemas/Uuid'}}}
+      responses:
+        '201':
+          description: Voto registrado.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /polls/{pollId}/publish:
+    post:
+      tags: [Polls]
+      operationId: publishPollResults
+      summary: Publica el resultado definitivo una vez vencido el plazo, y lo avisa.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      responses:
+        '200':
+          description: Resultado publicado.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
+  /polls/{pollId}/cancel:
+    post:
+      tags: [Polls]
+      operationId: cancelPoll
+      summary: Anula un borrador o una encuesta abierta. Una anulada no tiene resultado visible.
+      x-permissions: [polls.manage]
+      parameters:
+        - {$ref: '#/components/parameters/PollId'}
+        - {$ref: '#/components/parameters/AssociationId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [reason], properties: {reason: {type: string, minLength: 1, maxLength: 500}}}
+      responses:
+        '200':
+          description: Encuesta anulada.
+          content: {application/json: {schema: {$ref: '#/components/schemas/Poll'}}}
+        '400': {$ref: '#/components/responses/ValidationError'}
 components:
   securitySchemes:
     bearerAuth:
@@ -1020,6 +1188,7 @@ components:
     AssignmentId: {name: assignmentId, in: path, required: true, schema: {$ref: '#/components/schemas/Uuid'}}
     NotificationId: {name: notificationId, in: path, required: true, schema: {$ref: '#/components/schemas/Uuid'}}
     DeviceId: {name: deviceId, in: path, required: true, schema: {$ref: '#/components/schemas/Uuid'}}
+    PollId: {name: pollId, in: path, required: true, schema: {$ref: '#/components/schemas/Uuid'}}
     PushTestId: {name: pushTestId, in: path, required: true, schema: {$ref: '#/components/schemas/Uuid'}}
   headers:
     ETag:
@@ -1353,7 +1522,7 @@ components:
         gathering_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         location: {$ref: '#/components/schemas/Location'}
         uniform: {type: string, maxLength: 500}
-        is_mandatory: {type: boolean, default: false, description: Si es verdadera, rechazar la convocatoria exige justificar la ausencia.}
+        is_mandatory: {type: boolean, default: false, description: "Si es verdadera, rechazar la convocatoria exige justificar la ausencia."}
         response_deadline: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         programme: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/ProgrammeItemInput'}}
     ActivityUpdate:
@@ -1367,7 +1536,7 @@ components:
         gathering_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         location: {$ref: '#/components/schemas/Location'}
         uniform: {type: string, maxLength: 500}
-        is_mandatory: {type: boolean, description: Si es verdadera, rechazar la convocatoria exige justificar la ausencia.}
+        is_mandatory: {type: boolean, description: "Si es verdadera, rechazar la convocatoria exige justificar la ausencia."}
         response_deadline: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         programme: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/ProgrammeItemInput'}}
         require_new_response: {type: boolean, default: false, description: Solo válido en cambios relevantes.}
@@ -1507,7 +1676,7 @@ components:
         transport_id: {$ref: '#/components/schemas/Uuid'}
         member_id: {$ref: '#/components/schemas/Uuid'}
         created_at: {$ref: '#/components/schemas/UtcDateTime'}
-    NotificationKind: {type: string, enum: [invitation, reminder, activity_changed, activity_cancelled, transport_changed, system]}
+    NotificationKind: {type: string, enum: [invitation, reminder, activity_changed, activity_cancelled, transport_changed, poll_opened, poll_published, poll_cancelled, system]}
     Notification:
       type: object
       required: [id, kind, title, body, created_at]
@@ -1517,6 +1686,7 @@ components:
         title: {type: string, maxLength: 120}
         body: {type: string, maxLength: 500, description: Sin datos privados completos.}
         activity_id: {anyOf: [{$ref: '#/components/schemas/Uuid'}, {type: 'null'}]}
+        poll_id: {anyOf: [{$ref: '#/components/schemas/Uuid'}, {type: 'null'}]}
         deep_link: {type: [string, 'null'], pattern: '^gesband://', description: Se resuelve tras autenticar y autorizar.}
         read_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         created_at: {$ref: '#/components/schemas/UtcDateTime'}
@@ -1534,7 +1704,7 @@ components:
       additionalProperties: false
       required: [installation_id, platform, push_token, permission_state, app_version]
       properties:
-        installation_id: {type: string, minLength: 16, maxLength: 200, description: Identificador aleatorio de instalación, no identificador publicitario.}
+        installation_id: {type: string, minLength: 16, maxLength: 200, description: "Identificador aleatorio de instalación, no identificador publicitario."}
         platform: {$ref: '#/components/schemas/Platform'}
         push_token: {type: string, minLength: 20, maxLength: 4096, writeOnly: true}
         permission_state: {$ref: '#/components/schemas/PermissionState'}
@@ -1586,3 +1756,77 @@ components:
         created_at: {$ref: '#/components/schemas/UtcDateTime'}
         expires_at: {$ref: '#/components/schemas/UtcDateTime'}
         confirmed_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
+    PollStatus: {type: string, enum: [draft, open, published, cancelled]}
+    PollInput:
+      type: object
+      additionalProperties: false
+      properties:
+        question: {type: string, minLength: 1, maxLength: 300}
+        description: {type: string}
+        closes_at: {$ref: '#/components/schemas/UtcDateTime'}
+        options: {type: array, minItems: 2, maxItems: 20, items: {type: string, minLength: 1, maxLength: 200}}
+    PollChoice:
+      type: object
+      required: [id, label]
+      properties:
+        id: {$ref: '#/components/schemas/Uuid'}
+        label: {type: string}
+    PollTallyRow:
+      type: object
+      required: [id, label, votes]
+      properties:
+        id: {$ref: '#/components/schemas/Uuid'}
+        label: {type: string}
+        votes: {type: integer, minimum: 0}
+    PollResults:
+      type: object
+      description: |
+        `provisional` mientras se vota (todos los destinatarios y la junta) y, con el plazo
+        vencido sin publicar, solo para la junta. `final` una vez publicado.
+      required: [kind, votes_cast, options]
+      properties:
+        kind: {type: string, enum: [provisional, final]}
+        votes_cast: {type: integer, minimum: 0}
+        options: {type: array, items: {$ref: '#/components/schemas/PollTallyRow'}}
+    PollRecipientStatus:
+      type: object
+      required: [member, member_name, has_voted]
+      properties:
+        member: {$ref: '#/components/schemas/Uuid'}
+        member_name: {type: string}
+        has_voted: {type: boolean}
+    Poll:
+      type: object
+      required: [id, question, status, closes_at, choices, results, participation, has_voted, can_vote, recipients]
+      properties:
+        id: {$ref: '#/components/schemas/Uuid'}
+        association: {$ref: '#/components/schemas/Uuid'}
+        question: {type: string}
+        description: {type: string}
+        status: {$ref: '#/components/schemas/PollStatus'}
+        closes_at: {$ref: '#/components/schemas/UtcDateTime'}
+        opened_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
+        published_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
+        cancelled_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
+        cancel_reason: {type: string}
+        choices: {type: array, items: {$ref: '#/components/schemas/PollChoice'}}
+        results: {anyOf: [{$ref: '#/components/schemas/PollResults'}, {type: 'null'}]}
+        participation:
+          type: object
+          required: [recipients, voted]
+          properties:
+            recipients: {type: integer, minimum: 0}
+            voted: {type: integer, minimum: 0}
+        has_voted: {type: [boolean, 'null'], description: Null si la cuenta no es destinataria. Nunca se indica qué opción eligió.}
+        can_vote: {type: boolean}
+        recipients:
+          description: |
+            Quién ha votado y quién no. Solo para la junta y solo con la votación cerrada:
+            mientras se vota, cruzarlo con el recuento provisional delataría votos.
+          anyOf: [{type: array, items: {$ref: '#/components/schemas/PollRecipientStatus'}}, {type: 'null'}]
+    PollPage:
+      type: object
+      required: [results, page]
+      properties:
+        results: {type: array, items: {$ref: '#/components/schemas/Poll'}}
+        page: {$ref: '#/components/schemas/PageMeta'}

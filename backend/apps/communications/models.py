@@ -27,6 +27,14 @@ class Notification(models.Model):
         related_name="notifications",
         verbose_name=_("actividad"),
     )
+    poll = models.ForeignKey(
+        "polls.Poll",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="notifications",
+        verbose_name=_("encuesta"),
+    )
     title = models.CharField(_("título"), max_length=180)
     body = models.TextField(_("contenido"))
     deep_link = models.CharField(_("enlace interno"), max_length=255, blank=True)
