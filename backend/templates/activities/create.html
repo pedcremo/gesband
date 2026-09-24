@@ -1,0 +1,18 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Nueva actividad" %} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
+<h1>{% translate "Nueva actividad" %}</h1>
+<p class="muted">
+  {% translate "La actividad se guarda en borrador: nadie recibe avisos hasta que la publiques. Después podrás convocar a toda la banda, a unas cuerdas, a unos instrumentos o a personas concretas." %}
+</p>
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="association_id" value="{{ association.id }}">
+  {{ form.as_p }}
+  <div class="actions">
+    <button class="button" type="submit">{% translate "Crear en borrador" %}</button>
+  </div>
+</form>
+{% endblock %}

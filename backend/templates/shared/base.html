@@ -33,6 +33,7 @@
   <nav aria-label="{% translate 'Main navigation' %}">
     <a href="{% url 'panel' %}">{% translate "Home" %}</a>
     <a href="{% url 'panel-members' %}?association_id={{ association.id }}">{% translate "Members" %}</a>
+    <a href="{% url 'panel-my-access' %}{% if association.id %}?association_id={{ association.id }}{% endif %}">{% translate "Mi acceso" %}</a>
     <form class="language-selector" action="{% url 'set_language' %}" method="post">
       {% csrf_token %}
       <input name="next" type="hidden" value="{{ request.get_full_path }}">

@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from apps.activities.models import Activity, Attendance, Invitation, ProgrammeItem
 from apps.activities.services import record_attendance, respond
 from apps.associations.models import Association, AssociationAccess, AssociationRole
-from apps.associations.permissions import MANAGER_ROLES, PARTICIPANT_ROLES, accessible_association_ids, get_access_or_403, require_roles
+from apps.associations.permissions import MANAGER_ROLES, PARTICIPANT_ROLES, accessible_association_ids, get_access_or_403, permissions_for, require_roles
 from apps.communications.models import DeviceRegistration, Notification
 from apps.communications.services import mark_receipt, register_device
 from apps.members.images import sanitize_member_photo
@@ -53,22 +53,7 @@ class AssociationSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if not request:
             return []
-        if request.user.is_superuser:
-            return ["*"]
-        access = AssociationAccess.objects.filter(account=request.user, association=obj, is_active=True).first()
-        if not access:
-            return []
-        roles = set(access.role_assignments.values_list("role", flat=True))
-        # `notifications.view` y `devices.manage_own` son por cuenta, no por
-        # asociacion; `activities.view` depende de participar en la banda.
-        permissions = {"association.view", "notifications.view", "devices.manage_own"}
-        if roles.intersection(PARTICIPANT_ROLES):
-            permissions |= {"activities.view", "polls.view"}
-        if roles.intersection(MANAGER_ROLES):
-            permissions |= {"members.view", "members.manage", "activities.manage", "attendance.manage", "transport.manage", "polls.manage"}
-        if AssociationRole.Role.ADMIN in roles:
-            permissions |= {"association.manage", "imports.manage"}
-        return sorted(permissions)
+        return permissions_for(request.user, obj)
 
 
 class SectionSerializer(serializers.ModelSerializer):

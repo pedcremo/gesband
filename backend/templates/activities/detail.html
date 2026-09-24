@@ -10,6 +10,16 @@
   <p class="status">{% translate "Asistencia obligatoria" %}</p>
 {% endif %}
 <p class="status">{{ activity.get_status_display }}</p>
+{% with programme=activity.programme.all %}
+  {% if programme %}
+    <h2>{% translate "Repertorio" %}</h2>
+    <ol>
+      {% for item in programme %}
+        <li>{{ item.title }}{% if item.notes %} <span class="muted">· {{ item.notes }}</span>{% endif %}</li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+{% endwith %}
 {% if activity.status == 'draft' %}
   <form method="post">
     {% csrf_token %}
@@ -62,6 +72,45 @@
     <button class="button" name="invite_all_musicians" value="1">
       {% translate "Convocar a todos los músicos activos" %}
     </button>
+  </div>
+</form>
+
+<h3>{% translate "Convocar a una selección" %}</h3>
+<p class="muted">
+  {% translate "Marca cuerdas, instrumentos o personas: se convoca a quien cumpla cualquiera de las casillas. Solo cuentan los músicos activos; quien ya esté convocado no se duplica." %}
+</p>
+<form method="post">
+  {% csrf_token %}
+  {% if sections %}
+    <fieldset>
+      <legend>{% translate "Cuerdas" %}</legend>
+      {% for section in sections %}
+        <label><input type="checkbox" name="section_ids" value="{{ section.id }}"> {{ section.name }}</label>
+      {% endfor %}
+    </fieldset>
+  {% endif %}
+  {% if instruments %}
+    <fieldset>
+      <legend>{% translate "Instrumentos" %}</legend>
+      {% for instrument in instruments %}
+        <label><input type="checkbox" name="instrument_ids" value="{{ instrument.id }}"> {{ instrument.name }}{% if instrument.section %} <span class="muted">({{ instrument.section.name }})</span>{% endif %}</label>
+      {% endfor %}
+    </fieldset>
+  {% endif %}
+  <fieldset>
+    <legend>{% translate "Personas" %}</legend>
+    {% for member in musicians %}
+      <label><input type="checkbox" name="member_ids" value="{{ member.id }}"> {{ member }}{% with first=member.member_instruments.all|first %}{% if first %} <span class="muted">· {{ first.instrument.name }}</span>{% endif %}{% endwith %}</label><br>
+    {% empty %}
+      <span class="muted">{% translate "No hay músicos activos en el censo." %}</span>
+    {% endfor %}
+  </fieldset>
+  <label>
+    <input type="checkbox" name="is_mandatory" value="1"{% if activity.is_mandatory %} checked{% endif %}>
+    {% translate "Actividad obligatoria: una ausencia deberá justificarse" %}
+  </label>
+  <div class="actions">
+    <button class="button" name="invite_selected" value="1">{% translate "Convocar a la selección" %}</button>
   </div>
 </form>
 {% endif %}

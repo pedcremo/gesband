@@ -1,0 +1,10 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Sin permiso" %} · Gesband{% endblock %}
+{% block content %}
+<h1>{% translate "Sin permiso" %}</h1>
+<p>{% if exception %}{{ exception }}{% else %}{% translate "No tienes permisos para acceder a esta página." %}{% endif %}</p>
+{% if request.user.is_authenticated %}
+  <p><a href="{% url 'panel-my-access' %}">{% translate "Consulta en «Mi acceso» qué roles tienes y qué puedes hacer." %}</a></p>
+{% endif %}
+{% endblock %}

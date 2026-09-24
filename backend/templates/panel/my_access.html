@@ -1,0 +1,61 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Mi acceso" %} · Gesband{% endblock %}
+{% block content %}
+<h1>{% translate "Mi acceso" %}</h1>
+<p>
+  <strong>{{ request.user.get_full_name|default:request.user.email|default:request.user.get_username }}</strong>
+  {% if request.user.email %}<span class="muted"> · {{ request.user.email }}</span>{% endif %}
+</p>
+<p>{% translate "Asociación" %}: <strong>{{ association.name }}</strong></p>
+{% if accesses|length > 1 %}
+  <p class="actions">
+    <span class="muted">{% translate "Otras asociaciones" %}:</span>
+    {% for item in accesses %}{% if item.association_id != association.id %}
+      <a href="{% url 'panel-my-access' %}?association_id={{ item.association_id }}">{{ item.association.name }}</a>
+    {% endif %}{% endfor %}
+  </p>
+{% endif %}
+
+<h2>{% translate "Roles" %}</h2>
+{% if roles %}
+  <p class="actions">{% for item in roles %}<span class="status">{{ item.get_role_display }}</span>{% endfor %}</p>
+{% else %}
+  <p class="muted">{% translate "No tienes ningún rol asignado en esta asociación." %}</p>
+{% endif %}
+{% if is_superuser %}
+  <p class="muted">{% translate "Tu cuenta es de superusuario: el servidor te concede todos los permisos." %}</p>
+{% endif %}
+<p class="muted">{% translate "Los cargos de junta no conceden permisos por sí solos: los permisos dependen de estos roles. Si necesitas otro, pídeselo a la administración de la asociación." %}</p>
+
+<h2>{% translate "Qué puedes hacer" %}</h2>
+<table>
+  <thead>
+    <tr>
+      <th>{% translate "Acción" %}</th>
+      <th>{% translate "Permiso" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for capability in capabilities %}
+      <tr data-permission="{{ capability.permission }}" data-allowed="{{ capability.allowed|yesno:'yes,no' }}">
+        <td>{{ capability.label }}</td>
+        <td>
+          {% if capability.allowed %}
+            <span class="status">{% translate "Puedes" %}</span>
+          {% else %}
+            <span class="muted">{% translate "No puedes" %}</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if can_use_panel %}
+  <div class="actions"><a class="button" href="{% url 'panel' %}?association_id={{ association.id }}">{% translate "Ir al panel de la junta" %}</a></div>
+{% else %}
+  <p class="muted">{% translate "El panel de la junta es para los roles de gestión. Para ver tus convocatorias y responder, usa la aplicación del músico." %}</p>
+  <div class="actions"><a class="button" href="{% url 'member-app' %}">{% translate "Abrir la aplicación del músico" %}</a></div>
+{% endif %}
+{% endblock %}

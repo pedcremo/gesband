@@ -32,8 +32,10 @@ from apps.api import (
     TransportAssignmentViewSet,
 )
 from config.panel import (
+    activity_create,
     activity_detail,
     dashboard,
+    my_access,
     member_import_detail,
     member_import_start,
     member_import_template,
@@ -71,6 +73,8 @@ urlpatterns = [
     path("panel/members/import/", member_import_start, name="member-import-start"),
     path("panel/members/import/template.csv", member_import_template, name="member-import-template"),
     path("panel/members/import/<uuid:batch_id>/", member_import_detail, name="member-import-detail"),
+    path("panel/me/", my_access, name="panel-my-access"),
+    path("panel/activities/new/", activity_create, name="activity-create"),
     path("panel/activities/<uuid:activity_id>/", activity_detail, name="activity-detail"),
     path("api/v1/auth/login", LoginView.as_view(), name="api-login"),
     path("api/v1/auth/refresh", RefreshView.as_view(), name="api-refresh"),

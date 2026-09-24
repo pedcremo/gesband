@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ValidationError as DjangoValidationError
 from django.core.files.base import ContentFile
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -13,19 +13,21 @@ from django.utils.translation import gettext_lazy
 
 from rest_framework.exceptions import ValidationError as DRFValidationError
 
-from apps.activities.forms import ActivityChangeForm
+from apps.activities.forms import ActivityChangeForm, ActivityCreateForm
 from apps.activities.models import Activity
 from apps.activities.services import (
     announce_activity_change,
     cancel_activity,
     changed_activity_fields,
+    invite_members,
+    notify_activity,
     publish_activity,
 )
 from apps.accounts.models import AccessInvitation
 from apps.accounts.services import deliver_access_invitation, issue_access_invitation, revoke_access_invitation
 from apps.associations.models import AssociationAccess, AssociationRole
-from apps.associations.permissions import MANAGER_ROLES
-from apps.members.models import ImportBatch, Member
+from apps.associations.permissions import MANAGER_ROLES, capabilities_for, permissions_for
+from apps.members.models import ImportBatch, Instrument, Member, MemberInstrument, Section
 from apps.members.services import confirm_import, inspect_import, parse_import, suggest_import_mapping
 
 
@@ -306,6 +308,58 @@ def member_import_template(request):
 
 
 @login_required
+def activity_create(request):
+    association = _association_for(request)
+    draft = Activity(association=association, created_by=request.user, status=Activity.Status.DRAFT)
+    form = ActivityCreateForm(request.POST or None, instance=draft)
+    if request.method == "POST" and form.is_valid():
+        activity = form.save()
+        messages.success(
+            request,
+            _("Actividad creada en borrador. Revísala, convoca y publícala cuando esté lista."),
+        )
+        detail_url = reverse("activity-detail", kwargs={"activity_id": activity.id})
+        return redirect(f"{detail_url}?association_id={association.id}")
+    return render(request, "activities/create.html", {"association": association, "form": form})
+
+
+@login_required
+def my_access(request):
+    """Qué roles tiene la cuenta y qué le permite hacer el servidor.
+
+    Vale para cualquier rol con acceso activo, también para quien no gestiona,
+    porque es la página a la que se llega tras un «no tienes permisos».
+    """
+    accesses = (
+        AssociationAccess.objects.filter(account=request.user, is_active=True, association__is_active=True)
+        .select_related("association")
+        .prefetch_related("role_assignments")
+        .order_by("association__name")
+    )
+    association_id = request.GET.get("association_id")
+    try:
+        access = accesses.filter(association_id=association_id).first() if association_id else accesses.first()
+    except (ValueError, DjangoValidationError):
+        access = None
+    if not access:
+        raise PermissionDenied(_("No tienes acceso a esta asociación."))
+    association = access.association
+    permissions = permissions_for(request.user, association)
+    return render(
+        request,
+        "panel/my_access.html",
+        {
+            "association": association,
+            "accesses": accesses,
+            "roles": sorted(access.role_assignments.all(), key=lambda item: item.get_role_display()),
+            "is_superuser": request.user.is_superuser,
+            "capabilities": capabilities_for(permissions),
+            "can_use_panel": bool(_roles_in(request, association) & MANAGER_ROLES),
+        },
+    )
+
+
+@login_required
 def activity_detail(request, activity_id):
     association = _association_for(request)
     activity = get_object_or_404(Activity.objects.prefetch_related("invitations__member", "invitations__attendance"), id=activity_id, association=association)
@@ -342,24 +396,13 @@ def activity_detail(request, activity_id):
             _report_change_notice(request, notice)
             change_form = ActivityChangeForm(instance=activity)
         elif "invite_all_musicians" in request.POST:
-            from apps.activities.services import invite_members, notify_activity
-
-            result = invite_members(
-                activity,
-                Member.objects.filter(association=association),
-                mandatory=request.POST.get("is_mandatory") == "1",
-            )
-            activity = result["activity"]
-            if activity.status == Activity.Status.PUBLISHED:
-                notify_activity(activity, _("Nueva convocatoria"), activity.title)
-            messages.success(
-                request,
-                _(
-                    "Convocatoria preparada para %(eligible)s músicos activos: "
-                    "%(created)s nuevas y %(existing)s ya existentes."
-                )
-                % result,
-            )
+            activity = _invite(request, activity, Member.objects.filter(association=association))
+        elif "invite_selected" in request.POST:
+            selected = _selected_members(request, association)
+            if selected is None:
+                messages.error(request, _("Elige al menos una cuerda, un instrumento o una persona."))
+            else:
+                activity = _invite(request, activity, selected)
         elif request.POST.get("attendance_id"):
             invitation = activity.invitations.get(id=request.POST["attendance_id"])
             from apps.activities.services import record_attendance
@@ -376,6 +419,19 @@ def _render_activity_detail(request, association, activity, change_form):
         status=Member.Status.ACTIVE,
         kind=Member.Kind.MUSICIAN,
     ).count()
+    musicians = (
+        Member.objects.filter(
+            association=association,
+            status=Member.Status.ACTIVE,
+            kind=Member.Kind.MUSICIAN,
+        )
+        .prefetch_related(
+            Prefetch(
+                "member_instruments",
+                queryset=MemberInstrument.objects.select_related("instrument").order_by("-is_primary"),
+            )
+        )
+    )
     return render(
         request,
         "activities/detail.html",
@@ -384,8 +440,74 @@ def _render_activity_detail(request, association, activity, change_form):
             "activity": activity,
             "active_musicians_count": active_musicians_count,
             "change_form": change_form,
+            "sections": Section.objects.filter(association=association),
+            "instruments": Instrument.objects.filter(association=association).select_related("section"),
+            "musicians": musicians,
         },
     )
+
+
+def _ids_from(request, name, queryset):
+    """Ids enviados en `name` que existen en `queryset`.
+
+    El queryset ya viene filtrado por la asociación: un id ajeno o mal formado
+    se descarta sin decir si existe en otra parte.
+    """
+    from apps.polls.services import clean_ids
+
+    values = clean_ids(queryset.model, request.POST.getlist(name))
+    if not values:
+        return set()
+    return set(queryset.filter(pk__in=values).values_list("pk", flat=True))
+
+
+def _selected_members(request, association):
+    """Miembros elegidos por cuerda, instrumento o persona; `None` si no se eligió nada.
+
+    `invite_members` vuelve a quedarse con los músicos activos de la asociación.
+    """
+    if not any(request.POST.getlist(name) for name in ("section_ids", "instrument_ids", "member_ids")):
+        return None
+    section_ids = _ids_from(request, "section_ids", Section.objects.filter(association=association))
+    instrument_ids = _ids_from(request, "instrument_ids", Instrument.objects.filter(association=association))
+    member_ids = _ids_from(request, "member_ids", Member.objects.filter(association=association))
+    member_ids |= set(
+        MemberInstrument.objects.filter(
+            member__association=association,
+            instrument__section_id__in=section_ids,
+        ).values_list("member_id", flat=True)
+    )
+    member_ids |= set(
+        MemberInstrument.objects.filter(
+            member__association=association,
+            instrument_id__in=instrument_ids,
+        ).values_list("member_id", flat=True)
+    )
+    return Member.objects.filter(association=association, id__in=member_ids)
+
+
+def _invite(request, activity, members_queryset):
+    """Convoca, avisa si ya está publicada y cuenta el resultado a la junta."""
+    result = invite_members(
+        activity,
+        members_queryset,
+        mandatory=request.POST.get("is_mandatory") == "1",
+    )
+    activity = result["activity"]
+    if not result["eligible"]:
+        messages.warning(request, _("Ninguna de las personas elegidas es un músico activo; no se ha convocado a nadie."))
+        return activity
+    if activity.status == Activity.Status.PUBLISHED:
+        notify_activity(activity, _("Nueva convocatoria"), activity.title)
+    messages.success(
+        request,
+        _(
+            "Convocatoria preparada para %(eligible)s músicos activos: "
+            "%(created)s nuevas y %(existing)s ya existentes."
+        )
+        % result,
+    )
+    return activity
 
 
 def _report_change_notice(request, notice):

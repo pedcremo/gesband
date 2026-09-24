@@ -1,7 +1,8 @@
 from django import forms
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
-from .models import Activity
+from .models import Activity, ProgrammeItem
 
 
 class DateTimeLocalInput(forms.DateTimeInput):
@@ -44,3 +45,51 @@ class ActivityChangeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for name in ["starts_at", "ends_at", "meeting_at", "response_deadline"]:
             self.fields[name].input_formats = ["%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S"]
+
+
+class ActivityCreateForm(ActivityChangeForm):
+    """Alta de una actividad desde el panel; nace en borrador.
+
+    La vista entrega una instancia con asociación, autor y estado ya fijados,
+    de modo que la validación del modelo (`Activity.clean`) se aplica completa.
+    El repertorio se escribe como un título por línea; lo que siga a una barra
+    vertical se guarda como nota de esa obra.
+    """
+
+    programme = forms.CharField(
+        label=_("Repertorio"),
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 5}),
+        help_text=_("Opcional. Un título por línea; añade notas tras «|», p. ej. «Paquito el chocolatero | de pasacalle»."),
+    )
+
+    class Meta(ActivityChangeForm.Meta):
+        fields = ["kind", *ActivityChangeForm.Meta.fields]
+
+    def clean_programme(self):
+        title_limit = ProgrammeItem._meta.get_field("title").max_length
+        items = []
+        for number, line in enumerate(self.cleaned_data["programme"].splitlines(), start=1):
+            title, _separator, notes = line.partition("|")
+            title, notes = title.strip(), notes.strip()
+            if not title:
+                if notes:
+                    raise forms.ValidationError(_("La línea %(line)s tiene notas pero no título.") % {"line": number})
+                continue
+            if len(title) > title_limit:
+                raise forms.ValidationError(
+                    _("El título de la línea %(line)s supera los %(limit)s caracteres.")
+                    % {"line": number, "limit": title_limit}
+                )
+            items.append((title, notes))
+        return items
+
+    @transaction.atomic
+    def save(self, commit=True):
+        activity = super().save(commit=commit)
+        if commit:
+            ProgrammeItem.objects.bulk_create(
+                ProgrammeItem(activity=activity, title=title, notes=notes, order=order)
+                for order, (title, notes) in enumerate(self.cleaned_data["programme"])
+            )
+        return activity
