@@ -10,6 +10,7 @@ x-backend-environment: &backend-environment
   CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER:-gesband}:${RABBITMQ_DEFAULT_PASS:-development-password-change-me}@rabbitmq:5672//
   EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
   PUSH_PROVIDER: ${PUSH_PROVIDER:-fake}
+  FCM_CREDENTIALS_FILE: ${FCM_CREDENTIALS_FILE:-}
   PRIVATE_MEDIA_ROOT: /app/var/private_media
   STATIC_ROOT: /app/var/static
 
@@ -23,6 +24,8 @@ x-backend: &backend
   volumes:
     - private_media:/app/var/private_media
     - static_files:/app/var/static
+    # Credenciales de proveedores (cuenta de servicio de Firebase), fuera de Git.
+    - ./secrets:/run/gesband-secrets:ro
   networks:
     - application
   init: true

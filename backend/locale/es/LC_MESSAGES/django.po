@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gesband\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 10:42+0200\n"
+"POT-Creation-Date: 2026-09-30 17:35+0200\n"
 "PO-Revision-Date: 2026-09-21 10:00+0200\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,8 @@ msgid "correo electrónico"
 msgstr ""
 
 #: apps/accounts/models.py:12 apps/associations/models.py:48
-#: apps/communications/models.py:20 apps/communications/models.py:69
-#: apps/members/models.py:87
+#: apps/communications/models.py:21 apps/communications/models.py:79
+#: apps/communications/models.py:140 apps/members/models.py:87
 msgid "cuenta"
 msgstr ""
 
@@ -32,15 +32,16 @@ msgstr ""
 
 #: apps/accounts/models.py:20 apps/activities/models.py:23
 #: apps/activities/models.py:89 apps/associations/models.py:10
-#: apps/communications/models.py:12 apps/communications/models.py:64
-#: apps/members/models.py:77 apps/members/models.py:150 apps/polls/models.py:28
-#: apps/polls/models.py:69 apps/transport/models.py:17
+#: apps/communications/models.py:13 apps/communications/models.py:74
+#: apps/communications/models.py:134 apps/members/models.py:77
+#: apps/members/models.py:150 apps/polls/models.py:28 apps/polls/models.py:69
+#: apps/transport/models.py:17
 msgid "identificador"
 msgstr ""
 
 #: apps/accounts/models.py:25 apps/activities/models.py:25
 #: apps/associations/models.py:33 apps/associations/models.py:42
-#: apps/communications/models.py:14 apps/members/models.py:22
+#: apps/communications/models.py:15 apps/members/models.py:22
 #: apps/members/models.py:39 apps/members/models.py:79
 #: apps/members/models.py:152 apps/polls/models.py:30
 msgid "asociación"
@@ -68,8 +69,9 @@ msgstr ""
 #: apps/accounts/models.py:49 apps/activities/models.py:45
 #: apps/activities/models.py:102 apps/activities/models.py:129
 #: apps/associations/models.py:29 apps/associations/models.py:51
-#: apps/communications/models.py:43 apps/communications/models.py:114
-#: apps/members/models.py:99 apps/members/models.py:170 apps/polls/models.py:46
+#: apps/communications/models.py:44 apps/communications/models.py:150
+#: apps/communications/models.py:186 apps/members/models.py:99
+#: apps/members/models.py:170 apps/polls/models.py:46
 msgid "fecha de creación"
 msgstr ""
 
@@ -85,7 +87,7 @@ msgstr ""
 msgid "fecha de aceptación"
 msgstr ""
 
-#: apps/accounts/models.py:53
+#: apps/accounts/models.py:53 apps/communications/models.py:94
 msgid "fecha de revocación"
 msgstr ""
 
@@ -209,13 +211,13 @@ msgid "tipo"
 msgstr ""
 
 #: apps/activities/models.py:28 apps/activities/models.py:147
-#: apps/communications/models.py:109 apps/members/models.py:97
-#: apps/members/models.py:166 apps/polls/models.py:34
+#: apps/communications/models.py:145 apps/communications/models.py:181
+#: apps/members/models.py:97 apps/members/models.py:166 apps/polls/models.py:34
 msgid "estado"
 msgstr ""
 
 #: apps/activities/models.py:29 apps/activities/models.py:73
-#: apps/communications/models.py:38
+#: apps/communications/models.py:39
 msgid "título"
 msgstr ""
 
@@ -261,7 +263,7 @@ msgid "fecha de actualización"
 msgstr ""
 
 #: apps/activities/models.py:51 apps/activities/models.py:71
-#: apps/activities/models.py:91 apps/communications/models.py:28
+#: apps/activities/models.py:91 apps/communications/models.py:29
 #: apps/transport/models.py:19
 msgid "actividad"
 msgstr ""
@@ -299,7 +301,7 @@ msgstr ""
 msgid "elementos de repertorio"
 msgstr ""
 
-#: apps/activities/models.py:85 apps/communications/models.py:93
+#: apps/activities/models.py:85 apps/communications/models.py:165
 msgid "Pendiente"
 msgstr ""
 
@@ -537,15 +539,7 @@ msgstr ""
 msgid "No quedan plazas disponibles."
 msgstr ""
 
-#: apps/api.py:590
-msgid "Dispositivo no registrado."
-msgstr ""
-
-#: apps/api.py:598
-msgid "Registra primero un dispositivo con notificaciones activadas."
-msgstr ""
-
-#: apps/api.py:634 config/panel.py:199
+#: apps/api.py:601 config/panel.py:199
 msgid "Adjunta un CSV o XLSX."
 msgstr ""
 
@@ -599,7 +593,7 @@ msgstr ""
 msgid "asociaciones"
 msgstr ""
 
-#: apps/associations/models.py:50 apps/communications/models.py:79
+#: apps/associations/models.py:50 apps/communications/models.py:93
 msgid "activo"
 msgstr ""
 
@@ -715,142 +709,243 @@ msgstr ""
 msgid "Comunicaciones"
 msgstr ""
 
-#: apps/communications/models.py:36 apps/polls/models.py:52
+#: apps/communications/models.py:37 apps/polls/models.py:52
 #: apps/polls/models.py:70 apps/polls/models.py:91 apps/polls/models.py:107
 msgid "encuesta"
 msgstr ""
 
-#: apps/communications/models.py:39
+#: apps/communications/models.py:40
 msgid "contenido"
 msgstr ""
 
-#: apps/communications/models.py:40
+#: apps/communications/models.py:41
 msgid "enlace interno"
 msgstr ""
 
-#: apps/communications/models.py:41
+#: apps/communications/models.py:42
 msgid "clave de deduplicación"
 msgstr ""
 
-#: apps/communications/models.py:42
+#: apps/communications/models.py:43
 msgid "fecha de lectura"
 msgstr ""
 
-#: apps/communications/models.py:48 apps/communications/models.py:98
+#: apps/communications/models.py:49 apps/communications/models.py:170
 msgid "aviso"
 msgstr ""
 
-#: apps/communications/models.py:49
+#: apps/communications/models.py:50
 msgid "avisos"
 msgstr ""
 
-#: apps/communications/models.py:54
+#: apps/communications/models.py:63
 msgid "Android"
 msgstr ""
 
-#: apps/communications/models.py:55
+#: apps/communications/models.py:64
 msgid "iOS"
 msgstr ""
 
-#: apps/communications/models.py:58
-msgid "Desconocido"
+#: apps/communications/models.py:67
+msgid "Sin decidir"
 msgstr ""
 
-#: apps/communications/models.py:59
-msgid "Concedido"
-msgstr ""
-
-#: apps/communications/models.py:60
-msgid "Denegado"
-msgstr ""
-
-#: apps/communications/models.py:61
+#: apps/communications/models.py:68
 msgid "Provisional"
 msgstr ""
 
-#: apps/communications/models.py:62
-msgid "Desactivado"
+#: apps/communications/models.py:69
+msgid "Concedido"
+msgstr ""
+
+#: apps/communications/models.py:70
+msgid "Denegado"
 msgstr ""
 
 #: apps/communications/models.py:71
-msgid "identificador de instalación"
+msgid "Restringido"
 msgstr ""
 
 #: apps/communications/models.py:72
+msgid "Desconocido"
+msgstr ""
+
+#: apps/communications/models.py:81
+msgid "identificador de instalación"
+msgstr ""
+
+#: apps/communications/models.py:82
 msgid "plataforma"
 msgstr ""
 
-#: apps/communications/models.py:73
+#: apps/communications/models.py:83
 msgid "token push"
 msgstr ""
 
-#: apps/communications/models.py:75
+#: apps/communications/models.py:85
 msgid "permiso"
 msgstr ""
 
-#: apps/communications/models.py:77
-msgid "última recepción"
+#: apps/communications/models.py:87
+msgid "versión de la app"
 msgstr ""
 
-#: apps/communications/models.py:78
-msgid "última conexión"
-msgstr ""
-
-#: apps/communications/models.py:83
-msgid "dispositivo registrado"
-msgstr ""
-
-#: apps/communications/models.py:84
-msgid "dispositivos registrados"
+#: apps/communications/models.py:88
+msgid "idioma"
 msgstr ""
 
 #: apps/communications/models.py:89
-msgid "Push"
+msgid "último cambio de token"
 msgstr ""
 
 #: apps/communications/models.py:90
+msgid "token rechazado por el proveedor"
+msgstr ""
+
+#: apps/communications/models.py:91
+msgid "última recepción confirmada"
+msgstr ""
+
+#: apps/communications/models.py:92
+msgid "última conexión"
+msgstr ""
+
+#: apps/communications/models.py:98
+msgid "dispositivo registrado"
+msgstr ""
+
+#: apps/communications/models.py:99
+msgid "dispositivos registrados"
+msgstr ""
+
+#: apps/communications/models.py:121
+msgid "Primer plano"
+msgstr ""
+
+#: apps/communications/models.py:122
+msgid "Segundo plano"
+msgstr ""
+
+#: apps/communications/models.py:125
+msgid "En cola"
+msgstr ""
+
+#: apps/communications/models.py:126
+msgid "Aceptada por el proveedor"
+msgstr ""
+
+#: apps/communications/models.py:127
+msgid "Rechazada por el proveedor"
+msgstr ""
+
+#: apps/communications/models.py:128
+msgid "Recibida en primer plano"
+msgstr ""
+
+#: apps/communications/models.py:129
+msgid "Abierta desde segundo plano"
+msgstr ""
+
+#: apps/communications/models.py:130
+#: templates/members/access_invitations.html:42
+msgid "Caducada"
+msgstr ""
+
+#: apps/communications/models.py:136 apps/communications/models.py:178
+msgid "dispositivo"
+msgstr ""
+
+#: apps/communications/models.py:143
+msgid "presentación esperada"
+msgstr ""
+
+#: apps/communications/models.py:146 apps/communications/models.py:182
+msgid "identificador del proveedor"
+msgstr ""
+
+#: apps/communications/models.py:147
+msgid "código de error del proveedor"
+msgstr ""
+
+#: apps/communications/models.py:148
+msgid "momento indicado por la app"
+msgstr ""
+
+#: apps/communications/models.py:149 apps/members/models.py:171
+msgid "fecha de confirmación"
+msgstr ""
+
+#: apps/communications/models.py:151
+msgid "caducidad"
+msgstr ""
+
+#: apps/communications/models.py:155
+msgid "prueba de aviso"
+msgstr ""
+
+#: apps/communications/models.py:156
+msgid "pruebas de avisos"
+msgstr ""
+
+#: apps/communications/models.py:161
+msgid "Push"
+msgstr ""
+
+#: apps/communications/models.py:162
 msgid "Correo"
 msgstr ""
 
-#: apps/communications/models.py:94
+#: apps/communications/models.py:166
 #: templates/members/access_invitations.html:46
 msgid "Enviada"
 msgstr ""
 
-#: apps/communications/models.py:95 apps/members/models.py:148
+#: apps/communications/models.py:167 apps/members/models.py:148
 msgid "Fallida"
 msgstr ""
 
-#: apps/communications/models.py:106
-msgid "dispositivo"
-msgstr ""
-
-#: apps/communications/models.py:108
+#: apps/communications/models.py:180
 msgid "canal"
 msgstr ""
 
-#: apps/communications/models.py:110
-msgid "identificador del proveedor"
-msgstr ""
-
-#: apps/communications/models.py:111
+#: apps/communications/models.py:183
 msgid "error"
 msgstr ""
 
-#: apps/communications/models.py:112
+#: apps/communications/models.py:184
 msgid "intentos"
 msgstr ""
 
-#: apps/communications/models.py:113
+#: apps/communications/models.py:185
 msgid "último intento"
 msgstr ""
 
-#: apps/communications/models.py:118
+#: apps/communications/models.py:190
 msgid "entrega de aviso"
 msgstr ""
 
-#: apps/communications/models.py:119
+#: apps/communications/models.py:191
 msgid "entregas de avisos"
+msgstr ""
+
+#: apps/communications/services.py:123 apps/communications/services.py:189
+msgid "Este dispositivo ya no está registrado."
+msgstr ""
+
+#: apps/communications/services.py:127
+msgid "Activa las notificaciones y registra el dispositivo antes de probar."
+msgstr ""
+
+#: apps/communications/services.py:158
+msgid "Prueba de avisos de Gesband"
+msgstr ""
+
+#: apps/communications/services.py:159
+msgid "Si ves este aviso, las notificaciones funcionan en este dispositivo."
+msgstr ""
+
+#: apps/communications/services.py:187
+msgid "La prueba ha caducado; pide otra."
 msgstr ""
 
 #: apps/members/apps.py:8
@@ -991,10 +1086,6 @@ msgstr ""
 
 #: apps/members/models.py:169
 msgid "resultado"
-msgstr ""
-
-#: apps/members/models.py:171
-msgid "fecha de confirmación"
 msgstr ""
 
 #: apps/members/models.py:176
@@ -1804,10 +1895,6 @@ msgstr ""
 
 #: templates/members/access_invitations.html:40
 msgid "Revocada"
-msgstr ""
-
-#: templates/members/access_invitations.html:42
-msgid "Caducada"
 msgstr ""
 
 #: templates/members/access_invitations.html:44

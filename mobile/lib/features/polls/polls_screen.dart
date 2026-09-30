@@ -34,7 +34,9 @@ class _PollsScreenState extends State<PollsScreen> {
   }
 
   Future<void> reload() async {
-    setState(() => future = _load());
+    setState(() {
+      future = _load();
+    });
     await future;
   }
 

@@ -10,6 +10,7 @@ enum AppMessage {
   notificationsStatusFailed,
   notificationTestFailed,
   deviceRegistrationRenewalFailed,
+  deviceRegistrationFailed,
   notificationConfirmationFailed,
 }
 
@@ -136,6 +137,110 @@ class AppStrings {
       ca: 'Tens un avís nou.',
       en: 'You have a new notification.');
   String get open => _pick(es: 'Abrir', ca: 'Obri', en: 'Open');
+  String get receiptConfirmed => _pick(
+      es: 'Recepción comprobada',
+      ca: 'Recepció comprovada',
+      en: 'Delivery verified');
+  String lastReceiptAt(String when) => _pick(
+      es: 'Última recepción comprobada: $when',
+      ca: 'Última recepció comprovada: $when',
+      en: 'Last verified delivery: $when');
+  String get notificationsUnavailable => _pick(
+      es: 'Las notificaciones no están disponibles en esta instalación. '
+          'Puedes seguir usando la app; los avisos llegarán por correo.',
+      ca: 'Les notificacions no estan disponibles en esta instal·lació. '
+          'Pots continuar usant l’aplicació; els avisos arribaran per correu.',
+      en: 'Notifications are not available on this installation. '
+          'You can keep using the app; notices will arrive by email.');
+  String get notificationsDeniedExplanation => _pick(
+      es: 'Sin permiso no te llegarán los cambios de horario ni las '
+          'cancelaciones. El sistema ya no vuelve a preguntar: actívalo en los '
+          'ajustes y vuelve a la app.',
+      ca: 'Sense permís no t’arribaran els canvis d’horari ni les '
+          'cancel·lacions. El sistema ja no torna a preguntar: activa’l als '
+          'ajustos i torna a l’aplicació.',
+      en: 'Without permission you will not get schedule changes or '
+          'cancellations. The system will not ask again: turn it on in '
+          'settings and come back to the app.');
+  String get notificationsProvisionalExplanation => _pick(
+      es: 'Los avisos llegan en silencio, sin sonido ni banner. Para verlos '
+          'a tiempo, actívalos del todo en los ajustes.',
+      ca: 'Els avisos arriben en silenci, sense so ni bàner. Per a veure’ls '
+          'a temps, activa’ls del tot als ajustos.',
+      en: 'Notifications arrive silently, without sound or banner. To see '
+          'them in time, fully enable them in settings.');
+  String get notificationsRegisterExplanation => _pick(
+      es: 'El permiso está concedido, pero este dispositivo todavía no está '
+          'registrado para recibir avisos.',
+      ca: 'El permís està concedit, però este dispositiu encara no està '
+          'registrat per a rebre avisos.',
+      en: 'Permission is granted, but this device is not registered to '
+          'receive notifications yet.');
+  String get notificationsTestExplanation => _pick(
+      es: 'Envía un aviso de prueba para comprobar que llega a este móvil.',
+      ca: 'Envia un avís de prova per a comprovar que arriba a este mòbil.',
+      en: 'Send a test notification to check that it reaches this phone.');
+  String get notificationsAllSet => _pick(
+      es: 'Los avisos están activados y se ha comprobado que llegan.',
+      ca: 'Els avisos estan activats i s’ha comprovat que arriben.',
+      en: 'Notifications are on and delivery has been verified.');
+  String get registerDevice => _pick(
+      es: 'Registrar este dispositivo',
+      ca: 'Registra este dispositiu',
+      en: 'Register this device');
+  String get sendBackgroundTest => _pick(
+      es: 'Probar con la app en segundo plano',
+      ca: 'Prova amb l’aplicació en segon pla',
+      en: 'Test with the app in the background');
+  String get backgroundTestHint => _pick(
+      es: 'Tras enviarla, sal de la app y pulsa el aviso cuando llegue.',
+      ca: 'Després d’enviar-la, ix de l’aplicació i polsa l’avís quan arribe.',
+      en: 'After sending it, leave the app and tap the notification when it arrives.');
+  String get checkTestStatus => _pick(
+      es: 'Comprobar la prueba', ca: 'Comprova la prova', en: 'Check the test');
+  String get lastTest =>
+      _pick(es: 'Última prueba', ca: 'Última prova', en: 'Last test');
+  String testStatusName(String wireValue) => switch (wireValue) {
+        'queued' => _pick(es: 'en cola', ca: 'en cua', en: 'queued'),
+        'provider_accepted' => _pick(
+            es: 'enviada, esperando que llegue',
+            ca: 'enviada, esperant que arribe',
+            en: 'sent, waiting for it to arrive'),
+        'provider_failed' => _pick(
+            es: 'el servicio de avisos no la aceptó',
+            ca: 'el servei d’avisos no l’ha acceptada',
+            en: 'the push service rejected it'),
+        'received_foreground' => _pick(
+            es: 'recibida con la app abierta',
+            ca: 'rebuda amb l’aplicació oberta',
+            en: 'received with the app open'),
+        'opened_from_background' => _pick(
+            es: 'abierta desde el aviso',
+            ca: 'oberta des de l’avís',
+            en: 'opened from the notification'),
+        'expired' => _pick(
+            es: 'caducada sin confirmar',
+            ca: 'caducada sense confirmar',
+            en: 'expired without confirmation'),
+        _ => _pick(es: 'desconocido', ca: 'desconegut', en: 'unknown'),
+      };
+  String get notNow => _pick(es: 'Ahora no', ca: 'Ara no', en: 'Not now');
+  String get notificationsPendingBanner => _pick(
+      es: 'Los avisos no están completamente activados en este móvil.',
+      ca: 'Els avisos no estan activats del tot en este mòbil.',
+      en: 'Notifications are not fully enabled on this phone.');
+  String get review => _pick(es: 'Revisar', ca: 'Revisa', en: 'Review');
+  String get notificationsDisabledDetected => _pick(
+      es: 'Se han desactivado las notificaciones de Gesband. Reactívalas para '
+          'no perderte cambios ni cancelaciones.',
+      ca: 'S’han desactivat les notificacions de Gesband. Reactiva-les per a '
+          'no perdre’t canvis ni cancel·lacions.',
+      en: 'Gesband notifications have been turned off. Turn them back on so '
+          'you do not miss changes or cancellations.');
+  String get testNotificationReceived => _pick(
+      es: 'Aviso de prueba recibido.',
+      ca: 'Avís de prova rebut.',
+      en: 'Test notification received.');
 
   // Encuestas
   String get polls => _pick(es: 'Encuestas', ca: 'Enquestes', en: 'Polls');
@@ -211,12 +316,15 @@ class AppStrings {
 
   String permissionName(String name) => switch (name) {
         'notDetermined' => _pick(
-            es: 'por determinar', ca: 'per determinar', en: 'not determined'),
+            es: 'sin solicitar', ca: 'sense sol·licitar', en: 'not requested'),
         'denied' => _pick(es: 'denegado', ca: 'denegat', en: 'denied'),
-        'provisional' =>
-          _pick(es: 'provisional', ca: 'provisional', en: 'provisional'),
-        'authorized' =>
-          _pick(es: 'autorizado', ca: 'autoritzat', en: 'authorized'),
+        'restricted' =>
+          _pick(es: 'restringido', ca: 'restringit', en: 'restricted'),
+        'provisional' => _pick(
+            es: 'provisional (avisos silenciosos)',
+            ca: 'provisional (avisos silenciosos)',
+            en: 'provisional (quiet notifications)'),
+        'granted' => _pick(es: 'concedido', ca: 'concedit', en: 'granted'),
         _ => _pick(es: 'desconocido', ca: 'desconegut', en: 'unknown'),
       };
 
@@ -249,6 +357,10 @@ class AppStrings {
             es: 'No se pudo renovar el registro del dispositivo.',
             ca: 'No s’ha pogut renovar el registre del dispositiu.',
             en: 'The device registration could not be renewed.'),
+        AppMessage.deviceRegistrationFailed => _pick(
+            es: 'No se pudo registrar este dispositivo para recibir avisos.',
+            ca: 'No s’ha pogut registrar este dispositiu per a rebre avisos.',
+            en: 'This device could not be registered for notifications.'),
         AppMessage.notificationConfirmationFailed => _pick(
             es: 'El aviso llegó, pero no se pudo confirmar la prueba.',
             ca: 'L’avís ha arribat, però no s’ha pogut confirmar la prova.',

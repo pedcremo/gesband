@@ -11,12 +11,17 @@ from rest_framework.routers import DefaultRouter
 from apps.polls.api import PollViewSet
 from apps.polls.views import poll_create, poll_detail, poll_list
 from apps.accounts.views import activate_invitation, activation_complete
+from apps.communications.api import (
+    DeviceDetailView,
+    DeviceListView,
+    DevicePushTestView,
+    NotificationCapabilityView,
+    PushTestConfirmView,
+    PushTestDetailView,
+)
 from apps.api import (
     ActivityViewSet,
     AssociationViewSet,
-    DeviceReceiptView,
-    DeviceTestView,
-    DeviceView,
     ImportConfirmView,
     ImportPreviewView,
     LoginView,
@@ -84,9 +89,16 @@ urlpatterns = [
     path("api/v1/auth/refresh", RefreshView.as_view(), name="api-refresh"),
     path("api/v1/auth/logout", LogoutView.as_view(), name="api-logout"),
     path("api/v1/auth/me", MeView.as_view(), name="api-me"),
-    path("api/v1/devices", DeviceView.as_view(), name="api-devices"),
-    path("api/v1/devices/receipt", DeviceReceiptView.as_view(), name="api-device-receipt"),
-    path("api/v1/devices/test", DeviceTestView.as_view(), name="api-device-test"),
+    path("api/v1/devices", DeviceListView.as_view(), name="api-devices"),
+    path("api/v1/devices/<uuid:device_id>", DeviceDetailView.as_view(), name="api-device-detail"),
+    path(
+        "api/v1/devices/<uuid:device_id>/notification-capability",
+        NotificationCapabilityView.as_view(),
+        name="api-device-capability",
+    ),
+    path("api/v1/devices/<uuid:device_id>/push-tests", DevicePushTestView.as_view(), name="api-device-push-tests"),
+    path("api/v1/push-tests/<uuid:push_test_id>", PushTestDetailView.as_view(), name="api-push-test"),
+    path("api/v1/push-tests/<uuid:push_test_id>/confirm", PushTestConfirmView.as_view(), name="api-push-test-confirm"),
     path("api/v1/members/me/", MemberMeView.as_view(), name="api-member-me"),
     path("api/v1/members/me/photo/", MemberMePhotoView.as_view(), name="api-member-me-photo"),
     path("api/v1/imports/preview", ImportPreviewView.as_view(), name="api-import-preview"),

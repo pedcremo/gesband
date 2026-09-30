@@ -1,345 +1,280 @@
 import 'dart:async';
 
-import 'package:app_settings/app_settings.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../core/api/api_client.dart';
 import '../../core/localization/app_strings.dart';
+import 'device_registration.dart';
+import 'pending_push_tests.dart';
+import 'push_gateway.dart';
 
-enum PushPermission { unknown, notDetermined, denied, provisional, authorized }
+export 'device_registration.dart';
+export 'pending_push_tests.dart';
+export 'push_gateway.dart';
 
-class PushEnvelope {
-  const PushEnvelope({
-    required this.messageId,
-    required this.data,
-    this.title,
-    this.body,
-  });
+const Object _unset = Object();
 
-  factory PushEnvelope.fromRemoteMessage(RemoteMessage message) => PushEnvelope(
-        messageId: message.messageId,
-        data: Map<String, String>.from(message.data),
-        title: message.notification?.title,
-        body: message.notification?.body,
-      );
-
-  final String? messageId;
-  final Map<String, String> data;
-  final String? title;
-  final String? body;
-
-  String? get activityId => data['activity_id'];
-  String? get testChallengeId =>
-      data['kind'] == 'notification_test' ? data['challenge_id'] : null;
-}
-
-abstract interface class PushGateway {
-  Stream<String> get tokenChanges;
-  Stream<PushEnvelope> get foregroundMessages;
-  Stream<PushEnvelope> get openedMessages;
-
-  Future<void> initialize();
-  Future<PushPermission> permissionStatus();
-  Future<PushPermission> requestPermission();
-  Future<String?> getToken();
-  Future<PushEnvelope?> getInitialMessage();
-  Future<void> openSettings();
-  Future<void> deleteToken();
-}
-
-class FirebasePushGateway implements PushGateway {
-  FirebaseMessaging get _messaging => FirebaseMessaging.instance;
-
-  @override
-  Stream<String> get tokenChanges => _messaging.onTokenRefresh;
-
-  @override
-  Stream<PushEnvelope> get foregroundMessages =>
-      FirebaseMessaging.onMessage.map(PushEnvelope.fromRemoteMessage);
-
-  @override
-  Stream<PushEnvelope> get openedMessages =>
-      FirebaseMessaging.onMessageOpenedApp.map(PushEnvelope.fromRemoteMessage);
-
-  @override
-  Future<void> initialize() async {
-    await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    await _messaging.setAutoInitEnabled(true);
-  }
-
-  @override
-  Future<PushPermission> permissionStatus() async => _mapPermission(
-      (await _messaging.getNotificationSettings()).authorizationStatus);
-
-  @override
-  Future<PushPermission> requestPermission() async => _mapPermission(
-        (await _messaging.requestPermission(
-          alert: true,
-          badge: true,
-          sound: true,
-          provisional: false,
-        ))
-            .authorizationStatus,
-      );
-
-  @override
-  Future<String?> getToken() => _messaging.getToken();
-
-  @override
-  Future<PushEnvelope?> getInitialMessage() async {
-    final message = await _messaging.getInitialMessage();
-    return message == null ? null : PushEnvelope.fromRemoteMessage(message);
-  }
-
-  @override
-  Future<void> openSettings() =>
-      AppSettings.openAppSettings(type: AppSettingsType.notification);
-
-  @override
-  Future<void> deleteToken() => _messaging.deleteToken();
-
-  PushPermission _mapPermission(AuthorizationStatus value) => switch (value) {
-        AuthorizationStatus.notDetermined => PushPermission.notDetermined,
-        AuthorizationStatus.denied => PushPermission.denied,
-        AuthorizationStatus.provisional => PushPermission.provisional,
-        AuthorizationStatus.authorized => PushPermission.authorized,
-      };
-}
-
-class BackgroundPushStore {
-  static const _key = 'pending_notification_test_challenges';
-
-  static Future<void> record(PushEnvelope envelope) async {
-    final challengeId = envelope.testChallengeId;
-    if (challengeId == null) return;
-    final preferences = await SharedPreferences.getInstance();
-    final current = preferences.getStringList(_key) ?? <String>[];
-    if (!current.contains(challengeId)) {
-      await preferences.setStringList(_key, [...current, challengeId]);
-    }
-  }
-
-  static Future<List<String>> takeAll() async {
-    final preferences = await SharedPreferences.getInstance();
-    final values = preferences.getStringList(_key) ?? const <String>[];
-    await preferences.remove(_key);
-    return values;
-  }
-}
-
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  await BackgroundPushStore.record(PushEnvelope.fromRemoteMessage(message));
-}
-
-abstract interface class DeviceRegistrationRepository {
-  Future<void> registerToken(String token);
-  Future<void> unregisterToken(String token);
-  Future<bool> getRegistrationStatus();
-  Future<void> requestTestNotification();
-  Future<void> confirmTestReceipt(String challengeId);
-}
-
-class ApiDeviceRegistrationRepository implements DeviceRegistrationRepository {
-  ApiDeviceRegistrationRepository(this._api);
-
-  final ApiClient _api;
-
-  String get _platform => switch (defaultTargetPlatform) {
-        TargetPlatform.iOS => 'ios',
-        TargetPlatform.android => 'android',
-        _ => 'unsupported',
-      };
-
-  Future<String> _installationId() async {
-    final preferences = await SharedPreferences.getInstance();
-    const key = 'gesband_installation_id';
-    final current = preferences.getString(key);
-    if (current != null) return current;
-    final value = const Uuid().v4();
-    await preferences.setString(key, value);
-    return value;
-  }
-
-  @override
-  Future<void> registerToken(String token) async {
-    _cachedInstallationId = await _installationId();
-    await _api.postObject(
-      '/devices',
-      data: {
-        'installation_id': _cachedInstallationId,
-        'push_token': token,
-        'platform': _platform,
-        'permission': 'granted'
-      },
-    );
-  }
-
-  @override
-  Future<void> unregisterToken(String token) async {
-    _cachedInstallationId ??= await _installationId();
-    await _api
-        .delete('/devices', data: {'installation_id': _cachedInstallationId});
-  }
-
-  String? _cachedInstallationId;
-
-  @override
-  Future<bool> getRegistrationStatus() async =>
-      (await _api.getObject('/devices'))['active'] as bool? ?? false;
-
-  @override
-  Future<void> requestTestNotification() async {
-    await _api.postObject('/devices/test');
-  }
-
-  @override
-  Future<void> confirmTestReceipt(String challengeId) async {
-    await _api.postObject(
-      '/devices/notification-tests/$challengeId/confirm/',
-    );
-  }
-}
-
+/// Estado del paso de activación (MUST-NOTIF-01). Permiso, registro y
+/// recepción se muestran por separado: ninguno implica los otros.
 class NotificationActivationState {
   const NotificationActivationState({
+    this.available = true,
     this.permission = PushPermission.unknown,
     this.tokenRegistered = false,
-    this.testReceiptConfirmed = false,
+    this.receiptConfirmed = false,
+    this.lastReceiptConfirmedAt,
+    this.serverAction,
+    this.lastTest,
     this.loading = false,
     this.error,
   });
 
+  /// Falso si Firebase no se pudo iniciar (p. ej. sin ficheros de
+  /// configuración). La app sigue siendo usable sin avisos push.
+  final bool available;
+
+  /// Permiso observado en el sistema, el mismo que se envía al servidor.
   final PushPermission permission;
   final bool tokenRegistered;
-  final bool testReceiptConfirmed;
+  final bool receiptConfirmed;
+  final DateTime? lastReceiptConfirmedAt;
+
+  /// `action_required` devuelto por el servidor, si se pudo consultar.
+  final NotificationAction? serverAction;
+  final PushTest? lastTest;
   final bool loading;
   final AppMessage? error;
 
+  /// Paso que debe ver la persona. Se usa el del servidor y, si no hay
+  /// respuesta, se deduce del estado local con el mismo criterio.
+  NotificationAction get nextAction {
+    if (!available) return NotificationAction.none;
+    final server = serverAction;
+    if (server != null) return server;
+    return switch (permission) {
+      PushPermission.notDetermined ||
+      PushPermission.unknown =>
+        NotificationAction.requestSystemPermission,
+      PushPermission.denied ||
+      PushPermission.restricted =>
+        NotificationAction.openSystemSettings,
+      _ when !tokenRegistered => NotificationAction.registerToken,
+      _ when !receiptConfirmed => NotificationAction.runReceiveTest,
+      _ => NotificationAction.none,
+    };
+  }
+
   bool get fullyActive =>
-      permission == PushPermission.authorized &&
+      available &&
+      permission == PushPermission.granted &&
       tokenRegistered &&
-      testReceiptConfirmed;
+      receiptConfirmed;
 
   NotificationActivationState copyWith({
+    bool? available,
     PushPermission? permission,
     bool? tokenRegistered,
-    bool? testReceiptConfirmed,
+    bool? receiptConfirmed,
+    Object? lastReceiptConfirmedAt = _unset,
+    Object? serverAction = _unset,
+    Object? lastTest = _unset,
     bool? loading,
-    AppMessage? error,
-    bool clearError = false,
+    Object? error = _unset,
   }) =>
       NotificationActivationState(
+        available: available ?? this.available,
         permission: permission ?? this.permission,
         tokenRegistered: tokenRegistered ?? this.tokenRegistered,
-        testReceiptConfirmed: testReceiptConfirmed ?? this.testReceiptConfirmed,
+        receiptConfirmed: receiptConfirmed ?? this.receiptConfirmed,
+        lastReceiptConfirmedAt: identical(lastReceiptConfirmedAt, _unset)
+            ? this.lastReceiptConfirmedAt
+            : lastReceiptConfirmedAt as DateTime?,
+        serverAction: identical(serverAction, _unset)
+            ? this.serverAction
+            : serverAction as NotificationAction?,
+        lastTest:
+            identical(lastTest, _unset) ? this.lastTest : lastTest as PushTest?,
         loading: loading ?? this.loading,
-        error: clearError ? null : error ?? this.error,
+        error: identical(error, _unset) ? this.error : error as AppMessage?,
       );
 }
 
+/// Coordina permiso, registro del dispositivo, pruebas de recepción y
+/// apertura de avisos. Nunca escribe tokens ni contenido de avisos en logs.
 class NotificationController extends ChangeNotifier
     with WidgetsBindingObserver {
   NotificationController({
     required PushGateway gateway,
     required DeviceRegistrationRepository registrations,
+    required DeviceStateStore deviceStore,
+    required PendingPushTestStore pendingTests,
+    required String appVersion,
+    String languageCode = 'es',
+    DateTime Function()? clock,
   })  : _gateway = gateway,
-        _registrations = registrations;
+        _registrations = registrations,
+        _deviceStore = deviceStore,
+        _pendingTests = pendingTests,
+        _appVersion = appVersion,
+        _locale = deviceLocaleTag(languageCode),
+        _clock = clock ?? DateTime.now;
 
   final PushGateway _gateway;
   final DeviceRegistrationRepository _registrations;
-  final _activityLinks = StreamController<String>.broadcast();
+  final DeviceStateStore _deviceStore;
+  final PendingPushTestStore _pendingTests;
+  final String _appVersion;
+  final DateTime Function() _clock;
+  String _locale;
+
+  final _targets = StreamController<NotificationTarget>.broadcast();
   final _foregroundMessages = StreamController<PushEnvelope>.broadcast();
+  final _deactivations = StreamController<void>.broadcast();
   final List<StreamSubscription<dynamic>> _subscriptions = [];
+  final Set<String> _confirmedTests = {};
+
   NotificationActivationState _state = const NotificationActivationState();
-  String? _currentToken;
   bool _sessionActive = false;
+  bool _observing = false;
+  String? _lastSentToken;
+  Future<void>? _syncing;
+  bool _syncAgain = false;
 
   NotificationActivationState get state => _state;
-  Stream<String> get activityLinks => _activityLinks.stream;
+
+  /// Actividad o encuesta que debe abrirse tras pulsar un aviso.
+  Stream<NotificationTarget> get targets => _targets.stream;
+
+  /// Avisos recibidos con la app en primer plano.
   Stream<PushEnvelope> get foregroundMessages => _foregroundMessages.stream;
 
+  /// Se emite al detectar que un permiso concedido se ha retirado.
+  Stream<void> get deactivations => _deactivations.stream;
+
   Future<void> initialize() async {
-    WidgetsBinding.instance.addObserver(this);
+    if (!_observing) {
+      WidgetsBinding.instance.addObserver(this);
+      _observing = true;
+    }
     try {
       await _gateway.initialize();
-      _subscriptions
-        ..add(_gateway.tokenChanges.listen(_onTokenChanged))
-        ..add(_gateway.foregroundMessages.listen(_onForegroundMessage))
-        ..add(_gateway.openedMessages.listen(_onOpenedMessage));
-      final initial = await _gateway.getInitialMessage();
-      if (initial != null) await _handleReceipt(initial);
-      final initialActivity = initial?.activityId;
-      if (initialActivity != null) _activityLinks.add(initialActivity);
-      for (final challenge in await BackgroundPushStore.takeAll()) {
-        await _confirmReceipt(challenge);
-      }
-      await recheck();
     } catch (_) {
       _setState(_state.copyWith(
+        available: false,
         loading: false,
         error: AppMessage.notificationsInitializeFailed,
       ));
+      return;
     }
+    _subscriptions
+      ..add(_gateway.tokenChanges.listen(_onTokenChanged))
+      ..add(_gateway.foregroundMessages.listen(_onForegroundMessage))
+      ..add(_gateway.openedMessages.listen(_onOpenedMessage));
+    try {
+      final initial = await _gateway.getInitialMessage();
+      if (initial != null) await _onOpenedMessage(initial);
+    } catch (_) {
+      // Sin mensaje inicial legible no hay nada que abrir.
+    }
+    await refresh();
   }
 
+  /// Llamar tras iniciar sesión o al arrancar con una sesión guardada.
   Future<void> bindSession() async {
     _sessionActive = true;
-    await recheck();
+    await refresh();
+    await _flushPendingTests();
+  }
+
+  /// Revoca el dispositivo y borra el token para que los avisos de esta
+  /// persona no lleguen a la siguiente sesión. Llamar antes de cerrar la
+  /// sesión en el servidor, porque la revocación necesita autenticación.
+  Future<void> unbindSession() async {
+    _sessionActive = false;
+    final deviceId = await _deviceStore.deviceId();
+    if (deviceId != null) {
+      try {
+        await _registrations.revoke(deviceId);
+      } catch (_) {
+        // El servidor también revoca los dispositivos al cerrar la sesión.
+      }
+    }
+    if (_state.available) {
+      try {
+        await _gateway.deleteToken();
+      } catch (_) {
+        // Sin red no se puede invalidar el token; el servidor ya lo revocó.
+      }
+    }
+    await _deviceStore.saveDeviceId(null);
+    await _pendingTests.clear();
+    _lastSentToken = null;
+    _confirmedTests.clear();
+    _setState(NotificationActivationState(
+      available: _state.available,
+      permission: _state.permission,
+      error: _state.available ? null : _state.error,
+    ));
   }
 
   Future<void> requestPermission() async {
-    _setState(_state.copyWith(loading: true, clearError: true));
+    if (!_state.available) return;
+    _setState(_state.copyWith(loading: true, error: null));
     try {
-      final permission = await _gateway.requestPermission();
-      _setState(_state.copyWith(permission: permission));
-      await _registerCurrentToken();
+      await _deviceStore.markPermissionRequested();
+      await _gateway.requestPermission();
     } catch (_) {
       _setState(_state.copyWith(
         error: AppMessage.notificationsPermissionFailed,
       ));
-    } finally {
-      _setState(_state.copyWith(loading: false));
     }
+    await refresh();
+    _setState(_state.copyWith(loading: false));
   }
 
-  Future<void> recheck() async {
+  Future<void> openSettings() async {
     try {
-      final permission = await _gateway.permissionStatus();
-      var registered = false;
-      if (_sessionActive && permission == PushPermission.authorized) {
-        await _registerCurrentToken();
-        registered = await _registrations.getRegistrationStatus();
-      }
-      _setState(_state.copyWith(
-        permission: permission,
-        tokenRegistered: registered,
-        clearError: true,
-      ));
+      await _gateway.openSettings();
     } catch (_) {
-      _setState(_state.copyWith(
-        error: AppMessage.notificationsStatusFailed,
-      ));
+      // Si no se puede abrir, la pantalla sigue mostrando el paso pendiente.
     }
   }
 
-  Future<void> openSettings() => _gateway.openSettings();
+  /// Relee el permiso, informa al servidor y consulta el paso siguiente.
+  /// Las llamadas simultáneas se agrupan en una sola sincronización.
+  Future<void> refresh() {
+    final running = _syncing;
+    if (running != null) {
+      _syncAgain = true;
+      return running;
+    }
+    final future = _runSync();
+    _syncing = future;
+    return future;
+  }
 
-  Future<void> sendTest() async {
-    _setState(_state.copyWith(
-      loading: true,
-      testReceiptConfirmed: false,
-      clearError: true,
-    ));
+  Future<void> setLanguage(String languageCode) async {
+    final tag = deviceLocaleTag(languageCode);
+    if (tag == _locale) return;
+    _locale = tag;
+    if (_sessionActive) await refresh();
+  }
+
+  Future<void> sendTest(PushPresentation presentation) async {
+    if (!_state.available || !_sessionActive) return;
+    _setState(_state.copyWith(loading: true, error: null));
     try {
-      await _registrations.requestTestNotification();
+      var deviceId = await _deviceStore.deviceId();
+      if (deviceId == null) {
+        await refresh();
+        deviceId = await _deviceStore.deviceId();
+      }
+      if (deviceId == null) {
+        _setState(_state.copyWith(error: AppMessage.deviceRegistrationFailed));
+        return;
+      }
+      final test = await _registrations.requestPushTest(deviceId, presentation);
+      _setState(_state.copyWith(lastTest: test));
     } catch (_) {
       _setState(_state.copyWith(error: AppMessage.notificationTestFailed));
     } finally {
@@ -347,40 +282,160 @@ class NotificationController extends ChangeNotifier
     }
   }
 
-  Future<void> unbindSession() async {
-    _sessionActive = false;
-    final token = _currentToken ?? await _gateway.getToken();
-    if (token != null) {
-      try {
-        await _registrations.unregisterToken(token);
-      } catch (_) {
-        // El backend revoca también los dispositivos al cerrar la sesión.
-      }
+  /// Consulta el estado de la última prueba (p. ej. `provider_failed`).
+  Future<void> refreshTest() async {
+    final test = _state.lastTest;
+    if (test == null || !_sessionActive) return;
+    try {
+      _setState(_state.copyWith(
+        lastTest: await _registrations.getPushTest(test.id),
+      ));
+    } catch (_) {
+      _setState(_state.copyWith(error: AppMessage.notificationsStatusFailed));
     }
-    await _gateway.deleteToken();
-    _currentToken = null;
-    _setState(const NotificationActivationState());
+    await refresh();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) unawaited(recheck());
+    if (state != AppLifecycleState.resumed) return;
+    unawaited(() async {
+      await refresh();
+      await _flushPendingTests();
+    }());
   }
 
-  Future<void> _registerCurrentToken() async {
-    if (!_sessionActive) return;
-    final token = await _gateway.getToken();
-    if (token == null) return;
-    await _registrations.registerToken(token);
-    _currentToken = token;
+  Future<void> _runSync() async {
+    try {
+      do {
+        _syncAgain = false;
+        await _syncNow();
+      } while (_syncAgain);
+    } finally {
+      _syncing = null;
+    }
   }
+
+  Future<void> _syncNow() async {
+    if (!_state.available) return;
+    final previous = _state.permission;
+    final permission = await _observePermission();
+    final lost = _isEnabled(previous) && !_isEnabled(permission);
+    _setState(_state.copyWith(permission: permission));
+    if (lost) _deactivations.add(null);
+    if (!_sessionActive) return;
+
+    try {
+      final token = await _readToken();
+      final registration = await _reportDevice(permission, token);
+      if (registration == null) {
+        _setState(_state.copyWith(
+          tokenRegistered: false,
+          serverAction: NotificationAction.registerToken,
+          error: AppMessage.deviceRegistrationFailed,
+        ));
+        return;
+      }
+      final capability = await _registrations.capability(registration.id);
+      _setState(_state.copyWith(
+        tokenRegistered: capability.tokenRegistered,
+        receiptConfirmed: capability.receiptConfirmed,
+        lastReceiptConfirmedAt: capability.lastReceiptConfirmedAt,
+        serverAction: capability.actionRequired,
+        error: null,
+      ));
+    } catch (_) {
+      _setState(_state.copyWith(
+        serverAction: null,
+        error: AppMessage.notificationsStatusFailed,
+      ));
+    }
+  }
+
+  /// Android no distingue «sin preguntar» de «denegado»: antes de la primera
+  /// solicitud desde esta instalación se trata como no determinado para
+  /// ofrecer la solicitud; después, como denegado, para enviar a ajustes en
+  /// lugar de repetir una solicitud que el sistema ya no muestra.
+  Future<PushPermission> _observePermission() async {
+    try {
+      final raw = await _gateway.permissionStatus();
+      if (raw == PushPermission.denied &&
+          !await _deviceStore.permissionRequested()) {
+        return PushPermission.notDetermined;
+      }
+      return raw;
+    } catch (_) {
+      return PushPermission.unknown;
+    }
+  }
+
+  bool _isEnabled(PushPermission value) =>
+      value == PushPermission.granted || value == PushPermission.provisional;
+
+  Future<String?> _readToken() async {
+    try {
+      return await _gateway.getToken();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Registra o actualiza el dispositivo. Devuelve null si no hay registro
+  /// posible todavía (sin token y sin registro previo).
+  Future<DeviceRegistration?> _reportDevice(
+    PushPermission permission,
+    String? token,
+  ) async {
+    final deviceId = await _deviceStore.deviceId();
+    if (deviceId != null) {
+      final changedToken = token != null && token != _lastSentToken;
+      try {
+        final updated = await _registrations.update(
+          deviceId,
+          _report(permission, changedToken ? token : null),
+        );
+        if (changedToken) _lastSentToken = token;
+        if (updated.active) return updated;
+      } on ApiException catch (error) {
+        if (error.statusCode != 404) rethrow;
+      }
+      // El servidor ya no reconoce el registro: se crea de nuevo.
+      await _deviceStore.saveDeviceId(null);
+    }
+    if (token == null) return null;
+    final created = await _registrations.register(
+      installationId: await _deviceStore.installationId(),
+      platform: _gateway.platform,
+      pushToken: token,
+      report: _report(permission, token),
+    );
+    await _deviceStore.saveDeviceId(created.id);
+    _lastSentToken = token;
+    return created;
+  }
+
+  DeviceReport _report(PushPermission permission, String? token) =>
+      DeviceReport(
+        permissionState: permission,
+        appVersion: _appVersion,
+        locale: _locale,
+        pushToken: token,
+      );
 
   Future<void> _onTokenChanged(String token) async {
     if (!_sessionActive) return;
     try {
-      await _registrations.registerToken(token);
-      _currentToken = token;
-      _setState(_state.copyWith(tokenRegistered: true, clearError: true));
+      final deviceId = await _deviceStore.deviceId();
+      if (deviceId == null) {
+        await refresh();
+        return;
+      }
+      await _registrations.update(
+        deviceId,
+        _report(_state.permission, token),
+      );
+      _lastSentToken = token;
+      await refresh();
     } catch (_) {
       _setState(_state.copyWith(
         tokenRegistered: false,
@@ -390,38 +445,81 @@ class NotificationController extends ChangeNotifier
   }
 
   Future<void> _onForegroundMessage(PushEnvelope envelope) async {
-    await _handleReceipt(envelope);
-    _foregroundMessages.add(envelope);
+    if (envelope.isTest) {
+      await _recordTestReceipt(envelope, PushTestEvent.receivedForeground);
+    }
+    if (_sessionActive) _foregroundMessages.add(envelope);
   }
 
   Future<void> _onOpenedMessage(PushEnvelope envelope) async {
-    await _handleReceipt(envelope);
-    final activityId = envelope.activityId;
-    if (activityId != null) _activityLinks.add(activityId);
-  }
-
-  Future<void> _handleReceipt(PushEnvelope envelope) async {
-    final challenge = envelope.testChallengeId;
-    if (challenge != null) await _confirmReceipt(challenge);
-  }
-
-  Future<void> _confirmReceipt(String challenge) async {
-    if (!_sessionActive) {
-      await BackgroundPushStore.record(
-        PushEnvelope(
-          messageId: null,
-          data: {'kind': 'notification_test', 'challenge_id': challenge},
-        ),
-      );
+    if (envelope.isTest) {
+      await _recordTestReceipt(envelope, PushTestEvent.openedFromBackground);
       return;
     }
-    try {
-      await _registrations.confirmTestReceipt(challenge);
-      _setState(_state.copyWith(testReceiptConfirmed: true, clearError: true));
-    } catch (_) {
-      _setState(_state.copyWith(
-        error: AppMessage.notificationConfirmationFailed,
-      ));
+    final target = envelope.target;
+    if (target != null) _targets.add(target);
+  }
+
+  Future<void> _recordTestReceipt(
+    PushEnvelope envelope,
+    PushTestEvent event,
+  ) async {
+    final id = envelope.pushTestId;
+    if (id == null || _confirmedTests.contains(id)) return;
+    final now = _clock();
+    await _pendingTests.add(switch (event) {
+      PushTestEvent.receivedForeground =>
+        PendingPushTest.receivedForeground(id, occurredAt: now),
+      PushTestEvent.openedFromBackground =>
+        PendingPushTest.openedFromBackground(id, occurredAt: now),
+    });
+    await _flushPendingTests();
+  }
+
+  /// Envía las confirmaciones pendientes. Las que fallan por red se quedan
+  /// para el siguiente intento; las rechazadas definitivamente se descartan.
+  Future<void> _flushPendingTests() async {
+    if (!_sessionActive || !_state.available) return;
+    var confirmed = false;
+    for (final pending in await _pendingTests.all()) {
+      if (_confirmedTests.contains(pending.pushTestId)) {
+        await _pendingTests.remove(pending.pushTestId);
+        continue;
+      }
+      try {
+        await _registrations.confirmPushTest(pending);
+        _confirmedTests.add(pending.pushTestId);
+        await _pendingTests.remove(pending.pushTestId);
+        confirmed = true;
+        final test = _state.lastTest;
+        if (test != null && test.id == pending.pushTestId) {
+          _setState(_state.copyWith(
+            lastTest: test.withStatus(
+              pending.event == PushTestEvent.receivedForeground
+                  ? PushTestStatus.receivedForeground
+                  : PushTestStatus.openedFromBackground,
+            ),
+          ));
+        }
+      } on ApiException catch (error) {
+        final status = error.statusCode;
+        if (status != null && status >= 400 && status < 500) {
+          // 404/409/422: la prueba no es de esta sesión, caducó o ya constaba.
+          await _pendingTests.remove(pending.pushTestId);
+        } else {
+          _setState(_state.copyWith(
+            error: AppMessage.notificationConfirmationFailed,
+          ));
+        }
+      } catch (_) {
+        _setState(_state.copyWith(
+          error: AppMessage.notificationConfirmationFailed,
+        ));
+      }
+    }
+    if (confirmed) {
+      _setState(_state.copyWith(receiptConfirmed: true));
+      await refresh();
     }
   }
 
@@ -432,12 +530,13 @@ class NotificationController extends ChangeNotifier
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    if (_observing) WidgetsBinding.instance.removeObserver(this);
     for (final subscription in _subscriptions) {
       unawaited(subscription.cancel());
     }
-    unawaited(_activityLinks.close());
+    unawaited(_targets.close());
     unawaited(_foregroundMessages.close());
+    unawaited(_deactivations.close());
     super.dispose();
   }
 }

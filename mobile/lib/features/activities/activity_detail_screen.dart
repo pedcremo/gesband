@@ -33,7 +33,9 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
       final result = await widget.repository
           .respond(widget.association.id, widget.activityId, value, note: note);
       if (!mounted) return;
-      setState(() => future = Future.value(result));
+      setState(() {
+        future = Future.value(result);
+      });
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -98,8 +100,10 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   Text(strings.genericError),
                   const SizedBox(height: 8),
                   OutlinedButton(
-                    onPressed: () => setState(() => future = widget.repository
-                        .getById(widget.association.id, widget.activityId)),
+                    onPressed: () => setState(() {
+                      future = widget.repository
+                          .getById(widget.association.id, widget.activityId);
+                    }),
                     child: Text(strings.retry),
                   ),
                 ],

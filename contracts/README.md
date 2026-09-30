@@ -59,6 +59,24 @@ con el identificador opaco incluido en el mensaje, tanto en primer plano como al
 La confirmación prueba ese envío concreto, no garantiza entregas futuras. Los tokens push
 nunca aparecen en respuestas de lectura ni en avisos.
 
+`receipt_confirmed` solo es cierto si la última prueba confirmada es posterior al último
+cambio de token: un token renovado vuelve a pedir `run_receive_test`. Un permiso
+`provisional` confirmado sigue proponiendo `request_system_permission`, porque llega en
+silencio. Registrar la misma instalación o el mismo token desde otra cuenta elimina el
+vínculo anterior.
+
+Datos que lleva cada mensaje push (todos texto, sin datos personales):
+
+| `kind` | Campos |
+| --- | --- |
+| `notification_test` | `push_test_id` |
+| `activity` | `notification_id`, `association_id`, `activity_id`, `deep_link` (`gesband://activities/{id}`) |
+| `poll` | `notification_id`, `association_id`, `poll_id`, `deep_link` (`gesband://polls/{id}`) |
+| `notification` | `notification_id`, `association_id` y `deep_link` si lo hay |
+
+El título y el cuerpo visibles son los del aviso de la bandeja, o un texto fijo en la
+prueba, en el idioma declarado por la instalación.
+
 ## Validación
 
 Desde la raíz del repositorio, si está disponible `npx`:

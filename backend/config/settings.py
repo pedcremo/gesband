@@ -160,7 +160,11 @@ CELERY_TASK_ALWAYS_EAGER = env_flag("CELERY_TASK_ALWAYS_EAGER", False)
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Gesband <no-reply@example.invalid>")
 ACCESS_INVITATION_TTL_HOURS = int(os.getenv("ACCESS_INVITATION_TTL_HOURS", "168"))
-FCM_ENABLED = env_flag("FCM_ENABLED", False)
+# `fake` no envia nada fuera de la maquina; `fcm` necesita FCM_CREDENTIALS_FILE,
+# la cuenta de servicio de Firebase montada fuera del repositorio.
+PUSH_PROVIDER = os.getenv("PUSH_PROVIDER", "fake").strip().lower()
+FCM_CREDENTIALS_FILE = os.getenv("FCM_CREDENTIALS_FILE", "")
+PUSH_TEST_TTL_MINUTES = int(os.getenv("PUSH_TEST_TTL_MINUTES", "10"))
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = env_flag("DJANGO_SECURE_COOKIES", False)

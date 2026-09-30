@@ -923,11 +923,13 @@ paths:
       tags: [Devices]
       operationId: requestPushTest
       summary: Encola una notificación de prueba para una instalación propia.
-      description: Solo usa un proveedor falso o destinatarios autorizados fuera de producción.
+      description: |
+        Solo usa un proveedor falso o destinatarios autorizados fuera de producción.
+        Responde 409 con `code` `push_not_available` si el permiso no está concedido o
+        provisional o el token fue rechazado, y `device_revoked` si la instalación se revocó.
       x-permissions: [devices.manage_own]
       parameters:
         - {$ref: '#/components/parameters/DeviceId'}
-        - {$ref: '#/components/parameters/AssociationId'}
         - {$ref: '#/components/parameters/IdempotencyKey'}
       requestBody:
         required: true
@@ -961,6 +963,9 @@ paths:
       tags: [Devices]
       operationId: confirmPushTestReceipt
       summary: Confirma desde la app la recepción o apertura de la prueba.
+      description: |
+        Idempotente: una prueba ya confirmada conserva su primer evento. Una prueba
+        caducada responde 409 `push_test_expired`.
       x-permissions: [devices.manage_own]
       parameters:
         - {$ref: '#/components/parameters/PushTestId'}
@@ -1296,7 +1301,7 @@ components:
         id: {$ref: '#/components/schemas/Uuid'}
         display_name: {type: string}
         email: {type: string, format: email}
-        locale: {type: string, enum: [es-ES, ca-ES-valencia]}
+        locale: {type: string, enum: [es-ES, ca-ES-valencia, en]}
         associations: {type: array, items: {$ref: '#/components/schemas/AssociationMembership'}}
     Permission:
       type: string
@@ -1704,12 +1709,12 @@ components:
       additionalProperties: false
       required: [installation_id, platform, push_token, permission_state, app_version]
       properties:
-        installation_id: {type: string, minLength: 16, maxLength: 200, description: "Identificador aleatorio de instalación, no identificador publicitario."}
+        installation_id: {type: string, format: uuid, description: "UUID v4 aleatorio de la instalación, no identificador publicitario."}
         platform: {$ref: '#/components/schemas/Platform'}
         push_token: {type: string, minLength: 20, maxLength: 4096, writeOnly: true}
         permission_state: {$ref: '#/components/schemas/PermissionState'}
         app_version: {type: string, maxLength: 50}
-        locale: {type: string, enum: [es-ES, ca-ES-valencia]}
+        locale: {type: string, enum: [es-ES, ca-ES-valencia, en]}
     DeviceRegistrationUpdate:
       type: object
       additionalProperties: false
@@ -1717,7 +1722,7 @@ components:
         push_token: {type: string, minLength: 20, maxLength: 4096, writeOnly: true}
         permission_state: {$ref: '#/components/schemas/PermissionState'}
         app_version: {type: string, maxLength: 50}
-        locale: {type: string, enum: [es-ES, ca-ES-valencia]}
+        locale: {type: string, enum: [es-ES, ca-ES-valencia, en]}
     DeviceRegistration:
       type: object
       required: [id, installation_id, platform, permission_state, token_registered, active, last_seen_at]

@@ -137,18 +137,6 @@ class MvpApiTests(APITestCase):
         self.assertEqual(invitation.response, Invitation.Response.DECLINED)
         self.assertEqual(invitation.response_note, "Cita médica")
 
-    def test_notification_device_must_flow(self):
-        installation = "4a5b4c5d-1111-4111-8111-111111111111"
-        response = self.client.post(
-            "/api/v1/devices",
-            {"installation_id": installation, "platform": "android", "push_token": "synthetic-token", "permission": "granted"},
-            format="json",
-        )
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post("/api/v1/devices/receipt", {"installation_id": installation}, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(DeviceRegistration.objects.get(installation_id=installation).last_receipt_at)
-
     def test_other_account_cannot_respond_to_invitation(self):
         member = Member.objects.create(association=self.association, first_name="M", last_name="Test")
         activity = Activity.objects.create(

@@ -93,7 +93,9 @@ class _PollDetailScreenState extends State<PollDetailScreen> {
                   Text(strings.genericError),
                   const SizedBox(height: 8),
                   OutlinedButton(
-                    onPressed: () => setState(() => future = _load()),
+                    onPressed: () => setState(() {
+                      future = _load();
+                    }),
                     child: Text(strings.retry),
                   ),
                 ],

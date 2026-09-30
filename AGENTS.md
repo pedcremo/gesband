@@ -66,6 +66,7 @@ infra/                          Despliegue, proxy y operación
 docs/
   decisions/                    Decisiones técnicas breves
   handoffs/                     Entregas entre agentes cuando sean necesarias
+  manuales/                     Manual de uso por rol; se actualiza con cada función
 .github/workflows/              Integración continua
 ```
 

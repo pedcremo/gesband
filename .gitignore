@@ -10,6 +10,8 @@ backend/locale/*/LC_MESSAGES/*.mo
 
 # Entorno de despliegue: infra/.env.example es la plantilla versionada
 infra/.env
+infra/secrets/*
+!infra/secrets/README.md
 
 # Flutter
 mobile/build/

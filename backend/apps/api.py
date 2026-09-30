@@ -15,8 +15,8 @@ from apps.activities.models import Activity, Attendance, Invitation, ProgrammeIt
 from apps.activities.services import record_attendance, respond
 from apps.associations.models import Association, AssociationAccess, AssociationRole
 from apps.associations.permissions import MANAGER_ROLES, PARTICIPANT_ROLES, accessible_association_ids, get_access_or_403, permissions_for, require_roles
-from apps.communications.models import DeviceRegistration, Notification
-from apps.communications.services import mark_receipt, register_device
+from apps.communications.models import Notification
+from apps.communications.services import revoke_account_devices
 from apps.members.images import sanitize_member_photo
 from apps.members.models import ImportBatch, Instrument, Member, MemberInstrument, Section
 from apps.members.services import confirm_import, parse_import
@@ -265,7 +265,7 @@ class MeView(APIView):
 class LogoutView(APIView):
     def post(self, request):
         Token.objects.filter(user=request.user).delete()
-        DeviceRegistration.objects.filter(account=request.user).update(is_active=False)
+        revoke_account_devices(request.user)
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -567,39 +567,6 @@ class ActivityViewSet(ScopedViewSet):
         invitation = Invitation.objects.get(pk=invitation_id, activity_id=pk)
         result = record_attendance(invitation, request.user, request.data.get("status"), request.data.get("note", ""))
         return response.Response({"status": result.status, "note": result.note})
-
-
-class DeviceView(APIView):
-    def get(self, request):
-        device = DeviceRegistration.objects.filter(account=request.user, is_active=True).order_by("-last_seen_at").first()
-        return response.Response({"active": bool(device), "permission": device.permission if device else DeviceRegistration.Permission.UNKNOWN, "installation_id": str(device.installation_id) if device else None})
-
-    def post(self, request):
-        device = register_device(account=request.user, installation_id=request.data.get("installation_id"), platform=request.data.get("platform"), push_token=request.data.get("push_token"), permission=request.data.get("permission", DeviceRegistration.Permission.UNKNOWN))
-        return response.Response({"id": device.id, "installation_id": device.installation_id, "permission": device.permission})
-
-    def delete(self, request):
-        DeviceRegistration.objects.filter(account=request.user, installation_id=request.data.get("installation_id")).update(is_active=False)
-        return response.Response(status=204)
-
-
-class DeviceReceiptView(APIView):
-    def post(self, request):
-        changed = mark_receipt(account=request.user, installation_id=request.data.get("installation_id"))
-        if not changed:
-            raise ValidationError(_("Dispositivo no registrado."))
-        return response.Response({"received": True})
-
-
-class DeviceTestView(APIView):
-    def post(self, request):
-        device = DeviceRegistration.objects.filter(account=request.user, is_active=True).order_by("-last_seen_at").first()
-        if not device:
-            raise ValidationError(_("Registra primero un dispositivo con notificaciones activadas."))
-        # The provider worker can replace this challenge with an actual FCM send when credentials are configured.
-        import uuid
-
-        return response.Response({"challenge_id": str(uuid.uuid4()), "queued": True}, status=202)
 
 
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):

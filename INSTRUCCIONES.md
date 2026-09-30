@@ -95,11 +95,34 @@ Ninguno introducido por la siembra; son del código anterior.
 
 3. **Repertorio solo al crear.** El panel fija el repertorio al crear la actividad;
    para cambiarlo después hay que usar la API o el Django Admin.
-4. **Push de encuestas en Flutter.** La app Flutter abre una encuesta desde su
-   lista, no desde una notificación push: el envío FCM todavía no existe en el
-   backend y el aviso solo lleva `activity_id` en los datos push.
+4. ~~**Push de encuestas en Flutter.**~~ Resuelto el 30/09/2026: ver el apartado
+   «Cambios del 30/09/2026».
 5. **Listas de la app web.** Encuestas, agenda y avisos leen solo la primera
    página (50 elementos); no siguen `next`.
+
+## Cambios del 30/09/2026: push real (MUST-NOTIF-01)
+
+- **Servidor.** Envía los avisos push de verdad mediante un adaptador: `fake` por
+  omisión, que no sale de la máquina, o `fcm`. Implementa la prueba de recepción del
+  contrato: `notification-capability`, `push-tests` y `confirm`. Razonado en
+  [docs/decisions/0008-envio-push-y-prueba-de-recepcion.md](docs/decisions/0008-envio-push-y-prueba-de-recepcion.md)
+  y cubierto por `backend/tests/test_push.py`.
+- **App Flutter.**
+  - Tiene ya `android/` e `ios/` (`es.gesband.app`) y sigue el mismo contrato.
+  - Envía el permiso real, que antes era siempre `granted`.
+  - Los avisos de actividad y de encuesta abren su pantalla.
+  - Cubierto por `mobile/test/notification_controller_test.dart` y
+    `mobile/test/app_notifications_test.dart`.
+- **Probar en un móvil real.**
+  - Ficheros de Firebase y compilación: `mobile/README.md`.
+  - Cuenta de servicio para el servidor: `infra/secrets/README.md`.
+  - Guion MUST-NOTIF-01: `mobile/README.md`.
+  - **Hasta pasar ese guion en Android e iOS reales, el requisito no está cumplido.**
+- **Límites conocidos.**
+  - Una cuenta en dos bandas que pulse un aviso de la banda no activa no cambia de
+    banda antes de abrirlo.
+  - La API devuelve las fechas con desfase `+02:00` en vez de en UTC con `Z`.
+  - `Idempotency-Key` se envía, pero el servidor no la comprueba.
 
 ## 4. Cambios del 24/09/2026
 

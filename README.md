@@ -51,6 +51,8 @@ De momento esto es todo hasta ver q análisis haces. Q tecnologias escoges y otr
 
 La propuesta y el alcance ejecutable están documentados en [ANALISIS.md](ANALISIS.md), y las reglas de trabajo en [AGENTS.md](AGENTS.md).
 
+Los manuales de uso, uno por rol, están en [docs/manuales/](docs/manuales/README.md).
+
 Backend local (requiere Python 3.13 y las dependencias de `backend/requirements.txt`):
 
 ```bash

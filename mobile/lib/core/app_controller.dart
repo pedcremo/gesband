@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../features/activities/activity_detail_screen.dart';
+import '../features/polls/poll_detail_screen.dart';
 import '../features/notifications/notification_service.dart';
 import 'api/api_client.dart';
 import 'localization/app_strings.dart';
@@ -40,9 +41,14 @@ class AppController extends ChangeNotifier {
   List<Association> _associations = const [];
   Association? _activeAssociation;
   AppMessage? _error;
-  String? _pendingActivityId;
-  StreamSubscription<String>? _linkSubscription;
+  NotificationTarget? _pendingTarget;
+  StreamSubscription<NotificationTarget>? _linkSubscription;
   StreamSubscription<PushEnvelope>? _messageSubscription;
+  StreamSubscription<void>? _deactivationSubscription;
+
+  /// Aumenta al llegar un aviso en primer plano para que la agenda se
+  /// actualice sin que la persona tenga que tirar de la lista.
+  final contentRevision = ValueNotifier<int>(0);
 
   AppStage get stage => _stage;
   List<Association> get associations => _associations;
@@ -50,11 +56,14 @@ class AppController extends ChangeNotifier {
   AppMessage? get error => _error;
 
   Future<void> initialize() async {
-    _linkSubscription = notifications.activityLinks.listen(_openActivity);
+    _linkSubscription = notifications.targets.listen(openTarget);
     _messageSubscription =
         notifications.foregroundMessages.listen(_showForegroundMessage);
+    _deactivationSubscription =
+        notifications.deactivations.listen((_) => _showDeactivation());
     await notifications.initialize();
     if (await auth.hasSession()) {
+      unawaited(notifications.bindSession());
       await _loadAssociations();
     } else {
       _setStage(AppStage.signedOut);
@@ -66,7 +75,7 @@ class AppController extends ChangeNotifier {
     _setStage(AppStage.loading);
     try {
       await auth.login(email: email, password: password);
-      await notifications.bindSession();
+      unawaited(notifications.bindSession());
       await _loadAssociations();
     } catch (_) {
       _error = AppMessage.signInFailed;
@@ -96,11 +105,10 @@ class AppController extends ChangeNotifier {
 
   void finishNotificationStep() {
     _setStage(AppStage.ready);
-    final pending = _pendingActivityId;
-    _pendingActivityId = null;
+    final pending = _pendingTarget;
+    _pendingTarget = null;
     if (pending != null) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _openActivity(pending));
+      WidgetsBinding.instance.addPostFrameCallback((_) => openTarget(pending));
     }
   }
 
@@ -112,6 +120,8 @@ class AppController extends ChangeNotifier {
 
   Future<void> logout() async {
     _setStage(AppStage.loading);
+    _pendingTarget = null;
+    scaffoldMessengerKey.currentState?.clearSnackBars();
     await notifications.unbindSession();
     await agendaCache.clearAll();
     await auth.logout();
@@ -121,44 +131,85 @@ class AppController extends ChangeNotifier {
     _setStage(AppStage.signedOut);
   }
 
-  void _openActivity(String activityId) {
+  /// Abre la actividad o encuesta de un aviso. Si todavía no hay sesión y
+  /// banda elegida, lo guarda para abrirlo al terminar la incorporación.
+  void openTarget(NotificationTarget target) {
     final association = _activeAssociation;
-    final context = navigatorKey.currentContext;
-    if (_stage != AppStage.ready || association == null || context == null) {
-      _pendingActivityId = activityId;
+    final navigator = navigatorKey.currentState;
+    if (_stage != AppStage.ready || association == null || navigator == null) {
+      _pendingTarget = target;
       return;
     }
-    navigatorKey.currentState?.push(
+    navigator.push(
       MaterialPageRoute<void>(
-        builder: (_) => ActivityDetailScreen(
-          association: association,
-          activityId: activityId,
-          repository: activitiesRepository,
-        ),
+        builder: (_) => switch (target) {
+          ActivityTarget(:final id) => ActivityDetailScreen(
+              association: association,
+              activityId: id,
+              repository: activitiesRepository,
+            ),
+          PollTarget(:final id) => PollDetailScreen(
+              association: association,
+              pollId: id,
+              repository: pollsRepository,
+            ),
+        },
       ),
     );
   }
 
   void _showForegroundMessage(PushEnvelope envelope) {
+    if (_stage == AppStage.signedOut) return;
+    contentRevision.value++;
     final messenger = scaffoldMessengerKey.currentState;
-    if (messenger == null) return;
+    final strings = _strings;
+    if (messenger == null || strings == null) return;
+    final target = envelope.target;
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
           content: Text(
-            envelope.title ??
-                envelope.body ??
-                AppStrings.of(messenger.context).newNotification,
+            envelope.isTest
+                ? strings.testNotificationReceived
+                : envelope.title ?? envelope.body ?? strings.newNotification,
           ),
-          action: envelope.activityId == null
+          action: target == null
               ? null
               : SnackBarAction(
-                  label: AppStrings.of(messenger.context).open,
-                  onPressed: () => _openActivity(envelope.activityId!),
+                  label: strings.open,
+                  onPressed: () => openTarget(target),
                 ),
         ),
       );
+  }
+
+  void _showDeactivation() {
+    if (_stage == AppStage.signedOut) return;
+    final messenger = scaffoldMessengerKey.currentState;
+    final strings = _strings;
+    if (messenger == null || strings == null) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 10),
+          content: Text(strings.notificationsDisabledDetected),
+          action: SnackBarAction(
+            label: strings.openSystemSettings,
+            onPressed: notifications.openSettings,
+          ),
+        ),
+      );
+  }
+
+  /// El ScaffoldMessenger de MaterialApp está por encima de Localizations:
+  /// los textos se leen desde el contexto del Navigator.
+  AppStrings? get _strings {
+    final context = navigatorKey.currentContext;
+    return context == null
+        ? null
+        : Localizations.of<AppStrings>(context, AppStrings);
   }
 
   void _setStage(AppStage value) {
@@ -170,6 +221,8 @@ class AppController extends ChangeNotifier {
   void dispose() {
     unawaited(_linkSubscription?.cancel());
     unawaited(_messageSubscription?.cancel());
+    unawaited(_deactivationSubscription?.cancel());
+    contentRevision.dispose();
     notifications.dispose();
     super.dispose();
   }

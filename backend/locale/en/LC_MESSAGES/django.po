@@ -1,8 +1,9 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Gesband\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-24 10:42+0200\n"
+"POT-Creation-Date: 2026-09-30 17:35+0200\n"
 "PO-Revision-Date: 2026-09-21 10:00+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +21,8 @@ msgid "correo electrónico"
 msgstr "email"
 
 #: apps/accounts/models.py:12 apps/associations/models.py:48
-#: apps/communications/models.py:20 apps/communications/models.py:69
-#: apps/members/models.py:87
+#: apps/communications/models.py:21 apps/communications/models.py:79
+#: apps/communications/models.py:140 apps/members/models.py:87
 msgid "cuenta"
 msgstr "account"
 
@@ -31,15 +32,16 @@ msgstr "accounts"
 
 #: apps/accounts/models.py:20 apps/activities/models.py:23
 #: apps/activities/models.py:89 apps/associations/models.py:10
-#: apps/communications/models.py:12 apps/communications/models.py:64
-#: apps/members/models.py:77 apps/members/models.py:150 apps/polls/models.py:28
-#: apps/polls/models.py:69 apps/transport/models.py:17
+#: apps/communications/models.py:13 apps/communications/models.py:74
+#: apps/communications/models.py:134 apps/members/models.py:77
+#: apps/members/models.py:150 apps/polls/models.py:28 apps/polls/models.py:69
+#: apps/transport/models.py:17
 msgid "identificador"
 msgstr "identifier"
 
 #: apps/accounts/models.py:25 apps/activities/models.py:25
 #: apps/associations/models.py:33 apps/associations/models.py:42
-#: apps/communications/models.py:14 apps/members/models.py:22
+#: apps/communications/models.py:15 apps/members/models.py:22
 #: apps/members/models.py:39 apps/members/models.py:79
 #: apps/members/models.py:152 apps/polls/models.py:30
 msgid "asociación"
@@ -67,8 +69,9 @@ msgstr "revoked by"
 #: apps/accounts/models.py:49 apps/activities/models.py:45
 #: apps/activities/models.py:102 apps/activities/models.py:129
 #: apps/associations/models.py:29 apps/associations/models.py:51
-#: apps/communications/models.py:43 apps/communications/models.py:114
-#: apps/members/models.py:99 apps/members/models.py:170 apps/polls/models.py:46
+#: apps/communications/models.py:44 apps/communications/models.py:150
+#: apps/communications/models.py:186 apps/members/models.py:99
+#: apps/members/models.py:170 apps/polls/models.py:46
 msgid "fecha de creación"
 msgstr "creation date"
 
@@ -84,7 +87,7 @@ msgstr "sending date"
 msgid "fecha de aceptación"
 msgstr "acceptance date"
 
-#: apps/accounts/models.py:53
+#: apps/accounts/models.py:53 apps/communications/models.py:94
 msgid "fecha de revocación"
 msgstr "revocation date"
 
@@ -218,13 +221,13 @@ msgid "tipo"
 msgstr "type"
 
 #: apps/activities/models.py:28 apps/activities/models.py:147
-#: apps/communications/models.py:109 apps/members/models.py:97
-#: apps/members/models.py:166 apps/polls/models.py:34
+#: apps/communications/models.py:145 apps/communications/models.py:181
+#: apps/members/models.py:97 apps/members/models.py:166 apps/polls/models.py:34
 msgid "estado"
 msgstr "status"
 
 #: apps/activities/models.py:29 apps/activities/models.py:73
-#: apps/communications/models.py:38
+#: apps/communications/models.py:39
 msgid "título"
 msgstr "title"
 
@@ -270,7 +273,7 @@ msgid "fecha de actualización"
 msgstr "update date"
 
 #: apps/activities/models.py:51 apps/activities/models.py:71
-#: apps/activities/models.py:91 apps/communications/models.py:28
+#: apps/activities/models.py:91 apps/communications/models.py:29
 #: apps/transport/models.py:19
 msgid "actividad"
 msgstr "activity"
@@ -308,7 +311,7 @@ msgstr "repertoire item"
 msgid "elementos de repertorio"
 msgstr "repertoire items"
 
-#: apps/activities/models.py:85 apps/communications/models.py:93
+#: apps/activities/models.py:85 apps/communications/models.py:165
 msgid "Pendiente"
 msgstr "Pending"
 
@@ -546,15 +549,7 @@ msgstr "The member already has transport for this activity."
 msgid "No quedan plazas disponibles."
 msgstr "There are no seats available."
 
-#: apps/api.py:590
-msgid "Dispositivo no registrado."
-msgstr "Device not registered."
-
-#: apps/api.py:598
-msgid "Registra primero un dispositivo con notificaciones activadas."
-msgstr "First register a device with notifications enabled."
-
-#: apps/api.py:634 config/panel.py:199
+#: apps/api.py:601 config/panel.py:199
 msgid "Adjunta un CSV o XLSX."
 msgstr "Attach a CSV or XLSX file."
 
@@ -608,7 +603,7 @@ msgstr "active"
 msgid "asociaciones"
 msgstr "associations"
 
-#: apps/associations/models.py:50 apps/communications/models.py:79
+#: apps/associations/models.py:50 apps/communications/models.py:93
 msgid "activo"
 msgstr "active"
 
@@ -724,143 +719,244 @@ msgstr "Configure the association"
 msgid "Comunicaciones"
 msgstr "Communications"
 
-#: apps/communications/models.py:36 apps/polls/models.py:52
+#: apps/communications/models.py:37 apps/polls/models.py:52
 #: apps/polls/models.py:70 apps/polls/models.py:91 apps/polls/models.py:107
 msgid "encuesta"
 msgstr "poll"
 
-#: apps/communications/models.py:39
+#: apps/communications/models.py:40
 msgid "contenido"
 msgstr "content"
 
-#: apps/communications/models.py:40
+#: apps/communications/models.py:41
 msgid "enlace interno"
 msgstr "internal link"
 
-#: apps/communications/models.py:41
+#: apps/communications/models.py:42
 msgid "clave de deduplicación"
 msgstr "deduplication key"
 
-#: apps/communications/models.py:42
+#: apps/communications/models.py:43
 msgid "fecha de lectura"
 msgstr "read date"
 
-#: apps/communications/models.py:48 apps/communications/models.py:98
+#: apps/communications/models.py:49 apps/communications/models.py:170
 msgid "aviso"
 msgstr "notification"
 
-#: apps/communications/models.py:49
+#: apps/communications/models.py:50
 msgid "avisos"
 msgstr "notifications"
 
-#: apps/communications/models.py:54
+#: apps/communications/models.py:63
 msgid "Android"
 msgstr "Android"
 
-#: apps/communications/models.py:55
+#: apps/communications/models.py:64
 msgid "iOS"
 msgstr "iOS"
 
-#: apps/communications/models.py:58
-msgid "Desconocido"
-msgstr "Unknown"
+#: apps/communications/models.py:67
+msgid "Sin decidir"
+msgstr "Not determined"
 
-#: apps/communications/models.py:59
-msgid "Concedido"
-msgstr "Granted"
-
-#: apps/communications/models.py:60
-msgid "Denegado"
-msgstr "Denied"
-
-#: apps/communications/models.py:61
+#: apps/communications/models.py:68
 msgid "Provisional"
 msgstr "Provisional"
 
-#: apps/communications/models.py:62
-msgid "Desactivado"
-msgstr "Disabled"
+#: apps/communications/models.py:69
+msgid "Concedido"
+msgstr "Granted"
+
+#: apps/communications/models.py:70
+msgid "Denegado"
+msgstr "Denied"
 
 #: apps/communications/models.py:71
+msgid "Restringido"
+msgstr "Restricted"
+
+#: apps/communications/models.py:72
+msgid "Desconocido"
+msgstr "Unknown"
+
+#: apps/communications/models.py:81
 msgid "identificador de instalación"
 msgstr "installation identifier"
 
-#: apps/communications/models.py:72
+#: apps/communications/models.py:82
 msgid "plataforma"
 msgstr "platform"
 
-#: apps/communications/models.py:73
+#: apps/communications/models.py:83
 msgid "token push"
 msgstr "push token"
 
-#: apps/communications/models.py:75
+#: apps/communications/models.py:85
 msgid "permiso"
 msgstr "permission"
 
-#: apps/communications/models.py:77
-msgid "última recepción"
-msgstr "last received"
+#: apps/communications/models.py:87
+msgid "versión de la app"
+msgstr "app version"
 
-#: apps/communications/models.py:78
+#: apps/communications/models.py:88
+msgid "idioma"
+msgstr "language"
+
+#: apps/communications/models.py:89
+msgid "último cambio de token"
+msgstr "last token change"
+
+#: apps/communications/models.py:90
+msgid "token rechazado por el proveedor"
+msgstr "token rejected by the provider"
+
+#: apps/communications/models.py:91
+msgid "última recepción confirmada"
+msgstr "last confirmed receipt"
+
+#: apps/communications/models.py:92
 msgid "última conexión"
 msgstr "last connection"
 
-#: apps/communications/models.py:83
+#: apps/communications/models.py:98
 msgid "dispositivo registrado"
 msgstr "registered device"
 
-#: apps/communications/models.py:84
+#: apps/communications/models.py:99
 msgid "dispositivos registrados"
 msgstr "registered devices"
 
-#: apps/communications/models.py:89
+#: apps/communications/models.py:121
+msgid "Primer plano"
+msgstr "Foreground"
+
+#: apps/communications/models.py:122
+msgid "Segundo plano"
+msgstr "Background"
+
+#: apps/communications/models.py:125
+msgid "En cola"
+msgstr "Queued"
+
+#: apps/communications/models.py:126
+msgid "Aceptada por el proveedor"
+msgstr "Accepted by the provider"
+
+#: apps/communications/models.py:127
+msgid "Rechazada por el proveedor"
+msgstr "Rejected by the provider"
+
+#: apps/communications/models.py:128
+msgid "Recibida en primer plano"
+msgstr "Received in the foreground"
+
+#: apps/communications/models.py:129
+msgid "Abierta desde segundo plano"
+msgstr "Opened from the background"
+
+#: apps/communications/models.py:130
+#: templates/members/access_invitations.html:42
+msgid "Caducada"
+msgstr "Expired"
+
+#: apps/communications/models.py:136 apps/communications/models.py:178
+msgid "dispositivo"
+msgstr "device"
+
+#: apps/communications/models.py:143
+msgid "presentación esperada"
+msgstr "expected presentation"
+
+#: apps/communications/models.py:146 apps/communications/models.py:182
+msgid "identificador del proveedor"
+msgstr "provider identifier"
+
+#: apps/communications/models.py:147
+msgid "código de error del proveedor"
+msgstr "provider error code"
+
+#: apps/communications/models.py:148
+msgid "momento indicado por la app"
+msgstr "time reported by the app"
+
+#: apps/communications/models.py:149 apps/members/models.py:171
+msgid "fecha de confirmación"
+msgstr "confirmation date"
+
+#: apps/communications/models.py:151
+msgid "caducidad"
+msgstr "expiry"
+
+#: apps/communications/models.py:155
+msgid "prueba de aviso"
+msgstr "notification test"
+
+#: apps/communications/models.py:156
+msgid "pruebas de avisos"
+msgstr "notification tests"
+
+#: apps/communications/models.py:161
 msgid "Push"
 msgstr "Push"
 
-#: apps/communications/models.py:90
+#: apps/communications/models.py:162
 msgid "Correo"
 msgstr "Email"
 
-#: apps/communications/models.py:94
+#: apps/communications/models.py:166
 #: templates/members/access_invitations.html:46
 msgid "Enviada"
 msgstr "Sent"
 
-#: apps/communications/models.py:95 apps/members/models.py:148
+#: apps/communications/models.py:167 apps/members/models.py:148
 msgid "Fallida"
 msgstr "Failed"
 
-#: apps/communications/models.py:106
-msgid "dispositivo"
-msgstr "device"
-
-#: apps/communications/models.py:108
+#: apps/communications/models.py:180
 msgid "canal"
 msgstr "channel"
 
-#: apps/communications/models.py:110
-msgid "identificador del proveedor"
-msgstr "provider identifier"
-
-#: apps/communications/models.py:111
+#: apps/communications/models.py:183
 msgid "error"
 msgstr "error"
 
-#: apps/communications/models.py:112
+#: apps/communications/models.py:184
 msgid "intentos"
 msgstr "attempts"
 
-#: apps/communications/models.py:113
+#: apps/communications/models.py:185
 msgid "último intento"
 msgstr "last attempt"
 
-#: apps/communications/models.py:118
+#: apps/communications/models.py:190
 msgid "entrega de aviso"
 msgstr "notification delivery"
 
-#: apps/communications/models.py:119
+#: apps/communications/models.py:191
 msgid "entregas de avisos"
 msgstr "notification deliveries"
+
+#: apps/communications/services.py:123 apps/communications/services.py:189
+msgid "Este dispositivo ya no está registrado."
+msgstr "This device is no longer registered."
+
+#: apps/communications/services.py:127
+msgid "Activa las notificaciones y registra el dispositivo antes de probar."
+msgstr "Turn on notifications and register the device before testing."
+
+#: apps/communications/services.py:158
+msgid "Prueba de avisos de Gesband"
+msgstr "Gesband notification test"
+
+#: apps/communications/services.py:159
+msgid "Si ves este aviso, las notificaciones funcionan en este dispositivo."
+msgstr "If you can see this notice, notifications work on this device."
+
+#: apps/communications/services.py:187
+msgid "La prueba ha caducado; pide otra."
+msgstr "The test has expired; request another one."
 
 #: apps/members/apps.py:8
 msgid "Miembros"
@@ -1001,10 +1097,6 @@ msgstr "preview"
 #: apps/members/models.py:169
 msgid "resultado"
 msgstr "result"
-
-#: apps/members/models.py:171
-msgid "fecha de confirmación"
-msgstr "confirmation date"
 
 #: apps/members/models.py:176
 msgid "lote de importación"
@@ -1558,9 +1650,9 @@ msgstr "Activity updated. There was nothing to announce."
 #: config/panel.py:522
 #, python-format
 msgid ""
-"Actividad actualizada. Se ha avisado a %(notified)s personas y se han "
-"anulado %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar "
-"de nuevo."
+"Actividad actualizada. Se ha avisado a %(notified)s personas y se han anulado"
+" %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar de "
+"nuevo."
 msgstr ""
 "Activity updated. %(notified)s people were notified and %(reset)s answers "
 "were cancelled: the change of date or place requires confirming again."
@@ -1576,8 +1668,8 @@ msgid ""
 "El plazo de respuesta ya ha terminado, así que nadie puede volver a "
 "confirmar. Amplíalo para recoger las respuestas."
 msgstr ""
-"The response deadline has already passed, so nobody can confirm again. "
-"Extend it to collect the answers."
+"The response deadline has already passed, so nobody can confirm again. Extend"
+" it to collect the answers."
 
 #: templates/403.html:3 templates/403.html:5
 msgid "Sin permiso"
@@ -1618,8 +1710,8 @@ msgstr "Account activated"
 
 #: templates/accounts/activation_complete.html:4
 msgid ""
-"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la "
-"contraseña que acabas de crear."
+"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la contraseña"
+" que acabas de crear."
 msgstr ""
 "You can now log in to the mobile app with your email and the password you "
 "have just created."
@@ -1670,8 +1762,8 @@ msgstr "Edit the details"
 #: templates/activities/detail.html:34
 msgid ""
 "La actividad está publicada: cada cambio se avisa a quien esté convocado. "
-"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas "
-"ya dadas y obliga a confirmar de nuevo."
+"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas ya"
+" dadas y obliga a confirmar de nuevo."
 msgstr ""
 "The activity is published: every change is announced to the people invited. "
 "Changing the date, the meeting time or the place cancels the answers already "
@@ -1727,8 +1819,8 @@ msgstr "Invite a selection"
 #: templates/activities/detail.html:80
 msgid ""
 "Marca cuerdas, instrumentos o personas: se convoca a quien cumpla cualquiera "
-"de las casillas. Solo cuentan los músicos activos; quien ya esté convocado "
-"no se duplica."
+"de las casillas. Solo cuentan los músicos activos; quien ya esté convocado no"
+" se duplica."
 msgstr ""
 "Tick sections, instruments or people: anyone matching any of the boxes is "
 "invited. Only active musicians count; anyone already invited is not "
@@ -1850,10 +1942,6 @@ msgstr "No email"
 #: templates/members/access_invitations.html:40
 msgid "Revocada"
 msgstr "Revoked"
-
-#: templates/members/access_invitations.html:42
-msgid "Caducada"
-msgstr "Expired"
 
 #: templates/members/access_invitations.html:44
 msgid "Error de envío"
@@ -2101,11 +2189,11 @@ msgstr "Go to the board panel"
 
 #: templates/panel/my_access.html:58
 msgid ""
-"El panel de la junta es para los roles de gestión. Para ver tus "
-"convocatorias y responder, usa la aplicación del músico."
+"El panel de la junta es para los roles de gestión. Para ver tus convocatorias"
+" y responder, usa la aplicación del músico."
 msgstr ""
-"The board panel is for management roles. To see your invitations and "
-"respond, use the musician app."
+"The board panel is for management roles. To see your invitations and respond,"
+" use the musician app."
 
 #: templates/panel/my_access.html:59
 msgid "Abrir la aplicación del músico"
@@ -2198,8 +2286,8 @@ msgstr[1] "There are %(count)s recipients."
 #: templates/polls/detail.html:30
 msgid ""
 "La selección sustituye a la actual. Las personas marcadas son los "
-"destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus "
-"músicos activos."
+"destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus músicos"
+" activos."
 msgstr ""
 "The selection replaces the current one. The ticked people are the current "
 "recipients; add sections or instruments to include their active musicians."
@@ -2241,8 +2329,8 @@ msgstr "%(voted)s of %(recipients)s people asked have voted."
 
 #: templates/polls/detail.html:69
 msgid ""
-"Mientras se vota no se muestra quién ha votado: junto al recuento "
-"provisional delataría el voto de cada persona."
+"Mientras se vota no se muestra quién ha votado: junto al recuento provisional"
+" delataría el voto de cada persona."
 msgstr ""
 "While voting is open, who has voted is not shown: together with the "
 "provisional count it would reveal each person's vote."
@@ -2261,8 +2349,8 @@ msgstr "Publish the results"
 
 #: templates/polls/detail.html:79
 msgid ""
-"La publicación es definitiva: el recuento queda como resultado de la "
-"encuesta y se avisa a las personas consultadas."
+"La publicación es definitiva: el recuento queda como resultado de la encuesta"
+" y se avisa a las personas consultadas."
 msgstr ""
 "Publishing is final: the count becomes the poll results and the people asked "
 "are notified."

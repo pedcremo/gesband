@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,16 +21,22 @@ Future<void> main() async {
   final preferences = await SharedPreferences.getInstance();
   final localeController = LocaleController(preferences);
   final store = SecureSessionStore();
-  final api = ApiClient(
-      baseUrl: AppConfig.fromEnvironment().apiBaseUrl, sessionStore: store);
+  final config = AppConfig.fromEnvironment();
+  final api = ApiClient(baseUrl: config.apiBaseUrl, sessionStore: store);
   api.selectLanguage(localeController.locale.languageCode);
-  localeController.addListener(
-    () => api.selectLanguage(localeController.locale.languageCode),
-  );
   final notifications = NotificationController(
     gateway: FirebasePushGateway(),
     registrations: ApiDeviceRegistrationRepository(api),
+    deviceStore: SharedPreferencesDeviceStateStore(),
+    pendingTests: PendingPushTestStore.shared(),
+    appVersion: config.appVersion,
+    languageCode: localeController.locale.languageCode,
   );
+  localeController.addListener(() {
+    final language = localeController.locale.languageCode;
+    api.selectLanguage(language);
+    unawaited(notifications.setLanguage(language));
+  });
   final controller = AppController(
     api: api,
     auth: ApiAuthRepository(api, store),
@@ -83,8 +91,10 @@ class GesbandApp extends StatelessWidget {
             AppStage.signedOut => LoginScreen(controller: controller),
             AppStage.selectAssociation =>
               AssociationPickerScreen(controller: controller),
-            AppStage.notifications =>
-              NotificationActivationScreen(controller: controller),
+            AppStage.notifications => NotificationActivationScreen(
+                notifications: controller.notifications,
+                onContinue: controller.finishNotificationStep,
+              ),
             AppStage.ready => AgendaScreen(controller: controller),
           },
         ),

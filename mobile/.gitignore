@@ -10,3 +10,6 @@ ios/Runner/GoogleService-Info.plist
 *.jks
 *.keystore
 
+
+# Ficheros de IDE generados por flutter create
+*.iml

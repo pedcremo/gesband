@@ -95,9 +95,14 @@ class ApiClient {
   Future<Map<String, dynamic>> postObject(
     String path, {
     Object? data,
+    Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.post<Map<String, dynamic>>(path, data: data);
+      final response = await _dio.post<Map<String, dynamic>>(
+        path,
+        data: data,
+        options: headers == null ? null : Options(headers: headers),
+      );
       return response.data ?? const {};
     } on DioException catch (error) {
       throw error.error is ApiException
@@ -109,9 +114,14 @@ class ApiClient {
   Future<Map<String, dynamic>> patchObject(
     String path, {
     Object? data,
+    Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.patch<Map<String, dynamic>>(path, data: data);
+      final response = await _dio.patch<Map<String, dynamic>>(
+        path,
+        data: data,
+        options: headers == null ? null : Options(headers: headers),
+      );
       return response.data ?? const {};
     } on DioException catch (error) {
       throw error.error is ApiException
