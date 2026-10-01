@@ -6,6 +6,9 @@ x-backend-environment: &backend-environment
   DJANGO_DEBUG: ${DJANGO_DEBUG:-true}
   DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
   DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost:8080}
+  DJANGO_SECURE_COOKIES: ${DJANGO_SECURE_COOKIES:-false}
+  WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+  WEB_TIMEOUT: ${WEB_TIMEOUT:-60}
   DATABASE_URL: postgresql://${POSTGRES_USER:-gesband}:${POSTGRES_PASSWORD:-development-password-change-me}@postgres:5432/${POSTGRES_DB:-gesband}
   CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER:-gesband}:${RABBITMQ_DEFAULT_PASS:-development-password-change-me}@rabbitmq:5672//
   EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
