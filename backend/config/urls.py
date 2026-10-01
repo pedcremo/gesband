@@ -10,6 +10,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.polls.api import PollViewSet
 from apps.polls.views import poll_create, poll_detail, poll_list
+from apps.accounts.forms import PanelLoginForm
 from apps.accounts.views import activate_invitation, activation_complete
 from apps.communications.api import (
     DeviceDetailView,
@@ -66,7 +67,11 @@ urlpatterns = [
     path("health/", lambda request: JsonResponse({"status": "ok"}), name="health"),
     path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", admin.site.urls),
-    path("accounts/login/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
+    path(
+        "accounts/login/",
+        auth_views.LoginView.as_view(template_name="registration/login.html", authentication_form=PanelLoginForm),
+        name="login",
+    ),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("accounts/activate/<str:token>/", activate_invitation, name="account-invitation-activate"),
     path("accounts/activation-complete/", activation_complete, name="account-activation-complete"),

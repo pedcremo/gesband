@@ -29,7 +29,7 @@ identificador corto (`slug`), zona horaria (`Europe/Madrid`), logo, colores y le
 **Asignar el primer administrador de la banda.**
 
 1. Crea la cuenta (Cuentas) con usuario, correo y contraseña provisional, y comunícala
-   por un canal seguro.
+   por un canal seguro. La persona entra con su correo.
 2. Crea su acceso a la asociación y añádele el rol `admin`. A partir de ahí, la propia
    banda importa el censo e invita a los músicos.
 

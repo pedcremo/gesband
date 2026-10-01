@@ -13,8 +13,8 @@ Si además tocas en la banda, tu cuenta tendrá también el rol `member`: consul
 
 ## 1. Entrar
 
-1. Abre `/accounts/login/`, escribe tu **usuario** y tu contraseña y pulsa «Iniciar
-   sesión».
+1. Abre `/accounts/login/`, escribe tu **correo electrónico** (o tu usuario, si te lo
+   dieron) y tu contraseña y pulsa «Iniciar sesión».
 2. Llegas a **Inicio**, el panel de tu banda, con la lista de actividades: fecha,
    número de convocados y estado.
 3. La cabecera tiene «Inicio», «Miembros», «Encuestas», «Mi acceso», el selector de

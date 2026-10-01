@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gesband\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 17:35+0200\n"
+"POT-Creation-Date: 2026-10-01 08:00+0200\n"
 "PO-Revision-Date: 2026-09-21 10:00+0200\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,10 @@ msgstr ""
 
 #: apps/accounts/apps.py:8
 msgid "Cuentas"
+msgstr ""
+
+#: apps/accounts/forms.py:15
+msgid "Correo electrónico o usuario"
 msgstr ""
 
 #: apps/accounts/models.py:9 apps/accounts/models.py:33

@@ -31,7 +31,7 @@ no usan la app.
 
 | Herramienta | Dirección (entorno de pruebas) | Con qué |
 | --- | --- | --- |
-| Panel de la junta | `http://localhost:8080/panel/` | Usuario y contraseña |
+| Panel de la junta | `http://localhost:8080/panel/` | Correo (o usuario) y contraseña |
 | App móvil (Android/iOS) | Se instala en el móvil | Correo y contraseña |
 | App web del músico (pruebas) | `http://localhost:8080/app/` | Correo y contraseña |
 | Mi acceso | `http://localhost:8080/panel/me/` | Cualquier rol con acceso |
@@ -51,9 +51,5 @@ seguir estos manuales sin datos reales.
 
 - **No hay recuperación de contraseña.** Si alguien la olvida, la debe restablecer el
   operador de la plataforma.
-- **El panel pide el usuario, no el correo.** Las cuentas creadas al aceptar una
-  invitación reciben un usuario interno que la persona no conoce. Con esa cuenta
-  pueden entrar en la app con su correo, pero hoy no pueden entrar en el panel. Está
-  anotado como incidencia pendiente de corregir.
 - **Los roles de gestión los asigna el operador de la plataforma** desde la
   administración interna. Una invitación de acceso solo concede el rol `member`.

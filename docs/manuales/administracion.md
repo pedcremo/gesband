@@ -82,6 +82,3 @@ Recuerda que el cargo (presidencia, tesorería…) no da permisos: los da el rol
 - Cambiar el logo, los colores o el lema desde el panel: lo hace el operador de la
   plataforma.
 - Restablecer la contraseña de un músico.
-- Las personas que activan su cuenta con una invitación todavía no pueden entrar en el
-  panel, porque este pide el usuario y no el correo. Mientras no se corrija, las cuentas
-  de la junta las crea el operador de la plataforma.

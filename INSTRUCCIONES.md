@@ -29,7 +29,8 @@ recorrido del músico se puede recorrer entero desde la app.
 
 ### Dónde entra cada una
 
-- Panel de la junta: `http://localhost:8080/accounts/login/` con el **usuario**.
+- Panel de la junta: `http://localhost:8080/accounts/login/` con el **usuario** o el
+  **correo**.
 - API y app móvil: `POST /api/v1/auth/login` con el **correo** y la contraseña.
 
 ### Qué ve cada rol (verificado el 22/09/2026)
