@@ -1,6 +1,11 @@
 {
 	auto_https off
 	admin off
+	# Detras de otro proxy (compose.edge.yaml) hay que creer su X-Forwarded-Proto:
+	# sin esto Django veria HTTP y rechazaria las cookies seguras y el CSRF.
+	servers {
+		trusted_proxies static private_ranges
+	}
 }
 
 :8080 {

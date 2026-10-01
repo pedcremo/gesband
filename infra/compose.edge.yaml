@@ -1,0 +1,19 @@
+# Despliegue detras de un proxy inverso que ya existe en el servidor y ocupa 80/443.
+#
+#   docker compose --env-file infra/.env -f infra/compose.yaml -f infra/compose.edge.yaml up -d
+#
+# El proxy de Gesband se une a la red de ese proxy (EDGE_NETWORK) para que lo
+# alcance por nombre (gesband-proxy:8080). En el .env, WEB_PORT=127.0.0.1:8088
+# deja el puerto de Gesband accesible solo desde la propia maquina.
+services:
+  proxy:
+    networks:
+      application:
+      edge:
+        aliases:
+          - gesband-proxy
+
+networks:
+  edge:
+    external: true
+    name: ${EDGE_NETWORK:?Indica en EDGE_NETWORK la red del proxy existente}
