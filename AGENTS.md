@@ -163,7 +163,18 @@ La entrega del subagente incluirá archivos modificados, comportamiento final, p
 
 ## 8. Pruebas y definición de terminado
 
-Verifica de forma proporcional al riesgo. No añadas pruebas que repitan literalmente la implementación ni ejecutes suites amplias de forma repetida sin cambios que lo justifiquen.
+Todo lo que se crea o se corrige llega con sus pruebas. Es obligatorio, no una mejora opcional:
+
+- **Pruebas unitarias** de la lógica nueva: servicios, modelos, validaciones, controladores y parseo de datos.
+- **Pruebas funcionales** del comportamiento que ve la persona: endpoints de la API con su permiso y su aislamiento, vistas del panel y pantallas o flujos de la app.
+- **Una prueba de regresión por cada fallo corregido.** Debe fallar con el código anterior y pasar con el arreglo.
+- **Las pruebas son regresivas y permanentes.** Lo que funciona no puede dejar de funcionar por un cambio posterior. No se borra ni se debilita una prueba para que pase: si un cambio la rompe, se corrige el código. Si el comportamiento cambia por una decisión expresa, se actualiza la prueba y se explica en el commit.
+- **Antes de dar un cambio por terminado** se ejecutan las suites completas de los componentes afectados (backend y Flutter), no solo las pruebas nuevas. La CI las ejecuta en cada push y debe quedar en verde.
+- **Los datos de prueba del cliente reproducen respuestas reales del servidor**, no suposiciones. Si cambia la forma de una respuesta, se actualizan a la vez el servidor, el contrato OpenAPI y los datos de prueba del cliente.
+
+Una prueba que solo pasa contra datos simulados no demuestra la integración. El 01/10/2026 la app no mostraba la respuesta del músico ni su transporte porque sus pruebas usaban campos que el servidor nunca enviaba.
+
+Verifica de forma proporcional al riesgo. No añadas pruebas que repitan literalmente la implementación.
 
 Pruebas prioritarias del MVP:
 

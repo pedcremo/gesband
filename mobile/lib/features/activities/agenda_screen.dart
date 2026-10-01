@@ -131,13 +131,23 @@ class _AgendaScreenState extends State<AgendaScreen> {
                 itemCount: items.length,
                 itemBuilder: (_, index) {
                   final item = items[index];
+                  final reply = item.needsReconfirmation
+                      ? strings.reconfirmNotice
+                      : strings.responseName(item.invitationResponse);
                   return ListTile(
-                    leading: const Icon(Icons.event),
+                    leading: Icon(switch (item.invitationResponse) {
+                      _ when item.needsReconfirmation => Icons.error_outline,
+                      InvitationResponse.accepted => Icons.check_circle,
+                      InvitationResponse.declined => Icons.cancel,
+                      InvitationResponse.pending => Icons.help_outline,
+                    }),
                     title: Text(item.title),
                     subtitle: Text(
                       '${materialStrings.formatMediumDate(item.startsAt)} · '
-                      '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(item.startsAt))}',
+                      '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(item.startsAt))}'
+                      '\n$reply',
                     ),
+                    isThreeLine: true,
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => ActivityDetailScreen(

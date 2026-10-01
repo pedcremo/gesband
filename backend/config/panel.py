@@ -318,7 +318,7 @@ def activity_create(request):
             request,
             _("Actividad creada en borrador. Revísala, convoca y publícala cuando esté lista."),
         )
-        detail_url = reverse("activity-detail", kwargs={"activity_id": activity.id})
+        detail_url = reverse("panel-activity-detail", kwargs={"activity_id": activity.id})
         return redirect(f"{detail_url}?association_id={association.id}")
     return render(request, "activities/create.html", {"association": association, "form": form})
 
@@ -377,7 +377,7 @@ def activity_detail(request, activity_id):
                 result = cancel_activity(activity, request.user, reason=request.POST.get("reason", ""))
             except DRFValidationError as error:
                 messages.error(request, " ".join(error.detail))
-                return redirect("activity-detail", activity_id=activity.id)
+                return redirect("panel-activity-detail", activity_id=activity.id)
             activity = result["activity"]
             messages.success(
                 request,
@@ -409,7 +409,7 @@ def activity_detail(request, activity_id):
 
             record_attendance(invitation, request.user, request.POST.get("attendance", "present"))
             messages.success(request, _("Asistencia actualizada."))
-        return redirect("activity-detail", activity_id=activity.id)
+        return redirect("panel-activity-detail", activity_id=activity.id)
     return _render_activity_detail(request, association, activity, change_form)
 
 

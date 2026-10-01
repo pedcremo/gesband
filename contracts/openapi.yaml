@@ -1556,7 +1556,7 @@ components:
             invitation_revision: {type: integer, minimum: 1}
             programme: {type: array, items: {$ref: '#/components/schemas/ProgrammeItem'}}
             my_invitation: {anyOf: [{$ref: '#/components/schemas/Invitation'}, {type: 'null'}]}
-            my_transport: {anyOf: [{$ref: '#/components/schemas/TransportAssignment'}, {type: 'null'}]}
+            my_transport: {anyOf: [{$ref: '#/components/schemas/MyTransport'}, {type: 'null'}]}
             created_at: {$ref: '#/components/schemas/UtcDateTime'}
             updated_at: {$ref: '#/components/schemas/UtcDateTime'}
     ActivityPage:
@@ -1681,6 +1681,19 @@ components:
         transport_id: {$ref: '#/components/schemas/Uuid'}
         member_id: {$ref: '#/components/schemas/Uuid'}
         created_at: {$ref: '#/components/schemas/UtcDateTime'}
+    MyTransport:
+      type: object
+      description: Transporte asignado a quien consulta; no incluye a los demás ocupantes.
+      required: [id, transport_id, member, kind, label]
+      properties:
+        id: {$ref: '#/components/schemas/Uuid'}
+        transport_id: {$ref: '#/components/schemas/Uuid'}
+        member: {$ref: '#/components/schemas/Uuid'}
+        kind: {type: string, enum: [car, bus, other]}
+        label: {type: string}
+        meeting_point: {type: string}
+        departure_at: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
+        driver_name: {type: [string, 'null']}
     NotificationKind: {type: string, enum: [invitation, reminder, activity_changed, activity_cancelled, transport_changed, poll_opened, poll_published, poll_cancelled, system]}
     Notification:
       type: object

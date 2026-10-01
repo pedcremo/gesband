@@ -45,31 +45,40 @@ class ProgrammeItem {
   final String? notes;
 }
 
+DateTime? _localDate(Object? value) =>
+    value is String ? DateTime.parse(value).toLocal() : null;
+
+/// Convocatoria propia (`my_invitation`), o los campos planos de la agenda
+/// guardada sin conexion.
+Map<String, dynamic> _ownInvitation(Map<String, dynamic> json) =>
+    (json['my_invitation'] as Map<String, dynamic>?) ?? const {};
+
+/// Transporte asignado a quien consulta (`my_transport`).
 class TransportAssignment {
   const TransportAssignment({
-    required this.mode,
-    this.departurePoint,
+    required this.label,
+    this.kind,
+    this.meetingPoint,
     this.departureAt,
     this.driverName,
-    this.seatLabel,
   });
 
   factory TransportAssignment.fromJson(Map<String, dynamic> json) =>
       TransportAssignment(
-        mode: json['mode'] as String,
-        departurePoint: json['departure_point'] as String?,
-        departureAt: json['departure_at'] == null
+        label: json['label'] as String? ?? '',
+        kind: json['kind'] as String?,
+        meetingPoint: (json['meeting_point'] as String?)?.trim().isEmpty == true
             ? null
-            : DateTime.parse(json['departure_at'] as String).toLocal(),
+            : json['meeting_point'] as String?,
+        departureAt: _localDate(json['departure_at']),
         driverName: json['driver_name'] as String?,
-        seatLabel: json['seat_label'] as String?,
       );
 
-  final String mode;
-  final String? departurePoint;
+  final String label;
+  final String? kind;
+  final String? meetingPoint;
   final DateTime? departureAt;
   final String? driverName;
-  final String? seatLabel;
 }
 
 class ActivitySummary {
@@ -81,6 +90,7 @@ class ActivitySummary {
     required this.startsAt,
     required this.invitationResponse,
     required this.isMandatory,
+    this.needsReconfirmation = false,
     this.place,
   });
 
@@ -93,8 +103,14 @@ class ActivitySummary {
             'rehearsal'),
         status: ActivityStatus.values.byName(json['status'] as String),
         startsAt: DateTime.parse(json['starts_at'] as String).toLocal(),
-        invitationResponse: InvitationResponse.values
-            .byName(json['invitation_response'] as String? ?? 'pending'),
+        invitationResponse: InvitationResponse.values.byName(
+            _ownInvitation(json)['response'] as String? ??
+                json['invitation_response'] as String? ??
+                'pending'),
+        needsReconfirmation:
+            _ownInvitation(json)['needs_reconfirmation'] as bool? ??
+                json['needs_reconfirmation'] as bool? ??
+                false,
         isMandatory: json['is_mandatory'] as bool? ?? false,
         place: json['place'] as String? ?? json['location'] as String?,
       );
@@ -106,6 +122,7 @@ class ActivitySummary {
         'status': status.name,
         'starts_at': startsAt.toUtc().toIso8601String(),
         'invitation_response': invitationResponse.name,
+        'needs_reconfirmation': needsReconfirmation,
         'is_mandatory': isMandatory,
         'place': place,
       };
@@ -116,6 +133,7 @@ class ActivitySummary {
   final ActivityStatus status;
   final DateTime startsAt;
   final InvitationResponse invitationResponse;
+  final bool needsReconfirmation;
   final bool isMandatory;
   final String? place;
 }
@@ -125,47 +143,61 @@ class ActivityDetail {
     required this.summary,
     required this.programme,
     this.description,
+    this.endsAt,
     this.meetingAt,
     this.uniform,
     this.responseDeadline,
     this.transport,
     this.invitationId,
+    this.responseNote,
   });
 
-  factory ActivityDetail.fromJson(Map<String, dynamic> json) => ActivityDetail(
-        summary: ActivitySummary.fromJson(json),
-        description: json['description'] as String?,
-        meetingAt: json['meeting_at'] == null
-            ? null
-            : DateTime.parse(json['meeting_at'] as String).toLocal(),
-        uniform: json['uniform'] as String?,
-        responseDeadline: json['response_deadline'] == null
-            ? null
-            : DateTime.parse(json['response_deadline'] as String).toLocal(),
-        programme: (json['programme'] as List<dynamic>? ?? const [])
-            .map((item) => ProgrammeItem.fromJson(item as Map<String, dynamic>))
-            .toList(growable: false),
-        transport: json['transport'] == null
-            ? null
-            : TransportAssignment.fromJson(
-                json['transport'] as Map<String, dynamic>,
-              ),
-        invitationId:
-            (json['invitations'] as List<dynamic>?)?.isNotEmpty == true
-                ? ((json['invitations'] as List<dynamic>).first
-                    as Map<String, dynamic>)['id'] as String?
-                : json['invitation_id'] as String?,
-      );
+  factory ActivityDetail.fromJson(Map<String, dynamic> json) {
+    final own = _ownInvitation(json);
+    final description = json['description'] as String?;
+    final uniform = json['uniform'] as String?;
+    final note = own['response_note'] as String?;
+    return ActivityDetail(
+      summary: ActivitySummary.fromJson(json),
+      description: description?.trim().isEmpty == true ? null : description,
+      endsAt: _localDate(json['ends_at']),
+      meetingAt: _localDate(json['meeting_at']),
+      uniform: uniform?.trim().isEmpty == true ? null : uniform,
+      responseDeadline: _localDate(json['response_deadline']),
+      programme: (json['programme'] as List<dynamic>? ?? const [])
+          .map((item) => ProgrammeItem.fromJson(item as Map<String, dynamic>))
+          .toList(growable: false),
+      transport: json['my_transport'] == null
+          ? null
+          : TransportAssignment.fromJson(
+              json['my_transport'] as Map<String, dynamic>),
+      invitationId: own['id'] as String?,
+      responseNote: note?.trim().isEmpty == true ? null : note,
+    );
+  }
 
   final ActivitySummary summary;
   final String? description;
+  final DateTime? endsAt;
   final DateTime? meetingAt;
   final String? uniform;
   final DateTime? responseDeadline;
   final List<ProgrammeItem> programme;
   final TransportAssignment? transport;
 
+  /// Convocatoria propia; nula si quien consulta no esta convocado.
   final String? invitationId;
+  final String? responseNote;
+
+  bool get deadlinePassed =>
+      responseDeadline != null && DateTime.now().isAfter(responseDeadline!);
+
+  /// Solo se responde a una actividad publicada, futura y con plazo abierto.
+  bool get canRespond =>
+      invitationId != null &&
+      summary.status == ActivityStatus.published &&
+      DateTime.now().isBefore(summary.startsAt) &&
+      !deadlinePassed;
 }
 
 class MemberProfile {

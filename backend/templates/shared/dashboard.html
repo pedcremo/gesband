@@ -30,7 +30,7 @@
     <tbody>
       {% for activity in activities %}
         <tr>
-          <td><a href="{% url 'activity-detail' activity.id %}?association_id={{ association.id }}">{{ activity.title }}</a></td>
+          <td><a href="{% url 'panel-activity-detail' activity.id %}?association_id={{ association.id }}">{{ activity.title }}</a></td>
           <td>{{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }}</td>
           <td>{{ activity.invited }}</td>
           <td>{{ activity.get_status_display }}</td>

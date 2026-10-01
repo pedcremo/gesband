@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/models.dart';
+
 enum AppMessage {
   signInFailed,
   associationsLoadFailed,
@@ -89,6 +91,55 @@ class AppStrings {
       es: 'Si no puedes asistir, debes indicar el motivo.',
       ca: 'Si no pots assistir, has d’indicar el motiu.',
       en: 'If you cannot attend, you must provide a reason.');
+  String get startsLabel => _pick(es: 'Inicio', ca: 'Inici', en: 'Starts');
+  String get endsLabel => _pick(es: 'Final', ca: 'Final', en: 'Ends');
+  String get meetingLabel =>
+      _pick(es: 'Concentración', ca: 'Concentració', en: 'Meeting time');
+  String get placeLabel => _pick(es: 'Lugar', ca: 'Lloc', en: 'Place');
+  String get deadlineLabel => _pick(
+      es: 'Responder antes de', ca: 'Respondre abans de', en: 'Reply before');
+  String get meetingPointLabel => _pick(
+      es: 'Punto de encuentro', ca: 'Punt de trobada', en: 'Meeting point');
+  String get departureLabel =>
+      _pick(es: 'Salida', ca: 'Eixida', en: 'Departure');
+  String get driverLabel =>
+      _pick(es: 'Conductor', ca: 'Conductor', en: 'Driver');
+  String get yourResponse =>
+      _pick(es: 'Tu respuesta', ca: 'La teua resposta', en: 'Your reply');
+  String responseName(InvitationResponse value) => switch (value) {
+        InvitationResponse.pending =>
+          _pick(es: 'Sin responder', ca: 'Sense respondre', en: 'Not replied'),
+        InvitationResponse.accepted =>
+          _pick(es: 'Asistirás', ca: 'Assistiràs', en: 'You will attend'),
+        InvitationResponse.declined => _pick(
+            es: 'No asistirás', ca: 'No assistiràs', en: 'You will not attend'),
+      };
+  String get responseSaved => _pick(
+      es: 'Respuesta guardada.', ca: 'Resposta guardada.', en: 'Reply saved.');
+  String get responseFailed => _pick(
+      es: 'No se pudo guardar la respuesta. Inténtalo de nuevo.',
+      ca: 'No s’ha pogut guardar la resposta. Torna-ho a provar.',
+      en: 'Your reply could not be saved. Please try again.');
+  String get reconfirmNotice => _pick(
+      es: 'Ha cambiado la fecha, la hora o el lugar: vuelve a confirmar.',
+      ca: 'Ha canviat la data, l’hora o el lloc: torna a confirmar.',
+      en: 'The date, time or place has changed: please confirm again.');
+  String get deadlinePassedNotice => _pick(
+      es: 'El plazo de respuesta ha terminado.',
+      ca: 'El termini de resposta ha acabat.',
+      en: 'The reply deadline has passed.');
+  String get activityCancelledNotice => _pick(
+      es: 'Esta actividad se ha cancelado.',
+      ca: 'Aquesta activitat s’ha cancel·lat.',
+      en: 'This activity has been cancelled.');
+  String get activityPastNotice => _pick(
+      es: 'Esta actividad ya ha pasado.',
+      ca: 'Aquesta activitat ja ha passat.',
+      en: 'This activity has already taken place.');
+  String get notInvitedNotice => _pick(
+      es: 'No estás convocado a esta actividad.',
+      ca: 'No estàs convocat a aquesta activitat.',
+      en: 'You are not invited to this activity.');
   String get absenceReason => _pick(
       es: 'Motivo de la ausencia',
       ca: 'Motiu de l’absència',

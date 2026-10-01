@@ -139,13 +139,33 @@ class InvitationSerializer(serializers.ModelSerializer):
             return {"status": Attendance.Status.UNRECORDED, "note": ""}
 
 
+class MyTransportSerializer(serializers.ModelSerializer):
+    """Lo que el musico necesita de su transporte; sin datos de los demas ocupantes."""
+
+    transport_id = serializers.UUIDField(source="transport.id")
+    kind = serializers.CharField(source="transport.kind")
+    label = serializers.CharField(source="transport.label")
+    meeting_point = serializers.CharField(source="transport.meeting_point")
+    departure_at = serializers.DateTimeField(source="transport.departure_at")
+    driver_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TransportAssignment
+        fields = ["id", "transport_id", "member", "kind", "label", "meeting_point", "departure_at", "driver_name"]
+
+    def get_driver_name(self, obj):
+        return str(obj.transport.driver) if obj.transport.driver_id else None
+
+
 class ActivitySerializer(serializers.ModelSerializer):
     programme = ProgrammeSerializer(many=True, required=False)
     invitations = serializers.SerializerMethodField()
+    my_invitation = serializers.SerializerMethodField()
+    my_transport = serializers.SerializerMethodField()
 
     class Meta:
         model = Activity
-        fields = ["id", "association", "kind", "status", "title", "description", "location", "starts_at", "ends_at", "meeting_at", "response_deadline", "uniform", "is_mandatory", "version", "programme", "invitations"]
+        fields = ["id", "association", "kind", "status", "title", "description", "location", "starts_at", "ends_at", "meeting_at", "response_deadline", "uniform", "is_mandatory", "version", "programme", "invitations", "my_invitation", "my_transport"]
         # `status` solo cambia por las acciones publish y cancel, que avisan a
         # quien esta convocado; un PATCH lo cambiaria en silencio.
         read_only_fields = ["id", "association", "created_by", "status", "version", "invitations"]
@@ -167,6 +187,28 @@ class ActivitySerializer(serializers.ModelSerializer):
         if not request.user.is_superuser and not roles.intersection(MANAGER_ROLES):
             invitations = invitations.filter(member__account=request.user)
         return InvitationSerializer(invitations, many=True, context=self.context).data
+
+    def _own_invitation(self, obj):
+        """La convocatoria de quien consulta, tambien si gestiona la banda."""
+        request = self.context.get("request")
+        if not request or not request.user.is_authenticated:
+            return None
+        return next((item for item in obj.invitations.all() if item.member.account_id == request.user.pk), None)
+
+    def get_my_invitation(self, obj):
+        invitation = self._own_invitation(obj)
+        return InvitationSerializer(invitation, context=self.context).data if invitation else None
+
+    def get_my_transport(self, obj):
+        invitation = self._own_invitation(obj)
+        if not invitation:
+            return None
+        assignment = (
+            TransportAssignment.objects.filter(transport__activity=obj, member=invitation.member)
+            .select_related("transport__driver")
+            .first()
+        )
+        return MyTransportSerializer(assignment).data if assignment else None
 
     def update(self, instance, validated_data):
         from apps.activities.services import announce_activity_change, changed_activity_fields

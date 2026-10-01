@@ -20,6 +20,7 @@ class ActivityDetailScreen extends StatefulWidget {
 
 class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   late Future<ActivityDetail> future;
+  bool sending = false;
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   }
 
   Future<void> send(InvitationResponse value, {String note = ''}) async {
+    setState(() => sending = true);
     try {
       final result = await widget.repository
           .respond(widget.association.id, widget.activityId, value, note: note);
@@ -36,46 +38,22 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
       setState(() {
         future = Future.value(result);
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppStrings.of(context).responseSaved)));
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppStrings.of(context).genericError)));
+          SnackBar(content: Text(AppStrings.of(context).responseFailed)));
+    } finally {
+      if (mounted) setState(() => sending = false);
     }
   }
 
   Future<void> declineMandatory() async {
-    final strings = AppStrings.of(context);
-    final controller = TextEditingController();
     final reason = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(strings.absenceReason),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLength: 500,
-          maxLines: 3,
-          decoration: InputDecoration(
-            labelText: strings.absenceReason,
-            helperText: strings.reasonRequired,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(strings.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              final value = controller.text.trim();
-              if (value.isNotEmpty) Navigator.pop(context, value);
-            },
-            child: Text(strings.submitAbsence),
-          ),
-        ],
-      ),
+      builder: (_) => const _AbsenceReasonDialog(),
     );
-    controller.dispose();
     if (reason != null && mounted) {
       await send(InvitationResponse.declined, note: reason);
     }
@@ -114,54 +92,227 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           final activity = snapshot.data!;
-          return ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              Text(activity.summary.title,
-                  style: Theme.of(context).textTheme.headlineSmall),
-              if (activity.description != null) Text(activity.description!),
-              if (activity.uniform?.isNotEmpty ?? false)
-                ListTile(
-                    leading: const Icon(Icons.checkroom),
-                    title: Text(strings.uniform),
-                    subtitle: Text(activity.uniform!)),
-              if (activity.transport != null)
-                ListTile(
-                    leading: const Icon(Icons.directions_car),
-                    title: Text(strings.transport),
-                    subtitle: Text(activity.transport!.mode)),
-              if (activity.summary.isMandatory)
-                ListTile(
-                  leading: const Icon(Icons.priority_high),
-                  title: Text(strings.mandatoryActivity),
-                  subtitle: Text(strings.mandatoryActivityExplanation),
-                ),
-              const SizedBox(height: 16),
-              Text(strings.programme,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              ...activity.programme.map((item) => ListTile(
-                  title: Text(item.title),
-                  subtitle: item.notes == null ? null : Text(item.notes!))),
-              const SizedBox(height: 16),
-              Text(strings.response,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Row(children: [
-                Expanded(
-                    child: OutlinedButton(
-                        onPressed: activity.summary.isMandatory
-                            ? declineMandatory
-                            : () => send(InvitationResponse.declined),
-                        child: Text(strings.decline))),
-                const SizedBox(width: 8),
-                Expanded(
-                    child: FilledButton(
-                        onPressed: () => send(InvitationResponse.accepted),
-                        child: Text(strings.accept))),
-              ]),
-            ],
+          return _ActivityDetailBody(
+            activity: activity,
+            sending: sending,
+            onAccept: () => send(InvitationResponse.accepted),
+            onDecline: activity.summary.isMandatory
+                ? declineMandatory
+                : () => send(InvitationResponse.declined),
           );
         },
       ),
+    );
+  }
+}
+
+class _ActivityDetailBody extends StatelessWidget {
+  const _ActivityDetailBody({
+    required this.activity,
+    required this.sending,
+    required this.onAccept,
+    required this.onDecline,
+  });
+
+  final ActivityDetail activity;
+  final bool sending;
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppStrings.of(context);
+    final material = MaterialLocalizations.of(context);
+    final theme = Theme.of(context);
+    final summary = activity.summary;
+    final response = summary.invitationResponse;
+    final transport = activity.transport;
+
+    String when(DateTime value) => '${material.formatMediumDate(value)} · '
+        '${material.formatTimeOfDay(TimeOfDay.fromDateTime(value))}';
+
+    Widget row(IconData icon, String label, String value) => ListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          leading: Icon(icon),
+          title: Text(label),
+          subtitle: Text(value),
+        );
+
+    final notice = switch (summary.status) {
+      ActivityStatus.cancelled => strings.activityCancelledNotice,
+      _ when activity.invitationId == null => strings.notInvitedNotice,
+      _ when DateTime.now().isAfter(summary.startsAt) =>
+        strings.activityPastNotice,
+      _ when activity.deadlinePassed => strings.deadlinePassedNotice,
+      _ when summary.needsReconfirmation => strings.reconfirmNotice,
+      _ => null,
+    };
+
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Text(summary.title, style: theme.textTheme.headlineSmall),
+        if (notice != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Card(
+              color: theme.colorScheme.secondaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(notice),
+              ),
+            ),
+          ),
+        const SizedBox(height: 8),
+        row(Icons.event, strings.startsLabel, when(summary.startsAt)),
+        if (activity.endsAt != null)
+          row(Icons.event_available, strings.endsLabel, when(activity.endsAt!)),
+        if (activity.meetingAt != null)
+          row(Icons.groups, strings.meetingLabel, when(activity.meetingAt!)),
+        if (summary.place?.isNotEmpty ?? false)
+          row(Icons.place, strings.placeLabel, summary.place!),
+        if (activity.uniform != null)
+          row(Icons.checkroom, strings.uniform, activity.uniform!),
+        if (activity.responseDeadline != null)
+          row(Icons.schedule, strings.deadlineLabel,
+              when(activity.responseDeadline!)),
+        if (transport != null)
+          row(
+            Icons.directions_bus,
+            strings.transport,
+            [
+              transport.label,
+              if (transport.meetingPoint != null)
+                '${strings.meetingPointLabel}: ${transport.meetingPoint}',
+              if (transport.departureAt != null)
+                '${strings.departureLabel}: ${when(transport.departureAt!)}',
+              if (transport.driverName != null)
+                '${strings.driverLabel}: ${transport.driverName}',
+            ].join('\n'),
+          ),
+        if (summary.isMandatory)
+          row(Icons.priority_high, strings.mandatoryActivity,
+              strings.mandatoryActivityExplanation),
+        if (activity.description != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(activity.description!),
+          ),
+        if (activity.programme.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Text(strings.programme, style: theme.textTheme.titleMedium),
+          ...activity.programme.map((item) => ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text(item.title),
+              subtitle: item.notes == null ? null : Text(item.notes!))),
+        ],
+        if (activity.invitationId != null) ...[
+          const SizedBox(height: 16),
+          Text(strings.yourResponse, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Chip(
+            key: const Key('current-response'),
+            avatar: Icon(switch (response) {
+              InvitationResponse.accepted => Icons.check_circle,
+              InvitationResponse.declined => Icons.cancel,
+              InvitationResponse.pending => Icons.help_outline,
+            }),
+            label: Text(strings.responseName(response)),
+          ),
+          if (activity.responseNote != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text('${strings.absenceReason}: ${activity.responseNote}'),
+            ),
+          if (activity.canRespond) ...[
+            const SizedBox(height: 12),
+            SegmentedButton<InvitationResponse>(
+              key: const Key('response-buttons'),
+              emptySelectionAllowed: true,
+              segments: [
+                ButtonSegment(
+                  value: InvitationResponse.accepted,
+                  icon: const Icon(Icons.check),
+                  label: Text(strings.accept),
+                ),
+                ButtonSegment(
+                  value: InvitationResponse.declined,
+                  icon: const Icon(Icons.close),
+                  label: Text(strings.decline),
+                ),
+              ],
+              selected: {
+                if (response != InvitationResponse.pending) response,
+              },
+              onSelectionChanged: sending
+                  ? null
+                  : (selection) {
+                      if (selection.isEmpty) return;
+                      selection.single == InvitationResponse.accepted
+                          ? onAccept()
+                          : onDecline();
+                    },
+            ),
+            if (sending)
+              const Padding(
+                padding: EdgeInsets.only(top: 12),
+                child: LinearProgressIndicator(),
+              ),
+          ],
+        ],
+      ],
+    );
+  }
+}
+
+/// Pide el motivo de una ausencia. Es dueño de su campo de texto, que sigue en
+/// pantalla durante la animación de cierre y no puede liberarse antes.
+class _AbsenceReasonDialog extends StatefulWidget {
+  const _AbsenceReasonDialog();
+
+  @override
+  State<_AbsenceReasonDialog> createState() => _AbsenceReasonDialogState();
+}
+
+class _AbsenceReasonDialogState extends State<_AbsenceReasonDialog> {
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppStrings.of(context);
+    return AlertDialog(
+      title: Text(strings.absenceReason),
+      content: TextField(
+        controller: controller,
+        autofocus: true,
+        maxLength: 500,
+        maxLines: 3,
+        decoration: InputDecoration(
+          labelText: strings.absenceReason,
+          helperText: strings.reasonRequired,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(strings.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final value = controller.text.trim();
+            if (value.isNotEmpty) Navigator.pop(context, value);
+          },
+          child: Text(strings.submitAbsence),
+        ),
+      ],
     );
   }
 }
