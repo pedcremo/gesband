@@ -327,3 +327,29 @@ class PollApiTests(APITestCase):
         Poll.objects.filter(pk=poll["id"]).delete()
 
         self.assertEqual(Ballot.objects.count(), 0)
+
+
+class PollNoticeLanguageTests(TestCase):
+    """Los avisos de encuesta tambien salen en el idioma de cada destinatario."""
+
+    def test_the_poll_notice_uses_the_recipient_language(self):
+        from apps.communications.models import DeviceRegistration
+        from apps.polls import services
+        from apps.polls.models import Poll, PollOption, PollRecipient
+
+        association = Association.objects.create(name="Banda", slug="banda-idioma")
+        account = get_user_model().objects.create_user(username="m@example.invalid", email="m@example.invalid")
+        DeviceRegistration.objects.create(
+            account=account, platform="android", push_token="synthetic-token-poll-en", permission="granted", locale="en"
+        )
+        member = Member.objects.create(association=association, account=account, first_name="M", last_name="T")
+        poll = Poll.objects.create(
+            association=association, created_by=account, question="¿Viaje?", closes_at=timezone.now() + timedelta(days=2)
+        )
+        PollOption.objects.create(poll=poll, label="Mayo", order=0)
+        PollOption.objects.create(poll=poll, label="Junio", order=1)
+        PollRecipient.objects.create(poll=poll, member=member)
+
+        services.open_poll(poll, account)
+
+        self.assertEqual(Notification.objects.get(account=account).title, "New poll")

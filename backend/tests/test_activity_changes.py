@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 
 from apps.activities.models import Activity, Invitation, InvitationResponseEvent
 from apps.associations.models import Association, AssociationAccess, AssociationRole
-from apps.communications.models import Delivery, Notification
+from apps.communications.models import Delivery, DeviceRegistration, Notification
 from apps.members.models import Member
 
 
@@ -341,39 +341,67 @@ class ActivityPanelChangeTests(ActivityChangeNoticeTests):
 
 @override_settings(CELERY_TASK_ALWAYS_EAGER=True, CELERY_TASK_EAGER_PROPAGATES=True)
 class ActivityNoticeLanguageTests(ActivityChangeNoticeTests):
-    """Los avisos salen en el idioma que pide el cliente (ADR 0001)."""
+    """Cada aviso sale en el idioma de quien lo recibe, no en el de quien cambia.
 
-    def cancel_in(self, language):
+    El idioma es el de la instalacion activa mas reciente de la persona; sin
+    instalacion, castellano. Decision 0008.
+    """
+
+    def speaks(self, account, locale):
+        DeviceRegistration.objects.create(
+            account=account, platform="android", push_token=f"synthetic-token-{account.pk}-{locale}",
+            permission="granted", locale=locale,
+        )
+
+    def cancel_as_board_in(self, board_language):
         activity = self.make_activity()
         self.client.post(
             f"/api/v1/activities/{activity.id}/cancel/",
             {"association_id": str(self.association.id), "reason": "Pluja"},
             format="json",
-            HTTP_ACCEPT_LANGUAGE=language,
+            HTTP_ACCEPT_LANGUAGE=board_language,
         )
         return self.notices()[0]
 
-    def test_the_cancellation_notice_is_written_in_spanish(self):
-        self.assertEqual(self.cancel_in("es").title, "Actividad cancelada")
+    def test_without_a_device_the_notice_is_in_spanish_whatever_the_board_uses(self):
+        self.assertEqual(self.cancel_as_board_in("en").title, "Actividad cancelada")
 
-    def test_the_cancellation_notice_is_written_in_valencian(self):
-        notice = self.cancel_in("ca")
+    def test_the_musician_reads_it_in_valencian_when_the_board_writes_in_english(self):
+        self.speaks(self.musician_account, "ca-ES-valencia")
+
+        notice = self.cancel_as_board_in("en")
+
         self.assertEqual(notice.title, "Activitat cancel·lada")
         self.assertIn("Motiu", notice.body)
 
-    def test_the_cancellation_notice_is_written_in_english(self):
-        notice = self.cancel_in("en")
+    def test_the_musician_reads_it_in_english(self):
+        self.speaks(self.musician_account, "en")
+
+        notice = self.cancel_as_board_in("es")
+
         self.assertEqual(notice.title, "Activity cancelled")
         self.assertIn("Reason", notice.body)
 
-    def test_the_change_notice_is_translated_too(self):
+    def test_two_musicians_get_the_same_change_each_in_their_language(self):
+        other_account = get_user_model().objects.create_user(
+            username="altra@example.invalid", email="altra@example.invalid", password="secret-password"
+        )
+        other = Member.objects.create(association=self.association, account=other_account, first_name="Ana", last_name="Test")
+        self.speaks(self.musician_account, "ca-ES-valencia")
+        self.speaks(other_account, "es-ES")
         activity = self.make_activity()
+        Invitation.objects.create(activity=activity, member=other)
+
         self.client.patch(
             f"/api/v1/activities/{activity.id}/",
             {"association_id": str(self.association.id), "location": "Casa de la Música"},
             format="json",
-            HTTP_ACCEPT_LANGUAGE="ca",
+            HTTP_ACCEPT_LANGUAGE="en",
         )
-        notice = self.notices()[0]
-        self.assertEqual(notice.title, "Canvi important: torna a confirmar")
-        self.assertIn("Lloc", notice.body)
+
+        valencian = self.notices()[0]
+        spanish = Notification.objects.get(account=other_account)
+        self.assertEqual(valencian.title, "Canvi important: torna a confirmar")
+        self.assertIn("Lloc", valencian.body)
+        self.assertEqual(spanish.title, "Cambio importante: vuelve a confirmar")
+        self.assertIn("Lugar", spanish.body)

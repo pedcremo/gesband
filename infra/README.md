@@ -45,3 +45,17 @@ docker compose --env-file infra/.env -f infra/compose.yaml exec web python manag
 
 Los adaptadores locales usan correo por consola y proveedor push falso. No introduzcas credenciales FCM/APNs o SMTP en `.env.example`, imágenes ni Git.
 
+### Los contenedores pierden internet al cambiar de red
+
+Si el PC cambia de red (otra wifi, compartir conexión del móvil, VPN), los
+contenedores que ya estaban en marcha conservan el DNS anterior y dejan de resolver
+nombres. El síntoma es `Temporary failure in name resolution` en el worker al enviar
+push o correo. Se arregla reiniciándolos:
+
+```bash
+docker compose --env-file infra/.env -f infra/compose.yaml restart web worker
+```
+
+Un fallo así no deja avisos atascados: el envío se reintenta y, si sigue sin red,
+la entrega o la prueba queda como fallida con su código.
+

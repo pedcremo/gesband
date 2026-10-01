@@ -19,6 +19,7 @@ from apps.activities.services import (
     announce_activity_change,
     cancel_activity,
     changed_activity_fields,
+    invitation_notice,
     invite_members,
     notify_activity,
     publish_activity,
@@ -498,7 +499,7 @@ def _invite(request, activity, members_queryset):
         messages.warning(request, _("Ninguna de las personas elegidas es un músico activo; no se ha convocado a nadie."))
         return activity
     if activity.status == Activity.Status.PUBLISHED:
-        notify_activity(activity, _("Nueva convocatoria"), activity.title)
+        notify_activity(activity, "invitation", invitation_notice(activity))
     messages.success(
         request,
         _(

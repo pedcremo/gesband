@@ -241,7 +241,7 @@ class PushDeliveryTests(PushTestCase):
 
     def notify(self):
         with self.captureOnCommitCallbacks(execute=True):
-            notify_activity(self.activity, "Ensayo general", "Cambia la hora")
+            notify_activity(self.activity, "changed", lambda: ("Ensayo general", "Cambia la hora"))
         return Delivery.objects.get(channel=Delivery.Channel.PUSH, device_id=self.device_id)
 
     def test_an_activity_notice_reaches_the_device_and_opens_the_activity(self):
@@ -287,7 +287,7 @@ class PushDeliveryTests(PushTestCase):
         self.client.patch(f"/api/v1/devices/{self.device_id}", {"permission_state": "denied"}, format="json")
 
         with self.captureOnCommitCallbacks(execute=True):
-            notify_activity(self.activity, "Ensayo general", "Cambia la hora")
+            notify_activity(self.activity, "changed", lambda: ("Ensayo general", "Cambia la hora"))
 
         self.assertFalse(Delivery.objects.filter(channel=Delivery.Channel.PUSH).exists())
         self.assertEqual(Notification.objects.filter(account=self.account).count(), 1)
@@ -317,3 +317,32 @@ class FcmProviderTests(TestCase):
 
         with self.assertRaises(TemporaryPushError):
             self.send_raising(exceptions.UnavailableError("down"))
+
+    def test_no_dns_to_google_is_retryable(self):
+        """Regresion 01/10/2026: sin DNS, la prueba de avisos se quedaba en cola para siempre."""
+        from google.auth.exceptions import TransportError
+
+        with self.assertRaises(TemporaryPushError):
+            self.send_raising(TransportError("Failed to resolve 'oauth2.googleapis.com'"))
+
+    def test_rejected_service_account_is_not_retried(self):
+        from google.auth.exceptions import RefreshError
+
+        from apps.communications.push import RejectedPushError
+
+        with self.assertRaises(RejectedPushError):
+            self.send_raising(RefreshError("invalid_grant"))
+
+
+@override_settings(PUSH_PROVIDER="fake", CELERY_TASK_ALWAYS_EAGER=True, CELERY_TASK_EAGER_PROPAGATES=True)
+class PushTestOutageTests(PushTestCase):
+    def test_a_network_failure_marks_the_test_as_failed_instead_of_queued(self):
+        device_id = self.register().json()["id"]
+        FakePushProvider.scripted_failures.append(TemporaryPushError("transporterror"))
+
+        push_test = self.run_test(device_id).json()
+
+        stored = PushTest.objects.get(pk=push_test["id"])
+        self.assertEqual(stored.status, "provider_failed")
+        self.assertEqual(stored.provider_error_code, "transporterror")
+

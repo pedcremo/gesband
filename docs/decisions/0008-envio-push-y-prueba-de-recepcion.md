@@ -38,6 +38,17 @@ lo seguían.
   `association_id`, `activity_id` o `poll_id` y `deep_link`. El título y el cuerpo son
   los del aviso de la bandeja. La prueba usa un texto fijo en el idioma de la
   instalación.
+- **Cada aviso sale en el idioma de quien lo recibe** (añadido el 01/10/2026). Antes
+  salía en el de quien provocaba el cambio: una junta en castellano mandaba avisos en
+  castellano a músicos con la app en valenciano. El título y el cuerpo se componen una
+  vez por idioma, con el idioma de la instalación activa más reciente de cada
+  persona; sin instalación, castellano. La clave de deduplicación lleva el suceso
+  (`invitation`, `changed`, `reconfirm`, `cancelled`) en vez del título traducido.
+- **Un fallo imprevisto antes de llegar a FCM es temporal.** Sin DNS, sin red o con
+  cualquier excepción ajena a Firebase, el envío se reintenta y acaba en
+  `provider_failed` o `failed`. Antes se quedaba en cola para siempre. Si Google
+  rechaza la cuenta de servicio (`RefreshError`), el error es de configuración y no
+  se reintenta.
 - **La prueba caduca** a los `PUSH_TEST_TTL_MINUTES` (10 por omisión). Confirmarla dos
   veces, en primer plano y al abrirla, conserva el primer evento.
 

@@ -74,7 +74,8 @@ class _FakeActivities implements ActivitiesRepository {
   }
 
   @override
-  Future<List<ActivitySummary>> listMine(String associationId) async => [];
+  Future<AgendaSnapshot> listMine(String associationId) async =>
+      const AgendaSnapshot([]);
 }
 
 Future<void> _open(WidgetTester tester, ActivitiesRepository repository) async {

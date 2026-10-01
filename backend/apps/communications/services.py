@@ -308,8 +308,39 @@ def _handle_token_error(device, exc):
         )
 
 
-def _language_for(device):
-    code = (device.locale or "").split("-")[0].lower()
+def _language_code(locale):
+    code = (locale or "").split("-")[0].lower()
     available = {language for language, _name in settings.LANGUAGES}
     return code if code in available else settings.LANGUAGE_CODE
+
+
+def _language_for(device):
+    return _language_code(device.locale)
+
+
+def recipient_languages(account_ids):
+    """Idioma de cada cuenta: el de su instalacion activa mas reciente.
+
+    Es el unico idioma que la persona ha elegido de forma explicita (en la app).
+    Sin instalacion se usa el idioma por omision de la plataforma.
+    """
+    languages = {}
+    devices = (
+        DeviceRegistration.objects.filter(account_id__in=set(account_ids), is_active=True)
+        .exclude(locale="")
+        .order_by("account_id", "-last_seen_at")
+        .values_list("account_id", "locale")
+    )
+    for account_id, locale in devices:
+        languages.setdefault(account_id, _language_code(locale))
+    return {account_id: languages.get(account_id, settings.LANGUAGE_CODE) for account_id in account_ids}
+
+
+def compose_in(language, compose, cache):
+    """Titulo y cuerpo de un aviso en `language`, compuestos una vez por idioma."""
+    if language not in cache:
+        with translation.override(language):
+            title, body = compose()
+            cache[language] = (str(title)[:180], str(body))
+    return cache[language]
 

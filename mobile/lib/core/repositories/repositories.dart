@@ -55,8 +55,19 @@ class ApiAssociationsRepository implements AssociationsRepository {
           .toList(growable: false);
 }
 
+/// Agenda y su procedencia: si viene de la copia local, `cachedAt` dice cuándo
+/// se sincronizó por última vez (ANALISIS.md 6.3).
+class AgendaSnapshot {
+  const AgendaSnapshot(this.activities, {this.cachedAt});
+
+  final List<ActivitySummary> activities;
+  final DateTime? cachedAt;
+
+  bool get offline => cachedAt != null;
+}
+
 abstract interface class ActivitiesRepository {
-  Future<List<ActivitySummary>> listMine(String associationId);
+  Future<AgendaSnapshot> listMine(String associationId);
   Future<ActivityDetail> getById(String associationId, String activityId);
   Future<ActivityDetail> respond(
     String associationId,
@@ -73,14 +84,14 @@ class ApiActivitiesRepository implements ActivitiesRepository {
   final AgendaCache _cache;
 
   @override
-  Future<List<ActivitySummary>> listMine(String associationId) async {
+  Future<AgendaSnapshot> listMine(String associationId) async {
     try {
       final activities =
           (await _api.getList('/activities/?association_id=$associationId'))
               .map(ActivitySummary.fromJson)
               .toList(growable: false);
       await _cache.write(associationId, activities);
-      return activities;
+      return AgendaSnapshot(activities);
     } on ApiException {
       final cached = await _cache.read(associationId);
       if (cached != null) return cached;
@@ -138,14 +149,19 @@ class AgendaCache {
     await _preferences.setString(_key(associationId), jsonEncode(data));
   }
 
-  Future<List<ActivitySummary>?> read(String associationId) async {
+  /// Última agenda guardada, marcada como copia local con su fecha.
+  Future<AgendaSnapshot?> read(String associationId) async {
     final value = _preferences.getString(_key(associationId));
     if (value == null) return null;
     final data = jsonDecode(value) as Map<String, dynamic>;
     final values = data['results'] as List<dynamic>? ?? const [];
-    return values
-        .map((item) => ActivitySummary.fromJson(item as Map<String, dynamic>))
-        .toList(growable: false);
+    final syncedAt = DateTime.tryParse(data['synced_at'] as String? ?? '');
+    return AgendaSnapshot(
+      values
+          .map((item) => ActivitySummary.fromJson(item as Map<String, dynamic>))
+          .toList(growable: false),
+      cachedAt: (syncedAt ?? DateTime.fromMillisecondsSinceEpoch(0)).toLocal(),
+    );
   }
 
   Future<void> clearAll() async {

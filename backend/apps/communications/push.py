@@ -95,6 +95,7 @@ class FcmPushProvider:
 
     def send(self, message):
         from firebase_admin import exceptions, messaging
+        from google.auth import exceptions as auth_exceptions
 
         fcm_message = messaging.Message(
             token=message.token,
@@ -119,8 +120,15 @@ class FcmPushProvider:
             raise InvalidTokenError(_code(exc)) from None
         except exceptions.FirebaseError as exc:
             raise RejectedPushError(_code(exc)) from None
-        except (OSError, ValueError) as exc:
-            # Red o credenciales ilegibles: no se registra el mensaje, que podria llevar el token.
+        except auth_exceptions.RefreshError:
+            # Google rechaza la cuenta de servicio: es configuracion, no red.
+            logger.error("FCM rechaza las credenciales de la cuenta de servicio")
+            raise RejectedPushError("credentials_rejected") from None
+        except Exception as exc:
+            # Sin DNS, sin red o cualquier fallo imprevisto antes de llegar a FCM
+            # (p. ej. `google.auth.exceptions.TransportError`): se reintenta en vez
+            # de dejar la entrega o la prueba en cola para siempre. No se registra
+            # el mensaje, que podria llevar el token.
             logger.warning("Fallo de conexion con FCM: %s", type(exc).__name__)
             raise TemporaryPushError(type(exc).__name__.lower()[:64]) from None
 

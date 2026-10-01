@@ -91,6 +91,10 @@ class AppStrings {
       es: 'Si no puedes asistir, debes indicar el motivo.',
       ca: 'Si no pots assistir, has d’indicar el motiu.',
       en: 'If you cannot attend, you must provide a reason.');
+  String offlineAgenda(String when) => _pick(
+      es: 'Sin conexión con el servidor. Datos guardados el $when.',
+      ca: 'Sense connexió amb el servidor. Dades guardades el $when.',
+      en: 'No connection to the server. Data saved on $when.');
   String get startsLabel => _pick(es: 'Inicio', ca: 'Inici', en: 'Starts');
   String get endsLabel => _pick(es: 'Final', ca: 'Final', en: 'Ends');
   String get meetingLabel =>

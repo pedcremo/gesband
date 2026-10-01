@@ -80,23 +80,35 @@ def record_attendance(invitation, account, status, note=""):
     return attendance
 
 
-def create_activity_notifications(activity, title, body):
+def create_activity_notifications(activity, event, compose):
     """Crea un aviso por convocatoria y devuelve solo los que no existian ya.
 
-    La clave de deduplicacion incluye la version de la actividad, de modo que un
-    mismo cambio no se avisa dos veces aunque la operacion se repita.
+    `compose` devuelve `(titulo, cuerpo)` y se evalua en el idioma de cada
+    destinatario, no en el de quien provoca el aviso. La clave de deduplicacion
+    lleva el suceso y la version de la actividad, de modo que un mismo cambio no
+    se avisa dos veces aunque la operacion se repita.
     """
+    from apps.communications.services import compose_in, recipient_languages
+
+    invitations = [
+        invitation
+        for invitation in activity.invitations.select_related("member__account")
+        if invitation.member.account_id
+    ]
+    languages = recipient_languages([invitation.member.account_id for invitation in invitations])
+    texts = {}
     intended = {}
-    for invitation in activity.invitations.select_related("member__account"):
-        if not invitation.member.account_id:
-            continue
-        key = f"activity:{activity.pk}:v{activity.version}:{invitation.member.account_id}:{title}"
+    for invitation in invitations:
+        account = invitation.member.account
+        title, body = compose_in(languages[account.pk], compose, texts)
+        key = f"activity:{activity.pk}:v{activity.version}:{event}:{account.pk}"
         intended[key] = Notification(
             association=activity.association,
-            account=invitation.member.account,
+            account=account,
             activity=activity,
             title=title,
             body=body,
+            deep_link=f"gesband://activities/{activity.pk}",
             deduplication_key=key,
         )
     already_sent = set(
@@ -107,7 +119,7 @@ def create_activity_notifications(activity, title, body):
     return fresh
 
 
-def notify_activity(activity, title, body):
+def notify_activity(activity, event, compose):
     """Avisa a quien esta convocado y encola solo las entregas nuevas.
 
     Encolar todos los avisos de la actividad volveria a entregar los de cambios
@@ -116,12 +128,17 @@ def notify_activity(activity, title, body):
     """
     from apps.communications.tasks import queue_notification_task
 
-    fresh = create_activity_notifications(activity, title, body)
+    fresh = create_activity_notifications(activity, event, compose)
     for notification in fresh:
         transaction.on_commit(
             lambda notification_id=notification.id: queue_notification_task.delay(notification_id)
         )
     return len(fresh)
+
+
+def invitation_notice(activity):
+    """Aviso de convocatoria: se compone en el idioma de cada destinatario."""
+    return lambda: (_("Nueva convocatoria"), activity.title)
 
 
 # Cambios que se avisan a quien ya esta convocado.
@@ -214,17 +231,18 @@ def announce_activity_change(activity, changed_fields, account):
     if activity.status != Activity.Status.PUBLISHED or not relevant:
         return result
 
-    if relevant & RECONFIRM_FIELDS:
+    reconfirm = bool(relevant & RECONFIRM_FIELDS)
+    if reconfirm:
         result["reset"] = reset_responses_for_reconfirmation(activity, account)
-        title = _("Cambio importante: vuelve a confirmar")
         result["deadline_passed"] = bool(
             activity.response_deadline and timezone.now() > activity.response_deadline
         )
-    else:
-        title = _("Cambio en la convocatoria")
 
-    body = f"{activity.title}\n{describe_activity_changes(activity, relevant)}"
-    result["notified"] = notify_activity(activity, title, body)
+    def compose():
+        title = _("Cambio importante: vuelve a confirmar") if reconfirm else _("Cambio en la convocatoria")
+        return title, f"{activity.title}\n{describe_activity_changes(activity, relevant)}"
+
+    result["notified"] = notify_activity(activity, "reconfirm" if reconfirm else "changed", compose)
     return result
 
 
@@ -250,14 +268,17 @@ def cancel_activity(activity, account, reason):
 
     notified = 0
     if was_published:
-        # La llamada va fuera de la f-string: xgettext no extrae dentro.
-        reason_label = _("Motivo")
-        body = (
-            f"{locked.title}\n"
-            f"{describe_activity_changes(locked, {'starts_at'})}\n"
-            f"{reason_label}: {reason}"
-        )
-        notified = notify_activity(locked, _("Actividad cancelada"), body)
+        def compose():
+            # La llamada va fuera de la f-string: xgettext no extrae dentro.
+            reason_label = _("Motivo")
+            body = (
+                f"{locked.title}\n"
+                f"{describe_activity_changes(locked, {'starts_at'})}\n"
+                f"{reason_label}: {reason}"
+            )
+            return _("Actividad cancelada"), body
+
+        notified = notify_activity(locked, "cancelled", compose)
     return {"activity": locked, "notified": notified}
 
 
@@ -270,5 +291,5 @@ def publish_activity(activity, account):
     locked.status = Activity.Status.PUBLISHED
     locked.version += 1
     locked.save(update_fields=["status", "version", "updated_at"])
-    notified = notify_activity(locked, _("Nueva convocatoria"), locked.title)
+    notified = notify_activity(locked, "invitation", invitation_notice(locked))
     return {"activity": locked, "notified": notified}

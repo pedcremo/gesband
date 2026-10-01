@@ -34,8 +34,10 @@ class _OneBand implements AssociationsRepository {
 }
 
 class _EmptyAgenda implements ActivitiesRepository {
+  AgendaSnapshot snapshot = const AgendaSnapshot([]);
+
   @override
-  Future<List<ActivitySummary>> listMine(String associationId) async => [];
+  Future<AgendaSnapshot> listMine(String associationId) async => snapshot;
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
@@ -78,6 +80,7 @@ class _Unused implements ProfileRepository, InboxRepository, SessionStore {
 void main() {
   late FakePushGateway gateway;
   late _OnePoll polls;
+  late _EmptyAgenda agenda;
   late AppController controller;
   late LocaleController locale;
 
@@ -87,12 +90,13 @@ void main() {
     locale = LocaleController(preferences);
     gateway = FakePushGateway();
     polls = _OnePoll();
+    agenda = _EmptyAgenda();
     controller = AppController(
       api: ApiClient(
           baseUrl: 'http://localhost/api/v1', sessionStore: _Unused()),
       auth: _SignedIn(),
       associationsRepository: _OneBand(),
-      activitiesRepository: _EmptyAgenda(),
+      activitiesRepository: agenda,
       profileRepository: _Unused(),
       inboxRepository: _Unused(),
       pollsRepository: polls,
@@ -177,5 +181,24 @@ void main() {
 
     expect(find.byType(PollDetailScreen), findsOneWidget);
     expect(polls.requested, ['poll-8']);
+  });
+
+  testWidgets('says when the agenda comes from the saved copy', (tester) async {
+    agenda.snapshot =
+        AgendaSnapshot(const [], cachedAt: DateTime(2026, 10, 1, 12, 34));
+    await start(tester);
+    await tester.tap(find.byKey(const Key('continue-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('offline-agenda')), findsOneWidget);
+    expect(find.textContaining('Sin conexión con el servidor'), findsOneWidget);
+  });
+
+  testWidgets('shows no offline notice with fresh data', (tester) async {
+    await start(tester);
+    await tester.tap(find.byKey(const Key('continue-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('offline-agenda')), findsNothing);
   });
 }

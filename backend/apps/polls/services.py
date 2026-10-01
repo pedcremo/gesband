@@ -187,19 +187,26 @@ def set_recipients(poll, members):
     return len(chosen)
 
 
-def notify_poll(poll, event, title, body):
+def notify_poll(poll, event, compose):
     """Un aviso por destinatario con cuenta; encola solo los que no existian.
 
-    La clave incluye el suceso (`open`, `published`, `cancelled`) para que
-    repetir la operacion no vuelva a avisar.
+    `compose` devuelve `(titulo, cuerpo)` y se evalua en el idioma de cada
+    destinatario. La clave incluye el suceso (`open`, `published`,
+    `cancelled`) para que repetir la operacion no vuelva a avisar.
     """
+    from apps.communications.services import compose_in, recipient_languages
     from apps.communications.tasks import queue_notification_task
 
+    recipients = [
+        recipient.member.account
+        for recipient in poll.recipients.select_related("member__account")
+        if recipient.member.account_id
+    ]
+    languages = recipient_languages([account.pk for account in recipients])
+    texts = {}
     intended = {}
-    for recipient in poll.recipients.select_related("member__account"):
-        account = recipient.member.account
-        if not account:
-            continue
+    for account in recipients:
+        title, body = compose_in(languages[account.pk], compose, texts)
         key = f"poll:{poll.pk}:{event}:{account.pk}"
         intended[key] = Notification(
             association_id=poll.association_id,
@@ -242,7 +249,7 @@ def open_poll(poll, account):
     locked.opened_at = timezone.now()
     locked.save(update_fields=["status", "opened_at", "updated_at"])
     notified = notify_poll(
-        locked, "open", _("Nueva encuesta"), f"{locked.question}\n{_closing_line(locked)}"
+        locked, "open", lambda: (_("Nueva encuesta"), f"{locked.question}\n{_closing_line(locked)}")
     )
     return {"poll": locked, "notified": notified}
 
@@ -287,12 +294,15 @@ def publish_results(poll, account):
     locked.save(update_fields=["status", "published_at", "updated_at"])
     summary = tally(locked)
     lines = [f"{row['label']}: {row['votes']}" for row in summary["options"]]
-    participation = _("Votos emitidos: %(cast)s de %(recipients)s") % {
-        "cast": summary["votes_cast"],
-        "recipients": summary["recipients"],
-    }
-    body = "\n".join([locked.question, *lines, participation])
-    notified = notify_poll(locked, "published", _("Resultado de la encuesta"), body)
+
+    def compose():
+        participation = _("Votos emitidos: %(cast)s de %(recipients)s") % {
+            "cast": summary["votes_cast"],
+            "recipients": summary["recipients"],
+        }
+        return _("Resultado de la encuesta"), "\n".join([locked.question, *lines, participation])
+
+    notified = notify_poll(locked, "published", compose)
     return {"poll": locked, "notified": notified}
 
 
@@ -320,10 +330,11 @@ def cancel_poll(poll, account, reason):
     locked.save(update_fields=["status", "cancelled_at", "cancel_reason", "updated_at"])
     notified = 0
     if was_open:
-        reason_label = _("Motivo")
-        notified = notify_poll(
-            locked, "cancelled", _("Encuesta anulada"), f"{locked.question}\n{reason_label}: {reason}"
-        )
+        def compose():
+            reason_label = _("Motivo")
+            return _("Encuesta anulada"), f"{locked.question}\n{reason_label}: {reason}"
+
+        notified = notify_poll(locked, "cancelled", compose)
     return {"poll": locked, "notified": notified}
 
 

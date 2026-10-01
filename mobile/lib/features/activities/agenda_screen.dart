@@ -4,6 +4,7 @@ import '../../core/app_controller.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/localization/language_menu.dart';
 import '../../core/models/models.dart';
+import '../../core/repositories/repositories.dart';
 import '../notifications/notification_activation_screen.dart';
 import '../notifications/notification_service.dart';
 import '../polls/polls_screen.dart';
@@ -17,7 +18,7 @@ class AgendaScreen extends StatefulWidget {
 }
 
 class _AgendaScreenState extends State<AgendaScreen> {
-  late Future<List<ActivitySummary>> future;
+  late Future<AgendaSnapshot> future;
 
   @override
   void initState() {
@@ -102,7 +103,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
           },
         ),
         Expanded(
-            child: FutureBuilder<List<ActivitySummary>>(
+            child: FutureBuilder<AgendaSnapshot>(
           future: future,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -121,16 +122,42 @@ class _AgendaScreenState extends State<AgendaScreen> {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            final items = snapshot.data!;
+            final agenda = snapshot.data!;
+            final items = agenda.activities;
+            final offline = agenda.cachedAt == null
+                ? null
+                : Card(
+                    key: const Key('offline-agenda'),
+                    margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    child: ListTile(
+                      leading: const Icon(Icons.cloud_off),
+                      title: Text(strings.offlineAgenda(
+                        '${materialStrings.formatMediumDate(agenda.cachedAt!)} · '
+                        '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(agenda.cachedAt!))}',
+                      )),
+                      trailing: TextButton(
+                          onPressed: reload, child: Text(strings.retry)),
+                    ),
+                  );
+            final header = offline == null ? 0 : 1;
             if (items.isEmpty) {
-              return Center(child: Text(strings.emptyAgenda));
+              return RefreshIndicator(
+                onRefresh: reload,
+                child: ListView(children: [
+                  if (offline != null) offline,
+                  const SizedBox(height: 120),
+                  Center(child: Text(strings.emptyAgenda)),
+                ]),
+              );
             }
             return RefreshIndicator(
               onRefresh: reload,
               child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (_, index) {
-                  final item = items[index];
+                itemCount: items.length + header,
+                itemBuilder: (_, position) {
+                  if (position < header) return offline!;
+                  final item = items[position - header];
                   final reply = item.needsReconfirmation
                       ? strings.reconfirmNotice
                       : strings.responseName(item.invitationResponse);

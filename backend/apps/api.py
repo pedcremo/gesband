@@ -587,12 +587,12 @@ class ActivityViewSet(ScopedViewSet):
         members = Member.objects.filter(association_id=activity.association_id)
         if not request.data.get("all_active_musicians", False):
             members = members.filter(id__in=request.data.get("member_ids", []))
-        from apps.activities.services import invite_members, notify_activity
+        from apps.activities.services import invitation_notice, invite_members, notify_activity
 
         result = invite_members(activity, members, mandatory=request.data.get("is_mandatory"))
         activity = result["activity"]
         if activity.status == Activity.Status.PUBLISHED:
-            notify_activity(activity, _("Nueva convocatoria"), activity.title)
+            notify_activity(activity, "invitation", invitation_notice(activity))
         return response.Response(
             {"invited": result["eligible"], "created": result["created"], "existing": result["existing"]}
         )

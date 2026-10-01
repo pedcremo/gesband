@@ -101,6 +101,28 @@ Ninguno introducido por la siembra; son del código anterior.
 5. **Listas de la app web.** Encuestas, agenda y avisos leen solo la primera
    página (50 elementos); no siguen `next`.
 
+## Prueba en Android real del 01/10/2026
+
+Hecha con un Redmi Note 13 (Android 15), el proyecto Firebase `gesband-pruebas` y
+`PUSH_PROVIDER=fcm`:
+
+| Comprobación | Resultado |
+| --- | --- |
+| Acceso, agenda, ficha, respuesta y transporte | Correcto, tras los arreglos de `904ff51`. |
+| Permiso concedido, token registrado | Correcto. En Xiaomi hizo falta permitir el inicio automático y reiniciar: ver `mobile/README.md`. |
+| Aviso de prueba recibido con la app abierta | Correcto, confirmado en 1 s. |
+| Aviso real de la junta con la app en segundo plano | Correcto: llega por FCM. |
+| Pulsar el aviso abre la actividad correcta | Correcto. |
+
+Queda pendiente de MUST-NOTIF-01: permiso denegado y revocado desde ajustes, token
+renovado, cambio de cuenta y **todo el recorrido en iOS**.
+
+Corregido a raíz de la prueba:
+
+- Los avisos salen en el idioma de cada destinatario, no en el de la junta.
+- Un fallo de red hacia Google dejaba la prueba de avisos en cola para siempre.
+- Sin conexión, la agenda avisa de que muestra la copia guardada y de cuándo es.
+
 ## Cambios del 30/09/2026: push real (MUST-NOTIF-01)
 
 - **Servidor.** Envía los avisos push de verdad mediante un adaptador: `fake` por

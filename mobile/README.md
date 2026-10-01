@@ -69,6 +69,39 @@ Ejecutar en un móvil conectado por USB, contra el servidor de pruebas:
 flutter run --dart-define=API_BASE_URL=http://192.168.1.50:8000/api/v1
 ```
 
+### Probar en un móvil conectado por USB
+
+La app de depuración se compila contra el servidor local del PC y llega a él por
+el cable:
+
+```bash
+flutter build apk --debug --dart-define=API_BASE_URL=http://127.0.0.1:8080/api/v1
+adb install -r build/app/outputs/flutter-apk/app-debug.apk
+adb reverse tcp:8080 tcp:8080
+```
+
+`adb reverse` solo dura mientras el cable sigue conectado: al desconectar el USB o
+reiniciar el móvil hay que repetirlo. Sin él, la app enseña la última agenda guardada
+con el aviso «Sin conexión con el servidor».
+
+### Móviles Xiaomi, Redmi y POCO (MIUI/HyperOS)
+
+Verificado el 01/10/2026 con un Redmi Note 13 (Android 15):
+
+- **Instalar desde el PC** exige activar «Instalar vía USB» en *Opciones de
+  desarrollador* (pide la cuenta Xiaomi). Sin ello `adb install` falla con
+  `INSTALL_FAILED_USER_RESTRICTED`.
+- **Firebase no daba token** (`SERVICE_NOT_AVAILABLE`, «Won't retry») aunque el
+  proyecto, la red y los Play Services estaban bien. Se resolvió así:
+  1. *Ajustes → Aplicaciones → Gesband → Inicio automático*: activado (equivale a
+     `adb shell cmd appops set es.gesband.app 10008 allow`).
+  2. *Ahorro de batería*: «Sin restricciones», para Gesband y para *Servicios de
+     Google Play*.
+  3. **Reiniciar el móvil.** Tras el reinicio el token llegó al primer intento.
+
+Los músicos del piloto con Xiaomi pueden necesitar los pasos 1 y 2: conviene
+incluirlos en la guía de incorporación.
+
 ## iOS (en macOS)
 
 Ya está preparado en el repositorio:
