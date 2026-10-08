@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/models/models.dart';
 import '../../core/repositories/repositories.dart';
+import '../../core/theme/gesband_tokens.dart';
+import '../../core/theme/theme_controller.dart';
+import '../../core/theme/visual_style.dart';
+import '../../core/ui/brand_header.dart';
+import '../../core/ui/components.dart';
+import '../../core/ui/formatting.dart';
 import 'poll_detail_screen.dart';
 
 class PollsScreen extends StatefulWidget {
@@ -40,68 +46,141 @@ class _PollsScreenState extends State<PollsScreen> {
     await future;
   }
 
-  String _statusLabel(AppStrings strings, Poll poll) {
-    if (poll.status == PollStatus.cancelled) return strings.pollCancelled;
-    if (poll.status == PollStatus.published) return strings.pollPublished;
-    if (poll.awaitingPublication(DateTime.now())) {
-      return strings.pollAwaitingPublication;
+  (String, Tone) _status(AppStrings strings, Poll poll) {
+    if (poll.status == PollStatus.cancelled) {
+      return (strings.pollCancelled, Tone.danger);
     }
-    return poll.canVote ? strings.pollToVote : strings.pollVoted;
+    if (poll.status == PollStatus.published) {
+      return (strings.pollPublished, Tone.brand);
+    }
+    if (poll.awaitingPublication(DateTime.now())) {
+      return (strings.pollAwaitingPublication, Tone.neutral);
+    }
+    return poll.canVote
+        ? (strings.pollToVote, Tone.warning)
+        : (strings.pollVoted, Tone.success);
+  }
+
+  Future<void> _open(Poll poll) async {
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => PollDetailScreen(
+        association: widget.association,
+        pollId: poll.id,
+        repository: widget.repository,
+      ),
+    ));
+    if (mounted) await reload();
   }
 
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(strings.polls)),
-      body: FutureBuilder<List<Poll>>(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
+    // En la navegación principal lleva la cabecera de la banda; si se abre
+    // encima de otra pantalla, barra con botón de volver.
+    final embedded = !Navigator.of(context).canPop();
+    final list = FutureBuilder<List<Poll>>(
+      future: future,
+      builder: (context, snapshot) {
+        final children = <Widget>[
+          if (embedded)
+            BrandHeader(
+              brand: ThemeScope.brandOf(context),
+              title: strings.polls,
+            ),
+        ];
+        if (snapshot.hasError) {
+          children.add(SizedBox(
+            height: 360,
+            child: MessageView(
+              icon: Icons.cloud_off_rounded,
+              tone: Tone.danger,
+              message: strings.genericError,
+              actionLabel: strings.retry,
+              onAction: reload,
+            ),
+          ));
+        } else if (!snapshot.hasData) {
+          children.add(const SizedBox(height: 360, child: LoadingView()));
+        } else if (snapshot.data!.isEmpty) {
+          children.add(SizedBox(
+            height: 360,
+            child: MessageView(
+              icon: Icons.how_to_vote_outlined,
+              message: strings.emptyPolls,
+            ),
+          ));
+        } else {
+          for (final poll in snapshot.data!) {
+            children.add(Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  GesbandSpacing.xl, GesbandSpacing.md, GesbandSpacing.xl, 0),
+              child: _PollCard(
+                poll: poll,
+                status: _status(strings, poll),
+                onOpen: () => _open(poll),
+              ),
+            ));
+          }
+        }
+        return RefreshIndicator(
+          onRefresh: reload,
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: GesbandSpacing.xxl),
+            children: children,
+          ),
+        );
+      },
+    );
+    return embedded
+        ? list
+        : Scaffold(appBar: ScreenBar(title: strings.polls), body: list);
+  }
+}
+
+class _PollCard extends StatelessWidget {
+  const _PollCard({
+    required this.poll,
+    required this.status,
+    required this.onOpen,
+  });
+
+  final Poll poll;
+  final (String, Tone) status;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = GesbandTokens.of(context);
+    final strings = AppStrings.of(context);
+    final dates = DateLabels.of(context);
+    final text = Theme.of(context).textTheme;
+    return MergeSemantics(
+      child: SurfaceCard(
+        onTap: onOpen,
+        borderColor: poll.canVote ? t.highlight : null,
+        child: Row(
+          children: [
+            Expanded(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(strings.genericError),
-                  const SizedBox(height: 8),
-                  OutlinedButton(onPressed: reload, child: Text(strings.retry)),
+                  StatusPill(label: status.$1, tone: status.$2),
+                  const SizedBox(height: GesbandSpacing.sm),
+                  Text(poll.question,
+                      style: t.style == VisualStyle.escenario
+                          ? text.titleMedium!.copyWith(fontSize: 17)
+                          : t.display(19)),
+                  if (poll.status == PollStatus.open) ...[
+                    const SizedBox(height: GesbandSpacing.xs),
+                    Text(strings.pollClosesAt(dates.dateTime(poll.closesAt)),
+                        style: text.bodySmall),
+                  ],
                 ],
               ),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final polls = snapshot.data!;
-          if (polls.isEmpty) return Center(child: Text(strings.emptyPolls));
-          return RefreshIndicator(
-            onRefresh: reload,
-            child: ListView.builder(
-              itemCount: polls.length,
-              itemBuilder: (_, index) {
-                final poll = polls[index];
-                return ListTile(
-                  leading: Icon(poll.canVote
-                      ? Icons.how_to_vote
-                      : Icons.how_to_vote_outlined),
-                  title: Text(poll.question),
-                  subtitle: Text(_statusLabel(strings, poll)),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () async {
-                    await Navigator.of(context).push(MaterialPageRoute<void>(
-                      builder: (_) => PollDetailScreen(
-                        association: widget.association,
-                        pollId: poll.id,
-                        repository: widget.repository,
-                      ),
-                    ));
-                    if (mounted) await reload();
-                  },
-                );
-              },
             ),
-          );
-        },
+            Icon(Icons.chevron_right_rounded, color: t.muted),
+          ],
+        ),
       ),
     );
   }

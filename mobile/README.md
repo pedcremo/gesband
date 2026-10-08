@@ -22,6 +22,22 @@ flutter build apk --debug          # funciona sin google-services.json
 
 `flutter build ios` solo funciona en macOS con Xcode.
 
+## Sistema visual
+
+La app viste la marca de la banda activa con uno de tres estilos: **Escenario** (por
+defecto), **Partitura** o **Festa**, en claro u oscuro. Ver
+[decisión 0010](../docs/decisions/0010-sistema-visual-escenario.md).
+
+| Ruta | Contenido |
+| --- | --- |
+| `lib/core/theme/` | Tokens (`GesbandTokens`), contraste, marca y `ThemeController` |
+| `lib/core/ui/` | Cabecera de marca, navegación inferior, píldoras, tarjetas y estados |
+| `assets/fonts/` | Fuentes OFL empaquetadas y sus licencias ([README](assets/fonts/README.md)) |
+
+Las pantallas no escriben colores ni fuentes: los leen de `GesbandTokens.of(context)`.
+Las pruebas `test/visual_screens_test.dart` construyen cada pantalla principal en los
+tres estilos, en claro y oscuro y con texto a 1.5.
+
 ## Configuración de Firebase (no se versiona)
 
 La app usa Firebase Cloud Messaging en Android y FCM sobre APNs en iOS. Los

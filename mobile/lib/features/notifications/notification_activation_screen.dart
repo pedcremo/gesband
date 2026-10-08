@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/localization/app_strings.dart';
 import '../../core/localization/language_menu.dart';
+import '../../core/theme/gesband_tokens.dart';
+import '../../core/ui/components.dart';
 import 'notification_service.dart';
 
 /// Paso guiado de MUST-NOTIF-01. Muestra por separado permiso, registro y
@@ -31,66 +33,108 @@ class NotificationActivationScreen extends StatelessWidget {
     final materialStrings = MaterialLocalizations.of(context);
     final lastReceipt = state.lastReceiptConfirmedAt?.toLocal();
     final lastTest = state.lastTest;
+    final t = GesbandTokens.of(context);
+    final text = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(strings.activateNotifications),
+      appBar: ScreenBar(
+        title: strings.activateNotifications,
         actions: const [LanguageMenu()],
       ),
       body: SafeArea(
+        top: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(GesbandSpacing.xl,
+                    GesbandSpacing.sm, GesbandSpacing.xl, GesbandSpacing.xl),
                 children: [
-                  const Icon(Icons.notifications_active_outlined, size: 72),
-                  const SizedBox(height: 16),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: t.primary,
+                        borderRadius: BorderRadius.circular(t.radiusLarge),
+                        border: t.primaryEdge == null
+                            ? null
+                            : Border.fromBorderSide(t.primaryEdgeSide),
+                      ),
+                      child: Icon(Icons.notifications_active_outlined,
+                          size: 36, color: t.onPrimary),
+                    ),
+                  ),
+                  const SizedBox(height: GesbandSpacing.lg),
                   Text(
                     strings.notificationExplanation,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: text.titleMedium!.copyWith(fontSize: 18),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: GesbandSpacing.xl),
                   if (!state.available)
-                    _Explanation(strings.notificationsUnavailable)
+                    InlineNotice(
+                      icon: Icons.info_outline_rounded,
+                      tone: Tone.neutral,
+                      message: strings.notificationsUnavailable,
+                    )
                   else ...[
-                    _StatusRow(
-                      key: const Key('permission-row'),
-                      label: strings.permission,
-                      value: strings.permissionName(state.permission.name),
-                      ok: state.permission == PushPermission.granted,
-                    ),
-                    _StatusRow(
-                      key: const Key('registration-row'),
-                      label: strings.registeredDevice,
-                      value: state.tokenRegistered ? strings.yes : strings.no,
-                      ok: state.tokenRegistered,
-                    ),
-                    _StatusRow(
-                      key: const Key('receipt-row'),
-                      label: strings.receiptConfirmed,
-                      value: state.receiptConfirmed
-                          ? strings.yes
-                          : strings.pending,
-                      ok: state.receiptConfirmed,
-                    ),
-                    if (lastReceipt != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40, bottom: 8),
-                        child: Text(strings.lastReceiptAt(
-                          '${materialStrings.formatMediumDate(lastReceipt)} '
-                          '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(lastReceipt))}',
-                        )),
+                    SurfaceCard(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: GesbandSpacing.lg,
+                          vertical: GesbandSpacing.sm),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _StatusRow(
+                            key: const Key('permission-row'),
+                            label: strings.permission,
+                            value:
+                                strings.permissionName(state.permission.name),
+                            ok: state.permission == PushPermission.granted,
+                          ),
+                          _StatusRow(
+                            key: const Key('registration-row'),
+                            label: strings.registeredDevice,
+                            value: state.tokenRegistered
+                                ? strings.yes
+                                : strings.no,
+                            ok: state.tokenRegistered,
+                          ),
+                          _StatusRow(
+                            key: const Key('receipt-row'),
+                            label: strings.receiptConfirmed,
+                            value: state.receiptConfirmed
+                                ? strings.yes
+                                : strings.pending,
+                            ok: state.receiptConfirmed,
+                          ),
+                          if (lastReceipt != null)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 40, bottom: GesbandSpacing.sm),
+                              child: Text(
+                                strings.lastReceiptAt(
+                                  '${materialStrings.formatMediumDate(lastReceipt)} '
+                                  '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(lastReceipt))}',
+                                ),
+                                style: text.bodySmall,
+                              ),
+                            ),
+                          if (lastTest != null)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 40, bottom: GesbandSpacing.sm),
+                              child: Text(
+                                '${strings.lastTest}: '
+                                '${strings.testStatusName(lastTest.status.wireValue)}',
+                                style: text.bodySmall,
+                              ),
+                            ),
+                        ],
                       ),
-                    if (lastTest != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40, bottom: 8),
-                        child: Text(
-                          '${strings.lastTest}: '
-                          '${strings.testStatusName(lastTest.status.wireValue)}',
-                        ),
-                      ),
-                    const SizedBox(height: 8),
+                    ),
+                    const SizedBox(height: GesbandSpacing.md),
                     if (state.permission == PushPermission.provisional)
                       _Explanation(strings.notificationsProvisionalExplanation),
                     if (action != NotificationAction.requestSystemPermission)
@@ -106,40 +150,54 @@ class NotificationActivationScreen extends StatelessWidget {
                       }),
                   ],
                   if (state.error != null) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      strings.message(state.error!),
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error),
+                    const SizedBox(height: GesbandSpacing.md),
+                    InlineNotice(
+                      icon: Icons.error_outline_rounded,
+                      tone: Tone.danger,
+                      message: strings.message(state.error!),
                     ),
                   ],
                   if (state.loading) ...[
-                    const SizedBox(height: 16),
-                    const Center(child: CircularProgressIndicator()),
+                    const SizedBox(height: GesbandSpacing.lg),
+                    const LoadingView(),
                   ],
                 ],
               ),
             ),
             // Las acciones quedan fijas abajo para que «Ahora no» siempre se
             // vea: el paso nunca bloquea el acceso a la app.
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ..._actions(strings, state, action),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    key: const Key('continue-button'),
-                    onPressed: onContinue,
-                    child: Text(
-                      state.fullyActive || !state.available
-                          ? strings.continueLabel
-                          : strings.notNow,
-                    ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: t.background,
+                border: Border(top: BorderSide(color: t.line)),
+              ),
+              // Con texto grande en pantallas bajas, las acciones se
+              // desplazan en lugar de desbordar.
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(GesbandSpacing.xl,
+                      GesbandSpacing.md, GesbandSpacing.xl, GesbandSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ..._actions(strings, state, action),
+                      const SizedBox(height: GesbandSpacing.xs),
+                      TextButton(
+                        key: const Key('continue-button'),
+                        onPressed: onContinue,
+                        child: Text(
+                          state.fullyActive || !state.available
+                              ? strings.continueLabel
+                              : strings.notNow,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -225,21 +283,34 @@ class _StatusRow extends StatelessWidget {
   final bool ok;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            Icon(
-              ok ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: ok
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.outline,
+  Widget build(BuildContext context) {
+    final t = GesbandTokens.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: GesbandSpacing.sm),
+      child: Row(
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: ok ? t.success : t.surfaceMuted,
+              shape: BoxShape.circle,
             ),
-            const SizedBox(width: 16),
-            Expanded(child: Text('$label: $value')),
-          ],
-        ),
-      );
+            child: Icon(
+              ok ? Icons.check_rounded : Icons.more_horiz_rounded,
+              size: 18,
+              color: ok ? t.successInk : t.muted,
+            ),
+          ),
+          const SizedBox(width: GesbandSpacing.md),
+          Expanded(
+            child: Text('$label: $value',
+                style: Theme.of(context).textTheme.bodyLarge),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Explanation extends StatelessWidget {
@@ -248,7 +319,7 @@ class _Explanation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(text),
+        padding: const EdgeInsets.symmetric(vertical: GesbandSpacing.sm),
+        child: Text(text, style: Theme.of(context).textTheme.bodyLarge),
       );
 }

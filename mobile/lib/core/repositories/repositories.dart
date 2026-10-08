@@ -185,10 +185,12 @@ class ApiProfileRepository implements ProfileRepository {
 
   final ApiClient _api;
 
+  /// Ficha propia en la asociación activa: `GET /members/me/`. La lista
+  /// `/members/` es el censo y solo la ve la junta.
   @override
   Future<MemberProfile> getMine(String associationId) async =>
       MemberProfile.fromJson(
-          await _api.getObject('/members/?association_id=$associationId'));
+          await _api.getObject('/members/me/?association_id=$associationId'));
 
   @override
   Future<MemberProfile> updateContact({String? email, String? phone}) async =>

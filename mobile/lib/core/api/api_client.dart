@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 
 import '../storage/secure_session_store.dart';
@@ -151,6 +153,38 @@ class ApiClient {
       throw error.error is ApiException
           ? error.error! as ApiException
           : const ApiException('Error de conexión');
+    }
+  }
+
+  /// Ruta relativa al API para una URL absoluta que envía el servidor
+  /// (logotipo, foto). Solo se aceptan rutas del mismo host bajo el prefijo
+  /// del API, y la petición sale siempre contra la base configurada: el
+  /// token nunca se manda a otro sitio.
+  String? apiPathFor(String url) {
+    final target = Uri.tryParse(url);
+    final base = Uri.parse(_dio.options.baseUrl);
+    if (target == null) return null;
+    final prefix = base.path.endsWith('/') ? base.path : '${base.path}/';
+    if (!target.path.startsWith(prefix)) return null;
+    if (target.hasAuthority && target.host != base.host) return null;
+    final relative = target.path.substring(prefix.length - 1);
+    return target.hasQuery ? '$relative?${target.query}' : relative;
+  }
+
+  /// Descarga un archivo protegido del API con la sesión. Devuelve `null`
+  /// si la URL no pertenece al API, no existe o falla la red.
+  Future<Uint8List?> getBytes(String url) async {
+    final path = apiPathFor(url);
+    if (path == null) return null;
+    try {
+      final response = await _dio.get<List<int>>(
+        path,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final data = response.data;
+      return data == null || data.isEmpty ? null : Uint8List.fromList(data);
+    } on DioException {
+      return null;
     }
   }
 

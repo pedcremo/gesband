@@ -17,8 +17,12 @@ Si no tienes correo en la ficha no se te puede invitar: pide a la junta que lo a
 
 1. Escribe tu **correo electrónico** y tu contraseña y pulsa «Entrar».
 2. Si perteneces a varias bandas, elige una en «Elige la banda». Puedes cambiar
-   después con «Cambiar de banda».
-3. La app toma el logo y los colores de tu banda.
+   después con «Cambiar de banda», en «Mi ficha».
+3. La app toma el logo, los colores, el lema y el estilo visual de tu banda
+   (Escenario, Partitura o Festa). La próxima vez que abras la app, la pantalla de
+   acceso ya muestra tu banda.
+
+Abajo tienes cuatro secciones: **Agenda**, **Encuestas**, **Avisos** y **Mi ficha**.
 
 ## 3. Activar los avisos
 
@@ -43,7 +47,8 @@ La pantalla comprueba tres cosas por separado:
    punto está. Si el servicio de avisos no la aceptó, lo verás ahí.
 
 Puedes seguir sin terminar el paso con «Ahora no». Mientras falte algo, la agenda
-muestra un aviso con «Revisar» para volver a esta pantalla.
+muestra un aviso con «Revisar» para volver a esta pantalla. También puedes volver
+cuando quieras desde «Mi ficha → Avisos en este móvil».
 
 **Si denegaste el permiso,** el móvil ya no vuelve a preguntar. Pulsa «Abrir ajustes
 del sistema», activa las notificaciones de Gesband y vuelve a la app: lo comprueba al
@@ -58,8 +63,14 @@ actualiza.
 
 ## 4. Agenda y convocatorias
 
-La agenda muestra **solo tus convocatorias**, no las de los demás. En cada actividad
-verás tipo (ensayo o actuación), inicio y final, concentración, lugar, uniforme,
+La agenda muestra **solo tus convocatorias**, no las de los demás. Arriba, en grande,
+está la próxima, con la concentración, el lugar, el uniforme y el transporte; puedes
+responder ahí mismo con «Asistiré» o «No podré». Debajo, el resto agrupado por
+meses; cada una lleva su estado: «Asistiré», «No podré» o «Responde» (las que
+esperan tu respuesta van resaltadas).
+
+Al abrir una actividad
+verás el tipo (ensayo o actuación), inicio y final, concentración, lugar, uniforme,
 transporte si te lo han asignado, programa y plazo de respuesta.
 
 - Pulsa «Asistiré» o «No asistiré». Puedes cambiar la respuesta hasta que termine el
@@ -88,15 +99,31 @@ En la pestaña «Encuestas» aparecen las consultas de la junta en las que parti
 4. Al cerrar el plazo verás «Votación cerrada, pendiente de publicar» hasta que la
    junta publique el resultado definitivo.
 
-## 6. Cerrar sesión
+## 6. Avisos
 
-«Cerrar sesión» desvincula el móvil de tu cuenta: dejan de llegarte avisos en él.
+En «Avisos» están los mensajes que te ha enviado la banda, con los no leídos
+marcados. Al pulsar uno se marca como leído y, si trata de una actividad o una
+encuesta, se abre.
+
+## 7. Mi ficha y ajustes
+
+«Mi ficha» muestra tu nombre, tu foto, tu instrumento principal y tus datos de
+contacto tal como los tiene la banda. Debajo están los ajustes de este móvil:
+
+- **Apariencia:** «Como la banda» usa el modo claro u oscuro que ha elegido tu banda
+  (o el del móvil, si la banda no fija ninguno). «Claro» y «Oscuro» lo fijan solo en
+  este móvil.
+- **Idioma:** castellano, valencià o English.
+- **Avisos en este móvil:** vuelve a la pantalla de activación y prueba.
+- **Cambiar de banda** y **Licencias** (las de las fuentes tipográficas).
+
+## 8. Cerrar sesión
+
+«Cerrar sesión», al final de «Mi ficha», desvincula el móvil de tu cuenta: dejan de llegarte avisos en él.
 Si otra persona inicia sesión en el mismo móvil, recibirá solo los suyos.
 
 ## Todavía no se puede
 
-- Consultar la bandeja de avisos dentro de la app móvil. La app web de pruebas sí
-  tiene «Avisos».
 - Cambiar tus datos de contacto o tu foto desde la app. Pídeselo a la administración de
   la banda.
 - Recuperar la contraseña tú mismo.

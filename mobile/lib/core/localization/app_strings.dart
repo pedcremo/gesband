@@ -297,6 +297,88 @@ class AppStrings {
       ca: 'Avís de prova rebut.',
       en: 'Test notification received.');
 
+  // Sistema visual y navegación (decisión 0010)
+  String get agenda => _pick(es: 'Agenda', ca: 'Agenda', en: 'Agenda');
+  String get inbox => _pick(es: 'Avisos', ca: 'Avisos', en: 'Notices');
+  String get myProfile =>
+      _pick(es: 'Mi ficha', ca: 'La meua fitxa', en: 'My profile');
+  String get sections => _pick(es: 'Secciones', ca: 'Seccions', en: 'Sections');
+  String get loading => _pick(es: 'Cargando', ca: 'Carregant', en: 'Loading');
+  String logoOf(String name) =>
+      _pick(es: 'Logotipo de $name', ca: 'Logotip de $name', en: '$name logo');
+  String photoOf(String name) =>
+      _pick(es: 'Foto de $name', ca: 'Foto de $name', en: 'Photo of $name');
+  String nextActivity(String when) =>
+      _pick(es: 'Próxima · $when', ca: 'Pròxima · $when', en: 'Next · $when');
+  String get attendShort =>
+      _pick(es: 'Asistiré', ca: 'Assistiré', en: 'I’ll be there');
+  String get declineShort =>
+      _pick(es: 'No podré', ca: 'No podré', en: 'Can’t make it');
+  String get pillGoing => _pick(es: 'Asistiré', ca: 'Assistiré', en: 'Going');
+  String get pillNotGoing =>
+      _pick(es: 'No podré', ca: 'No podré', en: 'Not going');
+  String get pillReply => _pick(es: 'Responde', ca: 'Respon', en: 'Reply');
+  String get pillReconfirm =>
+      _pick(es: 'Reconfirma', ca: 'Reconfirma', en: 'Reconfirm');
+  String get pillCancelled =>
+      _pick(es: 'Cancelada', ca: 'Cancel·lada', en: 'Cancelled');
+  String pendingReplies(int count) => switch (count) {
+        0 => _pick(
+            es: 'Lo tienes todo respondido.',
+            ca: 'Ho tens tot respost.',
+            en: 'You are all caught up.'),
+        1 => _pick(
+            es: 'Tienes 1 respuesta pendiente.',
+            ca: 'Tens 1 resposta pendent.',
+            en: 'You have 1 reply pending.'),
+        _ => _pick(
+            es: 'Tienes $count respuestas pendientes.',
+            ca: 'Tens $count respostes pendents.',
+            en: 'You have $count replies pending.'),
+      };
+  String activityTypeName(ActivityType value) => switch (value) {
+        ActivityType.rehearsal =>
+          _pick(es: 'Ensayo', ca: 'Assaig', en: 'Rehearsal'),
+        ActivityType.performance =>
+          _pick(es: 'Actuación', ca: 'Actuació', en: 'Performance'),
+      };
+  String get mandatoryShort =>
+      _pick(es: 'Obligatoria', ca: 'Obligatòria', en: 'Mandatory');
+  String get emptyInbox => _pick(
+      es: 'No tienes avisos.',
+      ca: 'No tens avisos.',
+      en: 'You have no notices.');
+  String get unread => _pick(es: 'Sin leer', ca: 'Sense llegir', en: 'Unread');
+  String get instrumentLabel =>
+      _pick(es: 'Instrumento', ca: 'Instrument', en: 'Instrument');
+  String get phoneLabel => _pick(es: 'Teléfono', ca: 'Telèfon', en: 'Phone');
+  String get profileUnavailable => _pick(
+      es: 'No se pudo cargar tu ficha. Los ajustes siguen disponibles.',
+      ca: 'No s’ha pogut carregar la teua fitxa. Els ajustos continuen disponibles.',
+      en: 'Your profile could not be loaded. Settings are still available.');
+  String get settings => _pick(es: 'Ajustes', ca: 'Ajustos', en: 'Settings');
+  String get appearance =>
+      _pick(es: 'Apariencia', ca: 'Aparença', en: 'Appearance');
+  String get colorModeBand =>
+      _pick(es: 'Como la banda', ca: 'Com la banda', en: 'Like the band');
+  String get colorModeLight => _pick(es: 'Claro', ca: 'Clar', en: 'Light');
+  String get colorModeDark => _pick(es: 'Oscuro', ca: 'Fosc', en: 'Dark');
+  String get notificationsOnThisPhone => _pick(
+      es: 'Avisos en este móvil',
+      ca: 'Avisos en este mòbil',
+      en: 'Notifications on this phone');
+  String get notificationsActiveShort => _pick(
+      es: 'Activados y comprobados',
+      ca: 'Activats i comprovats',
+      en: 'On and verified');
+  String get notificationsNeedReview => _pick(
+      es: 'Pendientes de activar o comprobar',
+      ca: 'Pendents d’activar o comprovar',
+      en: 'Not yet enabled or verified');
+  String get licenses =>
+      _pick(es: 'Licencias', ca: 'Llicències', en: 'Licences');
+  String get back => _pick(es: 'Volver', ca: 'Tornar', en: 'Back');
+
   // Encuestas
   String get polls => _pick(es: 'Encuestas', ca: 'Enquestes', en: 'Polls');
   String get poll => _pick(es: 'Encuesta', ca: 'Enquesta', en: 'Poll');

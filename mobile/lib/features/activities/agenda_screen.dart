@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_controller.dart';
 import '../../core/localization/app_strings.dart';
-import '../../core/localization/language_menu.dart';
 import '../../core/models/models.dart';
 import '../../core/repositories/repositories.dart';
+import '../../core/theme/gesband_tokens.dart';
+import '../../core/theme/theme_controller.dart';
+import '../../core/theme/visual_style.dart';
+import '../../core/ui/brand_header.dart';
+import '../../core/ui/components.dart';
+import '../../core/ui/formatting.dart';
 import '../notifications/notification_activation_screen.dart';
 import '../notifications/notification_service.dart';
-import '../polls/polls_screen.dart';
+import 'absence_reason_dialog.dart';
 import 'activity_detail_screen.dart';
+import 'agenda_widgets.dart';
 
+/// Agenda: cartel de la próxima convocatoria y el resto agrupado por meses.
 class AgendaScreen extends StatefulWidget {
   const AgendaScreen({super.key, required this.controller});
   final AppController controller;
@@ -19,6 +26,7 @@ class AgendaScreen extends StatefulWidget {
 
 class _AgendaScreenState extends State<AgendaScreen> {
   late Future<AgendaSnapshot> future;
+  String? sendingId;
 
   @override
   void initState() {
@@ -55,141 +63,205 @@ class _AgendaScreenState extends State<AgendaScreen> {
     await future;
   }
 
+  Future<void> _open(ActivitySummary item) async {
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => ActivityDetailScreen(
+        association: widget.controller.activeAssociation!,
+        activityId: item.id,
+        repository: widget.controller.activitiesRepository,
+      ),
+    ));
+    if (mounted) await reload();
+  }
+
+  /// Respuesta desde el cartel, con las mismas reglas que el detalle: una
+  /// ausencia a una actividad obligatoria exige motivo.
+  Future<void> _respond(ActivitySummary item, InvitationResponse value) async {
+    var note = '';
+    if (value == InvitationResponse.declined && item.isMandatory) {
+      final reason = await askAbsenceReason(context);
+      if (reason == null || !mounted) return;
+      note = reason;
+    }
+    setState(() => sendingId = item.id);
+    final messenger = ScaffoldMessenger.of(context);
+    final strings = AppStrings.of(context);
+    try {
+      await widget.controller.activitiesRepository.respond(
+          widget.controller.activeAssociation!.id, item.id, value,
+          note: note);
+      messenger.showSnackBar(SnackBar(content: Text(strings.responseSaved)));
+      if (mounted) await reload();
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(strings.responseFailed)));
+    } finally {
+      if (mounted) setState(() => sendingId = null);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final association = widget.controller.activeAssociation!;
     final strings = AppStrings.of(context);
-    final materialStrings = MaterialLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(association.name), actions: [
-        IconButton(
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-                builder: (_) => PollsScreen(
-                      association: association,
-                      repository: widget.controller.pollsRepository,
-                    ))),
-            tooltip: strings.polls,
-            icon: const Icon(Icons.how_to_vote)),
-        IconButton(
-            onPressed: widget.controller.changeAssociation,
-            tooltip: strings.changeAssociation,
-            icon: const Icon(Icons.swap_horiz)),
-        const LanguageMenu(),
-        IconButton(
-            onPressed: widget.controller.logout,
-            tooltip: strings.signOut,
-            icon: const Icon(Icons.logout)),
-      ]),
-      body: Column(children: [
-        ListenableBuilder(
-          listenable: widget.controller.notifications,
-          builder: (context, _) {
-            final state = widget.controller.notifications.state;
-            if (!state.available ||
-                state.nextAction == NotificationAction.none) {
-              return const SizedBox.shrink();
-            }
-            return MaterialBanner(
-              key: const Key('notifications-pending-banner'),
-              leading: const Icon(Icons.notifications_off_outlined),
-              content: Text(strings.notificationsPendingBanner),
-              actions: [
-                TextButton(
-                  onPressed: _openNotificationStep,
-                  child: Text(strings.review),
-                ),
-              ],
-            );
-          },
-        ),
-        Expanded(
-            child: FutureBuilder<AgendaSnapshot>(
-          future: future,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(strings.genericError),
-                    const SizedBox(height: 8),
-                    OutlinedButton(
-                        onPressed: reload, child: Text(strings.retry)),
-                  ],
-                ),
-              );
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final agenda = snapshot.data!;
-            final items = agenda.activities;
-            final offline = agenda.cachedAt == null
-                ? null
-                : Card(
-                    key: const Key('offline-agenda'),
-                    margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-                    color: Theme.of(context).colorScheme.errorContainer,
-                    child: ListTile(
-                      leading: const Icon(Icons.cloud_off),
-                      title: Text(strings.offlineAgenda(
-                        '${materialStrings.formatMediumDate(agenda.cachedAt!)} · '
-                        '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(agenda.cachedAt!))}',
-                      )),
-                      trailing: TextButton(
-                          onPressed: reload, child: Text(strings.retry)),
-                    ),
-                  );
-            final header = offline == null ? 0 : 1;
-            if (items.isEmpty) {
-              return RefreshIndicator(
-                onRefresh: reload,
-                child: ListView(children: [
-                  if (offline != null) offline,
-                  const SizedBox(height: 120),
-                  Center(child: Text(strings.emptyAgenda)),
-                ]),
-              );
-            }
-            return RefreshIndicator(
-              onRefresh: reload,
-              child: ListView.builder(
-                itemCount: items.length + header,
-                itemBuilder: (_, position) {
-                  if (position < header) return offline!;
-                  final item = items[position - header];
-                  final reply = item.needsReconfirmation
-                      ? strings.reconfirmNotice
-                      : strings.responseName(item.invitationResponse);
-                  return ListTile(
-                    leading: Icon(switch (item.invitationResponse) {
-                      _ when item.needsReconfirmation => Icons.error_outline,
-                      InvitationResponse.accepted => Icons.check_circle,
-                      InvitationResponse.declined => Icons.cancel,
-                      InvitationResponse.pending => Icons.help_outline,
-                    }),
-                    title: Text(item.title),
-                    subtitle: Text(
-                      '${materialStrings.formatMediumDate(item.startsAt)} · '
-                      '${materialStrings.formatTimeOfDay(TimeOfDay.fromDateTime(item.startsAt))}'
-                      '\n$reply',
-                    ),
-                    isThreeLine: true,
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => ActivityDetailScreen(
-                              association: association,
-                              activityId: item.id,
-                              repository:
-                                  widget.controller.activitiesRepository,
-                            ))),
-                  );
-                },
-              ),
-            );
-          },
-        )),
-      ]),
+    final brand = ThemeScope.brandOf(context);
+    return FutureBuilder<AgendaSnapshot>(
+      future: future,
+      builder: (context, snapshot) {
+        final now = DateTime.now();
+        final items = [...?snapshot.data?.activities]
+          ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
+        final pending = items.where((item) => awaitsReply(item, now)).length;
+        final t = GesbandTokens.of(context);
+        final header = BrandHeader(
+          brand: brand,
+          // Festa saluda con el recuento de respuestas pendientes.
+          title: t.style == VisualStyle.festa && snapshot.hasData
+              ? strings.pendingReplies(pending)
+              : null,
+        );
+        final children = <Widget>[
+          header,
+          _NotificationsBanner(
+            notifications: widget.controller.notifications,
+            onReview: _openNotificationStep,
+          ),
+        ];
+        if (snapshot.hasError) {
+          children.add(SizedBox(
+            height: 360,
+            child: MessageView(
+              icon: Icons.cloud_off_rounded,
+              tone: Tone.danger,
+              message: strings.genericError,
+              actionLabel: strings.retry,
+              onAction: reload,
+            ),
+          ));
+        } else if (!snapshot.hasData) {
+          children.add(const SizedBox(height: 360, child: LoadingView()));
+        } else {
+          children.addAll(_content(context, snapshot.data!, items, now));
+        }
+        return RefreshIndicator(
+          onRefresh: reload,
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: GesbandSpacing.xxl),
+            children: children,
+          ),
+        );
+      },
     );
   }
+
+  List<Widget> _content(BuildContext context, AgendaSnapshot agenda,
+      List<ActivitySummary> items, DateTime now) {
+    final strings = AppStrings.of(context);
+    final dates = DateLabels.of(context);
+    final t = GesbandTokens.of(context);
+    final horizontal = t.style == VisualStyle.partitura
+        ? GesbandSpacing.xxl
+        : GesbandSpacing.xl;
+    Widget padded(Widget child, {double top = GesbandSpacing.lg}) => Padding(
+          padding: EdgeInsets.fromLTRB(horizontal, top, horizontal, 0),
+          child: child,
+        );
+
+    final widgets = <Widget>[];
+    if (agenda.cachedAt != null) {
+      final cachedAt = agenda.cachedAt!;
+      widgets.add(padded(
+        InlineNotice(
+          key: const Key('offline-agenda'),
+          icon: Icons.cloud_off_rounded,
+          message: strings.offlineAgenda(
+            '${MaterialLocalizations.of(context).formatMediumDate(cachedAt)} · '
+            '${dates.time(cachedAt)}',
+          ),
+          actionLabel: strings.retry,
+          onAction: reload,
+        ),
+      ));
+    }
+    if (items.isEmpty) {
+      widgets.add(SizedBox(
+        height: 320,
+        child: MessageView(
+          icon: Icons.event_available_rounded,
+          message: strings.emptyAgenda,
+        ),
+      ));
+      return widgets;
+    }
+
+    final next = items
+        .where((item) =>
+            item.status == ActivityStatus.published &&
+            item.startsAt.isAfter(now))
+        .firstOrNull;
+    if (next != null) {
+      widgets.add(padded(
+        ActivityPoster(
+          item: next,
+          canRespond: next.canRespondAt(now) && agenda.cachedAt == null,
+          sending: sendingId == next.id,
+          onOpen: () => _open(next),
+          onRespond: (value) => _respond(next, value),
+        ),
+        top: GesbandSpacing.sm,
+      ));
+    }
+
+    final rest = items.where((item) => item.id != next?.id).toList();
+    String? month;
+    for (final item in rest) {
+      final title = dates.monthTitle(item.startsAt, now);
+      if (title != month) {
+        month = title;
+        widgets.add(padded(SectionTitle(title), top: GesbandSpacing.xxl));
+        widgets.add(const SizedBox(height: GesbandSpacing.sm));
+      }
+      widgets.add(padded(
+        ActivityRow(
+          item: item,
+          highlighted: awaitsReply(item, now),
+          onOpen: () => _open(item),
+        ),
+        top: t.style == VisualStyle.partitura ? 0 : 10,
+      ));
+    }
+    return widgets;
+  }
+}
+
+/// Recordatorio de MUST-NOTIF-01 mientras los avisos no estén completos.
+class _NotificationsBanner extends StatelessWidget {
+  const _NotificationsBanner({
+    required this.notifications,
+    required this.onReview,
+  });
+
+  final NotificationController notifications;
+  final VoidCallback onReview;
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: notifications,
+        builder: (context, _) {
+          final state = notifications.state;
+          if (!state.available || state.nextAction == NotificationAction.none) {
+            return const SizedBox.shrink();
+          }
+          final strings = AppStrings.of(context);
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(
+                GesbandSpacing.xl, GesbandSpacing.md, GesbandSpacing.xl, 0),
+            child: InlineNotice(
+              key: const Key('notifications-pending-banner'),
+              icon: Icons.notifications_off_outlined,
+              message: strings.notificationsPendingBanner,
+              actionLabel: strings.review,
+              onAction: onReview,
+            ),
+          );
+        },
+      );
 }

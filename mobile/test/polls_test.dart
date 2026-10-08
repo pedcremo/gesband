@@ -7,6 +7,8 @@ import 'package:gesband_mobile/core/models/models.dart';
 import 'package:gesband_mobile/core/repositories/repositories.dart';
 import 'package:gesband_mobile/features/polls/poll_detail_screen.dart';
 
+import 'support/finders.dart';
+
 Map<String, dynamic> pollJson({
   bool canVote = true,
   bool? hasVoted = false,
@@ -81,6 +83,16 @@ Widget app(PollsRepository repository) => MaterialApp(
       ),
     );
 
+/// Móvil alto: la encuesta entera queda construida, así que «no aparece»
+/// significa que no se muestra y no que esté fuera de la lista.
+Future<void> pumpApp(WidgetTester tester, PollsRepository repository) async {
+  tester.view
+    ..physicalSize = const Size(1170, 4200)
+    ..devicePixelRatio = 3;
+  addTearDown(tester.view.reset);
+  await tester.pumpWidget(app(repository));
+}
+
 void main() {
   test('parses a poll without any field for the chosen option', () {
     final poll = Poll.fromJson(pollJson(status: 'published', results: {
@@ -107,7 +119,7 @@ void main() {
   testWidgets('voting asks for confirmation and then only says you voted',
       (tester) async {
     final repository = FakePollsRepository(pollJson());
-    await tester.pumpWidget(app(repository));
+    await pumpApp(tester, repository);
     await tester.pumpAndSettle();
 
     final voteButton = find.widgetWithText(FilledButton, 'Votar');
@@ -127,13 +139,13 @@ void main() {
 
     expect(repository.votes, ['opt-b']);
     expect(find.text('Has votado'), findsOneWidget);
-    expect(find.text('Recuento provisional'), findsOneWidget);
+    expect(findTextAnyCase('Recuento provisional'), findsOneWidget);
     expect(find.byType(RadioListTile<String>), findsNothing);
   });
 
   testWidgets('cancelling the confirmation does not vote', (tester) async {
     final repository = FakePollsRepository(pollJson());
-    await tester.pumpWidget(app(repository));
+    await pumpApp(tester, repository);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Valencia'));
@@ -149,7 +161,7 @@ void main() {
   testWidgets('a second vote rejected by the server is explained',
       (tester) async {
     final repository = FakePollsRepository(pollJson())..alreadyVoted = true;
-    await tester.pumpWidget(app(repository));
+    await pumpApp(tester, repository);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Valencia'));
@@ -166,11 +178,11 @@ void main() {
       (tester) async {
     final repository = FakePollsRepository(
         pollJson(canVote: false, closesIn: const Duration(hours: -1)));
-    await tester.pumpWidget(app(repository));
+    await pumpApp(tester, repository);
     await tester.pumpAndSettle();
 
     expect(
         find.text('Votación cerrada, pendiente de publicar'), findsOneWidget);
-    expect(find.text('Recuento provisional'), findsNothing);
+    expect(findTextAnyCase('Recuento provisional'), findsNothing);
   });
 }

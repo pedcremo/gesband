@@ -1,3 +1,5 @@
+import '../theme/visual_style.dart';
+
 enum ActivityType { rehearsal, performance }
 
 enum ActivityStatus { draft, published, cancelled, completed }
@@ -12,25 +14,39 @@ class Association {
     this.motto,
     this.logoUrl,
     this.primaryColor,
+    this.secondaryColor,
+    this.visualStyle = VisualStyle.escenario,
+    this.colorMode = BandColorMode.system,
   });
 
-  factory Association.fromJson(Map<String, dynamic> json) => Association(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        timeZone: json['time_zone'] as String? ??
-            json['timezone'] as String? ??
-            'Europe/Madrid',
-        motto: json['motto'] as String?,
-        logoUrl: json['logo_url'] as String?,
-        primaryColor: json['primary_color'] as String?,
-      );
+  factory Association.fromJson(Map<String, dynamic> json) {
+    final motto = (json['motto'] as String?)?.trim();
+    return Association(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      timeZone: json['time_zone'] as String? ??
+          json['timezone'] as String? ??
+          'Europe/Madrid',
+      motto: motto == null || motto.isEmpty ? null : motto,
+      logoUrl: json['logo_url'] as String?,
+      primaryColor: json['primary_color'] as String?,
+      secondaryColor: json['secondary_color'] as String?,
+      visualStyle: VisualStyle.fromWire(json['visual_style']),
+      colorMode: BandColorMode.fromWire(json['color_mode']),
+    );
+  }
 
   final String id;
   final String name;
   final String timeZone;
+
+  /// Lema; nulo si la asociación no tiene (el API envía `""`).
   final String? motto;
   final String? logoUrl;
   final String? primaryColor;
+  final String? secondaryColor;
+  final VisualStyle visualStyle;
+  final BandColorMode colorMode;
 }
 
 class ProgrammeItem {
@@ -47,6 +63,13 @@ class ProgrammeItem {
 
 DateTime? _localDate(Object? value) =>
     value is String ? DateTime.parse(value).toLocal() : null;
+
+/// Texto opcional; las cadenas vacías del API cuentan como ausentes.
+String? _text(Object? value) {
+  if (value is! String) return null;
+  final trimmed = value.trim();
+  return trimmed.isEmpty ? null : trimmed;
+}
 
 /// Convocatoria propia (`my_invitation`), o los campos planos de la agenda
 /// guardada sin conexion.
@@ -92,6 +115,11 @@ class ActivitySummary {
     required this.isMandatory,
     this.needsReconfirmation = false,
     this.place,
+    this.meetingAt,
+    this.uniform,
+    this.transportLabel,
+    this.responseDeadline,
+    this.hasInvitation = false,
   });
 
   factory ActivitySummary.fromJson(Map<String, dynamic> json) =>
@@ -112,7 +140,15 @@ class ActivitySummary {
                 json['needs_reconfirmation'] as bool? ??
                 false,
         isMandatory: json['is_mandatory'] as bool? ?? false,
-        place: json['place'] as String? ?? json['location'] as String?,
+        place: _text(json['place'] ?? json['location']),
+        meetingAt: _localDate(json['meeting_at']),
+        uniform: _text(json['uniform']),
+        transportLabel: _text(
+            (json['my_transport'] as Map<String, dynamic>?)?['label'] ??
+                json['transport_label']),
+        responseDeadline: _localDate(json['response_deadline']),
+        hasInvitation:
+            json['my_invitation'] != null || json['has_invitation'] == true,
       );
 
   Map<String, dynamic> toJson() => {
@@ -125,6 +161,11 @@ class ActivitySummary {
         'needs_reconfirmation': needsReconfirmation,
         'is_mandatory': isMandatory,
         'place': place,
+        'meeting_at': meetingAt?.toUtc().toIso8601String(),
+        'uniform': uniform,
+        'transport_label': transportLabel,
+        'response_deadline': responseDeadline?.toUtc().toIso8601String(),
+        'has_invitation': hasInvitation,
       };
 
   final String id;
@@ -136,6 +177,23 @@ class ActivitySummary {
   final bool needsReconfirmation;
   final bool isMandatory;
   final String? place;
+  final DateTime? meetingAt;
+  final String? uniform;
+
+  /// Etiqueta del transporte asignado (`my_transport.label`).
+  final String? transportLabel;
+  final DateTime? responseDeadline;
+
+  /// Hay convocatoria propia (`my_invitation`).
+  final bool hasInvitation;
+
+  /// Mismo criterio que [ActivityDetail.canRespond], con los datos de la
+  /// agenda: publicada, futura, con convocatoria propia y plazo abierto.
+  bool canRespondAt(DateTime now) =>
+      hasInvitation &&
+      status == ActivityStatus.published &&
+      now.isBefore(startsAt) &&
+      (responseDeadline == null || !now.isAfter(responseDeadline!));
 }
 
 class ActivityDetail {
@@ -212,16 +270,28 @@ class MemberProfile {
     this.photoUrl,
   });
 
-  factory MemberProfile.fromJson(Map<String, dynamic> json) => MemberProfile(
-        id: json['id'] as String,
-        firstName: json['first_name'] as String,
-        lastName: json['last_name'] as String,
-        email: json['email'] as String?,
-        phone: json['phone'] as String?,
-        instrument: json['instrument'] as String?,
-        section: json['section'] as String?,
-        photoUrl: json['photo_url'] as String?,
-      );
+  /// Forma de `GET /members/me/`: los instrumentos llegan en una lista con
+  /// el principal marcado (`is_primary`).
+  factory MemberProfile.fromJson(Map<String, dynamic> json) {
+    final instruments = (json['instruments'] as List<dynamic>? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+    final primary =
+        instruments.where((item) => item['is_primary'] == true).firstOrNull ??
+            instruments.firstOrNull;
+    return MemberProfile(
+      id: json['id'] as String,
+      firstName: json['first_name'] as String? ?? '',
+      lastName: json['last_name'] as String? ?? '',
+      email: _text(json['email']),
+      phone: _text(json['phone']),
+      instrument: _text(primary?['name'] ?? json['instrument']),
+      section: _text(json['section']),
+      photoUrl: _text(json['photo_url']),
+    );
+  }
+
+  String get fullName => '$firstName $lastName'.trim();
 
   final String id;
   final String firstName;
@@ -241,16 +311,20 @@ class InboxNotification {
     required this.createdAt,
     required this.isRead,
     this.activityId,
+    this.pollId,
   });
 
+  /// El servidor envía `read_at`, `activity` y `poll`; el contrato,
+  /// `activity_id` y `poll_id`. Se aceptan ambas formas.
   factory InboxNotification.fromJson(Map<String, dynamic> json) =>
       InboxNotification(
         id: json['id'] as String,
-        title: json['title'] as String,
-        body: json['body'] as String,
+        title: json['title'] as String? ?? '',
+        body: json['body'] as String? ?? '',
         createdAt: DateTime.parse(json['created_at'] as String).toLocal(),
-        isRead: json['is_read'] as bool? ?? false,
-        activityId: json['activity_id'] as String?,
+        isRead: json['read_at'] != null || json['is_read'] == true,
+        activityId: (json['activity'] ?? json['activity_id']) as String?,
+        pollId: (json['poll'] ?? json['poll_id']) as String?,
       );
 
   final String id;
@@ -259,6 +333,7 @@ class InboxNotification {
   final DateTime createdAt;
   final bool isRead;
   final String? activityId;
+  final String? pollId;
 }
 
 enum PollStatus { draft, open, published, cancelled }

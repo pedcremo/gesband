@@ -10,6 +10,7 @@ import 'package:gesband_mobile/core/localization/app_strings.dart';
 import 'package:gesband_mobile/core/models/models.dart';
 import 'package:gesband_mobile/core/repositories/repositories.dart';
 import 'package:gesband_mobile/core/storage/secure_session_store.dart';
+import 'package:gesband_mobile/core/theme/theme_controller.dart';
 import 'package:gesband_mobile/features/polls/poll_detail_screen.dart';
 import 'package:gesband_mobile/features/notifications/notification_service.dart';
 import 'package:gesband_mobile/main.dart';
@@ -83,11 +84,13 @@ void main() {
   late _EmptyAgenda agenda;
   late AppController controller;
   late LocaleController locale;
+  late ThemeController theme;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     final preferences = await SharedPreferences.getInstance();
     locale = LocaleController(preferences);
+    theme = ThemeController(preferences);
     gateway = FakePushGateway();
     polls = _OnePoll();
     agenda = _EmptyAgenda();
@@ -118,7 +121,11 @@ void main() {
       ..devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
-      GesbandApp(controller: controller, localeController: locale),
+      GesbandApp(
+        controller: controller,
+        localeController: locale,
+        themeController: theme,
+      ),
     );
     await tester.runAsync(controller.initialize);
     await tester.pumpAndSettle();

@@ -79,6 +79,12 @@ class _FakeActivities implements ActivitiesRepository {
 }
 
 Future<void> _open(WidgetTester tester, ActivitiesRepository repository) async {
+  // Móvil alto: el detalle entero queda construido, de modo que «no aparece»
+  // significa que no se muestra y no que esté fuera de la lista.
+  tester.view
+    ..physicalSize = const Size(1170, 4200)
+    ..devicePixelRatio = 3;
+  addTearDown(tester.view.reset);
   SharedPreferences.setMockInitialValues({});
   final preferences = await SharedPreferences.getInstance();
   await tester.pumpWidget(LocaleScope(

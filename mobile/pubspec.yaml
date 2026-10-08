@@ -28,3 +28,53 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Licencias OFL de las fuentes; se muestran en «Licencias» (Mi ficha).
+  assets:
+    - assets/fonts/licenses/
+
+  # Fuentes OFL de github.com/google/fonts, instanciadas solo en los pesos que
+  # se usan (ver assets/fonts/README.md). Van empaquetadas para que la app
+  # funcione sin conexión.
+  fonts:
+    - family: BigShouldersDisplay
+      fonts:
+        - asset: assets/fonts/BigShouldersDisplay-ExtraBold.ttf
+          weight: 800
+    - family: InstrumentSans
+      fonts:
+        - asset: assets/fonts/InstrumentSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/InstrumentSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/InstrumentSans-Bold.ttf
+          weight: 700
+    - family: LibreCaslonText
+      fonts:
+        - asset: assets/fonts/LibreCaslonText-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/LibreCaslonText-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/LibreCaslonText-Bold.ttf
+          weight: 700
+    - family: PublicSans
+      fonts:
+        - asset: assets/fonts/PublicSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PublicSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PublicSans-Bold.ttf
+          weight: 700
+    - family: BricolageGrotesque
+      fonts:
+        - asset: assets/fonts/BricolageGrotesque-ExtraBold.ttf
+          weight: 800
+    - family: Figtree
+      fonts:
+        - asset: assets/fonts/Figtree-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Figtree-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Figtree-Bold.ttf
+          weight: 700
