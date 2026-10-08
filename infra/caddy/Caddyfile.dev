@@ -21,6 +21,19 @@
 		@proxy_health path /proxy-health
 		respond @proxy_health "ok" 200
 
+		# APK de pruebas para los betatesters: infra/downloads/ montado en solo lectura.
+		redir /descargas /descargas/ 308
+		handle_path /descargas/* {
+			root * /srv/downloads
+			@apk path *.apk
+			header @apk Content-Type application/vnd.android.package-archive
+			header @apk Content-Disposition attachment
+			header Cache-Control no-cache
+			file_server {
+				hide README.md .gitkeep
+			}
+		}
+
 		handle_path /static/* {
 			root * /srv/static
 			file_server

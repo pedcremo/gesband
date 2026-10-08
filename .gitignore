@@ -19,3 +19,6 @@ mobile/.dart_tool/
 mobile/.flutter-plugins
 mobile/.flutter-plugins-dependencies
 staticfiles/
+
+# APK de pruebas servido en /descargas/: se copia en el servidor, no se versiona
+infra/downloads/*.apk

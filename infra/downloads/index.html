@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Gesband para Android (beta)</title>
+  <style>
+    :root {
+      --bg: #f6f4ef; --card: #ffffff; --text: #1d1b19; --muted: #5f5a53;
+      --accent: #8a2b2b; --accent-text: #ffffff; --border: #e3ddd3; --warn: #fff4e0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161412; --card: #211e1b; --text: #f1ede7; --muted: #b3aca2;
+        --accent: #d77a6a; --accent-text: #1a0f0d; --border: #38332d; --warn: #2e2516;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 34rem; margin: 0 auto; padding: 2.5rem 1rem 3rem; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1rem; padding: 1.5rem;
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+    .lead { color: var(--muted); margin: 0 0 1.5rem; }
+    .button {
+      display: block; text-align: center; text-decoration: none; font-weight: 600;
+      background: var(--accent); color: var(--accent-text);
+      padding: .9rem 1rem; border-radius: .75rem;
+    }
+    .note {
+      background: var(--warn); border-radius: .75rem; padding: .75rem 1rem;
+      margin: 1.25rem 0 0; font-size: .95rem;
+    }
+    h2 { font-size: 1.05rem; margin: 1.75rem 0 .5rem; }
+    ol { padding-left: 1.25rem; margin: 0; }
+    li { margin: .35rem 0; }
+    small { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>Gesband para Android</h1>
+      <p class="lead">Versión de prueba para betatesters. Se conecta al entorno de pruebas
+        con datos ficticios.</p>
+      <a class="button" href="gesband-beta.apk" download>Descargar la app (APK)</a>
+      <p class="note">Es una versión de prueba sin firma definitiva. Cuando se publique la
+        versión firmada habrá que desinstalar esta antes de instalar la nueva.</p>
+
+      <h2>Cómo instalarla</h2>
+      <ol>
+        <li>Abre esta página en el móvil Android y pulsa <strong>Descargar la app</strong>.</li>
+        <li>Abre el archivo descargado. Si el móvil lo pide, permite
+          <em>instalar aplicaciones desconocidas</em> para el navegador.</li>
+        <li>Si aparece un aviso de Play Protect, elige <em>Instalar de todas formas</em>.</li>
+        <li>Abre Gesband, entra con la cuenta de prueba que te hayan dado y acepta las
+          notificaciones.</li>
+      </ol>
+
+      <h2>Xiaomi, Redmi y POCO</h2>
+      <ol>
+        <li>En los ajustes de la app, activa <em>Inicio automático</em>.</li>
+        <li>En <em>Ahorro de batería</em>, elige <em>Sin restricciones</em>.</li>
+      </ol>
+      <p><small>Sin estos ajustes, los avisos pueden no llegar con la app cerrada.</small></p>
+
+      <h2>Para actualizar</h2>
+      <p>Descarga e instala de nuevo desde esta misma página. No hace falta desinstalar.</p>
+    </div>
+  </main>
+</body>
+</html>

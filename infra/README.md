@@ -63,6 +63,28 @@ puertos: su proxy se une a la red del Caddy existente.
 
 Actualizar: `git pull` y repetir el paso 3. Comprobación: `curl https://gesband.fertion.com/health/`.
 
+### APK de pruebas para betatesters
+
+`https://gesband.fertion.com/descargas/` sirve `infra/downloads/index.html`, con las
+instrucciones de instalación, y el APK `infra/downloads/gesband-beta.apk`. El APK no
+se versiona: se compila en el PC y se copia al servidor. Caddy lo sirve como
+`application/vnd.android.package-archive` y no publica nada fuera de esa carpeta.
+
+```bash
+# En el PC (Flutter 3.47.5)
+cd mobile
+flutter build apk --release --dart-define=API_BASE_URL=https://gesband.fertion.com/api/v1
+scp build/app/outputs/flutter-apk/app-release.apk SERVIDOR:gesband/infra/downloads/gesband-beta.apk
+```
+
+Sustituir el APK no exige reiniciar nada. La primera vez, tras el `git pull`, hay que
+recrear el proxy para que monte la carpeta (`up -d` del paso 3).
+
+Ese APK va firmado con la clave de depuración del PC que lo compila: se puede
+actualizar encima mientras se compile siempre en el mismo PC. Cuando haya firma
+definitiva, los betatesters tendrán que desinstalar esta versión antes de instalar la
+firmada.
+
 ## Copias y restauración
 
 La copia incluye un volcado lógico de PostgreSQL, los archivos privados y sus checksums. RabbitMQ no se copia: los avisos pendientes deben persistir en PostgreSQL y poder reencolarse; la cola no es la fuente de verdad.

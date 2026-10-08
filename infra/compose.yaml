@@ -114,6 +114,7 @@ services:
     volumes:
       - ./caddy/Caddyfile.dev:/etc/caddy/Caddyfile:ro
       - static_files:/srv/static:ro
+      - ./downloads:/srv/downloads:ro
       - caddy_data:/data
       - caddy_config:/config
     healthcheck:
