@@ -1,4 +1,4 @@
-# Sistema visual de la app: Escenario, Partitura y Festa
+# Sistema visual de la app y el panel: Escenario, Partitura y Festa
 
 Fecha: 8 de octubre de 2026.
 
@@ -121,8 +121,33 @@ recorren las pantallas principales con escala de texto 1.5 y los tres idiomas.
 - Las pruebas de widgets usan `findTextAnyCase` cuando el estilo pone un título en
   mayúsculas, y un móvil alto cuando necesitan que la pantalla entera esté
   construida.
-- El panel de la junta y el cliente web no comparten estos tokens: si se quieren los
-  mismos estilos allí, hay que trasladar la tabla anterior a CSS.
-- Pendiente: elegir estilo y modo desde el panel (lo gestiona el servidor), cambiar la
-  foto desde la app y presentar las horas en la zona horaria de la asociación en lugar
-  de la del móvil.
+- El cliente web del músico (`/app/`, decisión 0004) todavía no usa estos estilos.
+- Pendiente: cambiar la foto desde la app y presentar las horas en la zona horaria de
+  la asociación en lugar de la del móvil.
+
+## El panel de la junta (añadido el 08/10/2026)
+
+El panel usa el mismo sistema, trasladado a CSS en `backend/static/panel/panel.css`:
+
+- `<html data-style="escenario|partitura|festa" data-mode="system|light|dark">` elige
+  el estilo y el modo. La plantilla base los escribe con `{% brand_attributes %}`
+  (`apps/associations/templatetags/panel_shell.py`), junto con las variables de marca.
+- `apps/associations/branding.py` calcula en el servidor la misma legibilidad que la
+  app: tinta sobre el principal y el secundario, versión corregida a 4.5:1 para texto
+  en claro y en oscuro, y el filo (`--brand-edge-*`) cuando el principal no llega a
+  1.5:1 con el fondo. Bocairent (#111111 / #C9A227) lleva filo dorado en oscuro.
+- Las fuentes se sirven desde el propio servidor (`backend/static/panel/fonts/`, OFL),
+  sin pedirlas a Google desde el navegador de cada persona.
+- La portada es el «cartel» de la próxima actividad publicada con el recuento de
+  respuestas, las siguientes en tarjetas y las anteriores en tabla.
+- El acceso y la activación de cuenta usan una base sencilla (`shared/plain.html`);
+  la activación se viste con la marca de la banda que invita.
+
+### Imagen de la banda
+
+`/panel/branding/` permite a `admin` y `board` (permiso nuevo `branding.manage`)
+cambiar logo, colores, lema, estilo y modo, con vista previa al momento. La regla
+vive en `apps/associations/services.update_branding`. El logo se valida por su
+contenido, se reescala a 1024 px como máximo, pierde los metadatos y se guarda como
+WebP sin pérdida con transparencia y nombre interno. Se sirve, como antes, solo a
+quien pertenece a la asociación (`/api/v1/associations/{id}/logo/`).

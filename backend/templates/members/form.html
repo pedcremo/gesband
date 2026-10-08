@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% if member %}{{ member }}{% else %}{% translate "Nueva ficha" %}{% endif %} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
+<p><a class="back" href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
 {% if member %}
   <h1>{{ member }}</h1>
   <p>

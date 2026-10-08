@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% translate "Member import" %} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'member-import-start' %}?association_id={{ association.id }}">← {% translate "Back to imports" %}</a></p>
+<p><a class="back" href="{% url 'member-import-start' %}?association_id={{ association.id }}">← {% translate "Back to imports" %}</a></p>
 <h1>{% translate "Member import" %}</h1>
 <p><strong>{{ batch.filename }}</strong> · <span class="status">{{ batch.get_status_display }}</span></p>
 
@@ -12,7 +12,7 @@
     {% csrf_token %}
     <input type="hidden" name="association_id" value="{{ association.id }}">
     <input type="hidden" name="action" value="preview">
-    <table>
+    <div class="table-wrap"><table>
       <thead><tr><th>{% translate "Source column" %}</th><th>{% translate "Census field" %}</th></tr></thead>
       <tbody>
         {% for row in mapping_rows %}
@@ -27,7 +27,7 @@
           </tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table></div>
     <div class="actions"><button class="button" type="submit">{% translate "Generate preview" %}</button></div>
   </form>
 {% endif %}
@@ -42,7 +42,7 @@
       <div class="card"><strong>{{ batch.result.rejected|default:0 }}</strong><br>{% translate "rejected" %}</div>
     </div>
   {% endif %}
-  <table>
+  <div class="table-wrap"><table>
     <thead>
       <tr><th>{% translate "Row" %}</th><th>{% translate "External ID" %}</th><th>{% translate "Name" %}</th><th>{% translate "Result" %}</th></tr>
     </thead>
@@ -63,7 +63,7 @@
         </tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% if batch.status == 'preview' %}
     {% if can_confirm %}
       <form method="post" class="actions">

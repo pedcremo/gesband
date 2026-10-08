@@ -1,6 +1,6 @@
 {% load i18n %}
 <h2>{% translate "Participación" %}</h2>
-<table>
+<div class="table-wrap"><table>
   <thead>
     <tr><th>{% translate "Persona" %}</th><th>{% translate "Ha votado" %}</th></tr>
   </thead>
@@ -11,4 +11,4 @@
       <tr><td colspan="2">{% translate "No hay destinatarios." %}</td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>

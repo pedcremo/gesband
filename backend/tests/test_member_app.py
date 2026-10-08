@@ -93,6 +93,19 @@ class AssociationBrandingTests(TestCase):
         self.assertEqual(payload["secondary_color"], "#E8C87D")
         self.assertEqual(payload["motto"], "La música que ens uneix")
 
+    def test_the_session_carries_the_visual_style_and_colour_mode(self):
+        """Sin elegir nada, la banda se ve con Escenario y sigue el modo del dispositivo."""
+        payload = self.association_payload()
+        self.assertEqual(payload["visual_style"], "escenario")
+        self.assertEqual(payload["color_mode"], "system")
+
+        self.association.visual_style = Association.VisualStyle.FESTA
+        self.association.color_mode = Association.ColorMode.DARK
+        self.association.save()
+        payload = self.association_payload()
+        self.assertEqual(payload["visual_style"], "festa")
+        self.assertEqual(payload["color_mode"], "dark")
+
     def test_without_a_logo_the_url_is_null(self):
         """El contrato pide `logo_url`; el campo crudo apuntaba a una ruta que nadie sirve."""
         payload = self.association_payload()

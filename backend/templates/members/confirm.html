@@ -9,7 +9,7 @@
   <ul class="errors">
     {% for blocker in blockers %}<li>{{ blocker }}</li>{% endfor %}
   </ul>
-  <p><a href="{{ cancel_url }}">← {% translate "Volver" %}</a></p>
+  <p><a class="back" href="{{ cancel_url }}">← {% translate "Volver" %}</a></p>
 {% else %}
   <form method="post" action="{{ action_url }}">
     {% csrf_token %}

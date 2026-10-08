@@ -7,6 +7,17 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Association(models.Model):
+    class VisualStyle(models.TextChoices):
+        # Estilos elegidos el 08/10/2026 sobre el lienzo de propuestas; `escenario` es el de Gesband.
+        ESCENARIO = "escenario", _("Escenario")
+        PARTITURA = "partitura", _("Partitura")
+        FESTA = "festa", _("Festa")
+
+    class ColorMode(models.TextChoices):
+        SYSTEM = "system", _("Según el dispositivo")
+        LIGHT = "light", _("Claro")
+        DARK = "dark", _("Oscuro")
+
     id = models.UUIDField(_("identificador"), primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(_("nombre"), max_length=180)
     slug = models.SlugField(_("identificador para URL"), max_length=80, unique=True)
@@ -24,6 +35,10 @@ class Association(models.Model):
         validators=[RegexValidator(r"^#[0-9A-Fa-f]{6}$", _("Usa un color hexadecimal, por ejemplo #CAE9FF."))],
     )
     motto = models.CharField(_("lema"), max_length=240, blank=True)
+    visual_style = models.CharField(
+        _("estilo visual"), max_length=16, choices=VisualStyle.choices, default=VisualStyle.ESCENARIO
+    )
+    color_mode = models.CharField(_("modo de color"), max_length=8, choices=ColorMode.choices, default=ColorMode.SYSTEM)
     timezone = models.CharField(_("zona horaria"), max_length=64, default="Europe/Madrid")
     is_active = models.BooleanField(_("activa"), default=True)
     created_at = models.DateTimeField(_("fecha de creación"), auto_now_add=True)

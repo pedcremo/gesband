@@ -2782,3 +2782,105 @@ msgstr ""
 msgid "Crea la primera ficha con «Nueva ficha»."
 msgstr ""
 
+# Sistema visual del panel e imagen de la banda (decisión 0010)
+msgid "Imagen de la banda"
+msgstr ""
+
+msgid "Lo que viene"
+msgstr ""
+
+msgid "%(yes)s asistirán, %(no)s no podrán, %(pending)s sin responder"
+msgstr ""
+
+msgid "<strong>%(yes)s</strong> asistirán · <strong>%(no)s</strong> no · <strong>%(pending)s</strong> sin responder"
+msgstr ""
+
+msgid "%(answered)s de %(invited)s han respondido"
+msgstr ""
+
+msgid "Crea un ensayo o una actuación y convoca a la banda."
+msgstr ""
+
+msgid "Lo que elijas aquí viste el panel y la app de todos los músicos de la banda."
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Colores"
+msgstr ""
+
+msgid "Escenario: oscura y contundente. Partitura: clásica y editorial. Festa: cálida y popular."
+msgstr ""
+
+msgid "Guardar"
+msgstr ""
+
+msgid "Vista previa"
+msgstr ""
+
+msgid "Próxima actuación"
+msgstr ""
+
+msgid "Concierto de ejemplo"
+msgstr ""
+
+msgid "Así se verá el cartel de la próxima actividad."
+msgstr ""
+
+msgid "Asistiré"
+msgstr ""
+
+msgid "La vista previa cambia al elegir; nada se guarda hasta pulsar «Guardar»."
+msgstr ""
+
+msgid "PNG, JPG o WebP de hasta 2 MB. Se recorta en un cuadrado con esquinas redondeadas."
+msgstr ""
+
+msgid "Quitar el logo y usar las iniciales"
+msgstr ""
+
+msgid "Cualquier color: el panel y la app ajustan el texto para que se lea."
+msgstr ""
+
+msgid "Cada persona puede cambiarlo en su dispositivo."
+msgstr ""
+
+msgid "Escenario"
+msgstr ""
+
+msgid "Partitura"
+msgstr ""
+
+msgid "Festa"
+msgstr ""
+
+msgid "Según el dispositivo"
+msgstr ""
+
+msgid "Claro"
+msgstr ""
+
+msgid "Oscuro"
+msgstr ""
+
+msgid "estilo visual"
+msgstr ""
+
+msgid "modo de color"
+msgstr ""
+
+msgid "El logo supera 2 MB."
+msgstr ""
+
+msgid "Imagen de la banda guardada."
+msgstr ""
+
+msgid "Cambiar la imagen de la banda: logo, colores, lema y estilo"
+msgstr ""
+
+msgid "%(member_count)s active member"
+msgid_plural "%(member_count)s active members"
+msgstr[0] "%(member_count)s miembro activo"
+msgstr[1] "%(member_count)s miembros activos"
+msgstr[2] "%(member_count)s miembros activos"

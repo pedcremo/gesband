@@ -75,7 +75,7 @@ MANAGER_PERMISSIONS = {
     "transport.manage",
     "polls.manage",
 }
-ACCESS_MANAGER_PERMISSIONS = {"accounts.manage", "roles.manage"}
+ACCESS_MANAGER_PERMISSIONS = {"accounts.manage", "roles.manage", "branding.manage"}
 ADMIN_PERMISSIONS = {"association.manage", "imports.manage", "members.delete"}
 
 
@@ -138,6 +138,7 @@ CAPABILITIES = [
     ("polls.manage", gettext_lazy("Crear, abrir y publicar encuestas")),
     ("accounts.manage", gettext_lazy("Invitar y activar o desactivar accesos")),
     ("roles.manage", gettext_lazy("Asignar y quitar roles")),
+    ("branding.manage", gettext_lazy("Cambiar la imagen de la banda: logo, colores, lema y estilo")),
     ("association.manage", gettext_lazy("Configurar la asociación")),
 ]
 

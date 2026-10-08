@@ -1322,11 +1322,13 @@ components:
         associations: {type: array, items: {$ref: '#/components/schemas/AssociationMembership'}}
     Permission:
       type: string
-      enum: [association.view, association.manage, members.view, members.manage, members.delete, members.private_data.view, members.photo.view, members.photo.manage, imports.manage, accounts.manage, roles.manage, activities.view, activities.manage, invitations.manage, attendance.manage, transport.view, transport.manage, notifications.view, devices.manage_own]
+      enum: [association.view, association.manage, members.view, members.manage, members.delete, members.private_data.view, members.photo.view, members.photo.manage, imports.manage, accounts.manage, roles.manage, branding.manage, activities.view, activities.manage, invitations.manage, attendance.manage, transport.view, transport.manage, notifications.view, devices.manage_own]
       description: >-
         `accounts.manage` (invitar y activar o desactivar accesos) y `roles.manage`
         (conceder y quitar roles) los tienen `admin` y `board`; `members.delete`
         (borrado físico de fichas sin historial), solo `admin`. Decisión 0009.
+        `branding.manage` (logo, colores, lema, estilo y modo) lo tienen `admin` y
+        `board`. Decisión 0010.
     AssociationMembership:
       type: object
       required: [id, name, permissions]
@@ -1345,6 +1347,8 @@ components:
         timezone: {type: string, example: Europe/Madrid}
         primary_color: {type: string, pattern: '^#[0-9A-Fa-f]{6}$'}
         secondary_color: {type: string, pattern: '^#[0-9A-Fa-f]{6}$'}
+        visual_style: {$ref: '#/components/schemas/VisualStyle'}
+        color_mode: {$ref: '#/components/schemas/ColorMode'}
         logo_url: {type: [string, 'null'], format: uri-reference}
         permissions: {type: array, items: {$ref: '#/components/schemas/Permission'}}
         updated_at: {$ref: '#/components/schemas/UtcDateTime'}
@@ -1357,6 +1361,18 @@ components:
         timezone: {type: string}
         primary_color: {type: string, pattern: '^#[0-9A-Fa-f]{6}$'}
         secondary_color: {type: string, pattern: '^#[0-9A-Fa-f]{6}$'}
+        visual_style: {$ref: '#/components/schemas/VisualStyle'}
+        color_mode: {$ref: '#/components/schemas/ColorMode'}
+    VisualStyle:
+      type: string
+      enum: [escenario, partitura, festa]
+      default: escenario
+      description: Estilo predefinido de la app y el panel. Un cliente que reciba un valor desconocido usa `escenario`.
+    ColorMode:
+      type: string
+      enum: [system, light, dark]
+      default: system
+      description: Modo de color por defecto de la asociación; `system` sigue al dispositivo. La persona puede sobrescribirlo en su dispositivo.
     CatalogueItemInput:
       type: object
       additionalProperties: false

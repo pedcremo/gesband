@@ -42,7 +42,19 @@ class AssociationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Association
-        fields = ["id", "name", "slug", "logo_url", "primary_color", "secondary_color", "motto", "timezone", "permissions"]
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "logo_url",
+            "primary_color",
+            "secondary_color",
+            "motto",
+            "visual_style",
+            "color_mode",
+            "timezone",
+            "permissions",
+        ]
 
     def get_logo_url(self, obj):
         """El logotipo vive en media privada: se sirve por la API, como la foto del musico."""

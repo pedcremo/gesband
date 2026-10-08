@@ -1,0 +1,25 @@
+{% load i18n static panel_shell %}
+{% get_current_language as LANGUAGE_CODE %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}" {% brand_attributes association %}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Gesband{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'panel/panel.css' %}">
+</head>
+<body class="plain">
+<main class="plain-page">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">{{ association.name|default:'Gesband'|initials }}</span>
+    <span class="brand-name">{{ association.name|default:'Gesband' }}
+      {% if association.motto %}<span class="brand-motto">{{ association.motto }}</span>{% endif %}
+    </span>
+  </div>
+  <div class="card stack">
+    {% block content %}{% endblock %}
+  </div>
+  {% block after %}{% endblock %}
+</main>
+</body>
+</html>

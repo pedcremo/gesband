@@ -2841,3 +2841,104 @@ msgstr "Delete this record…"
 msgid "Crea la primera ficha con «Nueva ficha»."
 msgstr "Create the first record with “New record”."
 
+# Sistema visual del panel e imagen de la banda (decisión 0010)
+msgid "Imagen de la banda"
+msgstr "Band look"
+
+msgid "Lo que viene"
+msgstr "Coming up"
+
+msgid "%(yes)s asistirán, %(no)s no podrán, %(pending)s sin responder"
+msgstr "%(yes)s attending, %(no)s not attending, %(pending)s not answered"
+
+msgid "<strong>%(yes)s</strong> asistirán · <strong>%(no)s</strong> no · <strong>%(pending)s</strong> sin responder"
+msgstr "<strong>%(yes)s</strong> attending · <strong>%(no)s</strong> not · <strong>%(pending)s</strong> not answered"
+
+msgid "%(answered)s de %(invited)s han respondido"
+msgstr "%(answered)s of %(invited)s have answered"
+
+msgid "Crea un ensayo o una actuación y convoca a la banda."
+msgstr "Create a rehearsal or a performance and call the band."
+
+msgid "Lo que elijas aquí viste el panel y la app de todos los músicos de la banda."
+msgstr "What you choose here dresses the panel and the app of every musician in the band."
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Colores"
+msgstr "Colours"
+
+msgid "Escenario: oscura y contundente. Partitura: clásica y editorial. Festa: cálida y popular."
+msgstr "Escenario: dark and bold. Partitura: classic and editorial. Festa: warm and popular."
+
+msgid "Guardar"
+msgstr "Save"
+
+msgid "Vista previa"
+msgstr "Preview"
+
+msgid "Próxima actuación"
+msgstr "Next performance"
+
+msgid "Concierto de ejemplo"
+msgstr "Sample concert"
+
+msgid "Así se verá el cartel de la próxima actividad."
+msgstr "This is how the next activity poster will look."
+
+msgid "Asistiré"
+msgstr "I'll attend"
+
+msgid "La vista previa cambia al elegir; nada se guarda hasta pulsar «Guardar»."
+msgstr "The preview changes as you choose; nothing is saved until you press “Save”."
+
+msgid "PNG, JPG o WebP de hasta 2 MB. Se recorta en un cuadrado con esquinas redondeadas."
+msgstr "PNG, JPG or WebP up to 2 MB. It is cropped to a square with rounded corners."
+
+msgid "Quitar el logo y usar las iniciales"
+msgstr "Remove the logo and use the initials"
+
+msgid "Cualquier color: el panel y la app ajustan el texto para que se lea."
+msgstr "Any colour: the panel and the app adjust the text so it stays readable."
+
+msgid "Cada persona puede cambiarlo en su dispositivo."
+msgstr "Everyone can change it on their own device."
+
+msgid "Escenario"
+msgstr "Escenario"
+
+msgid "Partitura"
+msgstr "Partitura"
+
+msgid "Festa"
+msgstr "Festa"
+
+msgid "Según el dispositivo"
+msgstr "Follow the device"
+
+msgid "Claro"
+msgstr "Light"
+
+msgid "Oscuro"
+msgstr "Dark"
+
+msgid "estilo visual"
+msgstr "visual style"
+
+msgid "modo de color"
+msgstr "colour mode"
+
+msgid "El logo supera 2 MB."
+msgstr "The logo is larger than 2 MB."
+
+msgid "Imagen de la banda guardada."
+msgstr "Band look saved."
+
+msgid "Cambiar la imagen de la banda: logo, colores, lema y estilo"
+msgstr "Change the band look: logo, colours, motto and style"
+
+msgid "%(member_count)s active member"
+msgid_plural "%(member_count)s active members"
+msgstr[0] "%(member_count)s active member"
+msgstr[1] "%(member_count)s active members"

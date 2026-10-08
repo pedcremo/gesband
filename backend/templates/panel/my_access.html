@@ -29,7 +29,7 @@
 <p class="muted">{% translate "Los cargos de junta no conceden permisos por sí solos: los permisos dependen de estos roles. Si necesitas otro, pídeselo a la administración de la asociación." %}</p>
 
 <h2>{% translate "Qué puedes hacer" %}</h2>
-<table>
+<div class="table-wrap"><table>
   <thead>
     <tr>
       <th>{% translate "Acción" %}</th>
@@ -50,7 +50,7 @@
       </tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 
 {% if can_use_panel %}
   <div class="actions"><a class="button" href="{% url 'panel' %}?association_id={{ association.id }}">{% translate "Ir al panel de la junta" %}</a></div>

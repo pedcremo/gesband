@@ -2,43 +2,86 @@
 {% load i18n %}
 {% block title %}{{ association.name }} · Gesband{% endblock %}
 {% block content %}
-<h1>{% blocktranslate with association_name=association.name %}{{ association_name }} dashboard{% endblocktranslate %}</h1>
-<div class="cards">
-  <div class="card">
-    <strong>{{ members_count }}</strong><br>
-    {% blocktranslate count member_count=members_count %}active member{% plural %}active members{% endblocktranslate %}
+<div class="page-head">
+  <div>
+    <span class="eyebrow">{% blocktranslate count member_count=members_count %}{{ member_count }} active member{% plural %}{{ member_count }} active members{% endblocktranslate %}</span>
+    <h1>{% translate "Lo que viene" %}</h1>
+    <div class="staff" aria-hidden="true"></div>
   </div>
-  <div class="card">
-    <strong>{{ activities|length }}</strong><br>
-    {% blocktranslate count activity_count=activities|length %}recent activity{% plural %}recent activities{% endblocktranslate %}
-  </div>
-</div>
-<h2>{% translate "Activities" %}</h2>
-<div class="actions">
   <a class="button" href="{% url 'activity-create' %}?association_id={{ association.id }}">{% translate "Nueva actividad" %}</a>
 </div>
-{% if activities %}
+
+{% if next_activity or activities %}
+<div class="cards">
+  {% if next_activity %}
+    <article class="poster">
+      <span class="poster-day" aria-hidden="true">{{ next_activity.starts_at|date:"j" }}</span>
+      <span class="eyebrow">{{ next_activity.starts_at|date:"D j M · H:i" }}</span>
+      <h2><a href="{% url 'panel-activity-detail' next_activity.id %}?association_id={{ association.id }}">{{ next_activity.title }}</a></h2>
+      {% if next_activity.location %}<p>{{ next_activity.location }}</p>{% endif %}
+      <div class="stack" style="margin-top:auto">
+        <div class="meter" role="img" aria-label="{% blocktranslate with yes=next_activity.accepted no=next_activity.declined pending=next_activity.pending %}{{ yes }} asistirán, {{ no }} no podrán, {{ pending }} sin responder{% endblocktranslate %}">
+          <span class="yes" style="width:{{ next_activity.accepted_pct }}%"></span><span class="no" style="width:{{ next_activity.declined_pct }}%"></span>
+        </div>
+        <span>{% blocktranslate with yes=next_activity.accepted no=next_activity.declined pending=next_activity.pending %}<strong>{{ yes }}</strong> asistirán · <strong>{{ no }}</strong> no · <strong>{{ pending }}</strong> sin responder{% endblocktranslate %}</span>
+      </div>
+    </article>
+  {% endif %}
+  {% for activity in activities|slice:":5" %}
+    <article class="card stack">
+      <div class="row" style="justify-content:space-between">
+        <span class="eyebrow">{{ activity.starts_at|date:"D j M · H:i" }}</span>
+        <span class="status {{ activity.status }}">{{ activity.get_status_display }}</span>
+      </div>
+      <h3 class="display" style="font-size:1.8rem"><a href="{% url 'panel-activity-detail' activity.id %}?association_id={{ association.id }}" style="color:inherit;text-decoration:none">{{ activity.title }}</a></h3>
+      {% if activity.location %}<p class="muted">{{ activity.location }}</p>{% endif %}
+      {% if activity.invited %}
+        <div class="meter" aria-hidden="true"><span class="yes" style="width:{{ activity.accepted_pct }}%"></span><span class="no" style="width:{{ activity.declined_pct }}%"></span></div>
+        <span class="muted">{% blocktranslate with answered=activity.answered invited=activity.invited %}{{ answered }} de {{ invited }} han respondido{% endblocktranslate %}</span>
+      {% else %}
+        <a class="button ghost" href="{% url 'panel-activity-detail' activity.id %}?association_id={{ association.id }}">{% translate "Convocar músicos" %}</a>
+      {% endif %}
+    </article>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="card empty">
+    <h2>{% translate "There are no activities yet." %}</h2>
+    <p>{% translate "Crea un ensayo o una actuación y convoca a la banda." %}</p>
+  </div>
+{% endif %}
+
+{% if activities|length > 5 or past_activities %}
+<h2>{% translate "Activities" %}</h2>
+<div class="table-wrap">
   <table>
     <thead>
       <tr>
-        <th>{% translate "Activity" %}</th>
         <th>{% translate "Date" %}</th>
+        <th>{% translate "Activity" %}</th>
         <th>{% translate "Invited" %}</th>
         <th>{% translate "Status" %}</th>
       </tr>
     </thead>
     <tbody>
-      {% for activity in activities %}
+      {% for activity in activities|slice:"5:" %}
         <tr>
-          <td><a href="{% url 'panel-activity-detail' activity.id %}?association_id={{ association.id }}">{{ activity.title }}</a></td>
           <td>{{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          <td><a href="{% url 'panel-activity-detail' activity.id %}?association_id={{ association.id }}">{{ activity.title }}</a></td>
           <td>{{ activity.invited }}</td>
-          <td>{{ activity.get_status_display }}</td>
+          <td><span class="status {{ activity.status }}">{{ activity.get_status_display }}</span></td>
+        </tr>
+      {% endfor %}
+      {% for activity in past_activities %}
+        <tr>
+          <td class="muted">{{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          <td><a href="{% url 'panel-activity-detail' activity.id %}?association_id={{ association.id }}">{{ activity.title }}</a></td>
+          <td>{{ activity.invited }}</td>
+          <td><span class="status {{ activity.status }}">{{ activity.get_status_display }}</span></td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
-{% else %}
-  <p class="muted">{% translate "There are no activities yet." %}</p>
+</div>
 {% endif %}
 {% endblock %}

@@ -2,18 +2,20 @@
 {% load i18n %}
 {% block title %}{% translate "Members" %} · Gesband{% endblock %}
 {% block content %}
-<h1>{% translate "Members" %}</h1>
+<div class="page-head">
+  <h1>{% translate "Members" %}</h1>
 <div class="actions">
   <a class="button" href="{% url 'panel-member-new' %}?association_id={{ association.id }}">{% translate "Nueva ficha" %}</a>
   {% if can_import %}
-    <a class="button" href="{% url 'member-import-start' %}?association_id={{ association.id }}">{% translate "Import members" %}</a>
+    <a class="button ghost" href="{% url 'member-import-start' %}?association_id={{ association.id }}">{% translate "Import members" %}</a>
   {% endif %}
   {% if can_manage_access %}
-    <a class="button" href="{% url 'member-access-invitations' %}?association_id={{ association.id }}">{% translate "Gestionar accesos" %}</a>
-    <a class="button" href="{% url 'panel-access-roles' %}?association_id={{ association.id }}">{% translate "Accesos y roles" %}</a>
+    <a class="button ghost" href="{% url 'member-access-invitations' %}?association_id={{ association.id }}">{% translate "Gestionar accesos" %}</a>
+    <a class="button ghost" href="{% url 'panel-access-roles' %}?association_id={{ association.id }}">{% translate "Accesos y roles" %}</a>
   {% endif %}
 </div>
-<table>
+</div>
+<div class="table-wrap"><table>
   <thead>
     <tr>
       <th>{% translate "Name" %}</th>
@@ -34,11 +36,11 @@
             <span class="muted">{% translate "No instrument" %}</span>
           {% endfor %}
         </td>
-        <td>{% if member.status == 'active' %}{{ member.get_status_display }}{% else %}<span class="muted">{{ member.get_status_display }}</span>{% endif %}</td>
+        <td><span class="status{% if member.status == 'active' %} ok{% endif %}">{{ member.get_status_display }}</span></td>
       </tr>
     {% empty %}
       <tr><td colspan="4">{% translate "There are no members." %} {% translate "Crea la primera ficha con «Nueva ficha»." %}</td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% endblock %}

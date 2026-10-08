@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% translate "Nueva encuesta" %} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'panel-polls' %}?association_id={{ association.id }}">← {% translate "Encuestas" %}</a></p>
+<p><a class="back" href="{% url 'panel-polls' %}?association_id={{ association.id }}">← {% translate "Encuestas" %}</a></p>
 <h1>{% translate "Nueva encuesta" %}</h1>
 <p class="muted">{% translate "Se guarda en borrador. Podrás corregirla y elegir a quién se consulta antes de abrir la votación." %}</p>
 <form method="post">

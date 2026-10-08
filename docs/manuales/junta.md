@@ -166,6 +166,26 @@ activó o desactivó cada acceso.
 Todavía no hay una función de «compartir mensaje preparado». De momento, copia el texto
 de la actividad y compártelo tú desde WhatsApp. Gesband no envía nada por WhatsApp.
 
+## 11. Imagen de la banda
+
+Con `board` o `admin`, «Imagen de la banda» en la cabecera del panel. Lo que se guarda
+aquí viste el panel y la app de todos los músicos.
+
+1. **Logo:** PNG, JPG o WebP de hasta 2 MB. Se muestra recortado en un cuadrado con
+   esquinas redondeadas, así que un escudo cuadrado o un logo sobre fondo propio queda
+   mejor. Sin logo se usan las iniciales del nombre.
+2. **Lema** y **colores** principal y secundario. Puedes elegir cualquier color: el
+   panel y la app ajustan el texto para que siempre se lea, y si el color principal se
+   confunde con el fondo oscuro (una banda en negro) le añaden un filo del secundario.
+3. **Estilo:** Escenario (oscuro y contundente, el de Gesband), Partitura (clásico y
+   editorial) o Festa (cálido y popular).
+4. **Modo de color:** según el dispositivo, claro u oscuro. Cada músico puede cambiarlo
+   en su móvil desde «Mi ficha».
+5. La vista previa de la derecha cambia al elegir. Nada se guarda hasta pulsar
+   «Guardar».
+
+El nombre y la zona horaria de la asociación los cambia el operador de la plataforma.
+
 ## Todavía no se puede
 
 - Editar el repertorio después de crear la actividad (hay que hacerlo desde la

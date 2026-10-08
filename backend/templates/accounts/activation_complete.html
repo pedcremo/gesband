@@ -1,4 +1,3 @@
+{% extends 'shared/plain.html' %}
 {% load i18n %}
-<!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gesband</title></head>
-<body><main><h1>{% translate "Cuenta activada" %}</h1><p>{% translate "Ya puedes iniciar sesión en la aplicación móvil con tu correo y la contraseña que acabas de crear." %}</p></main></body></html>
+{% block content %}<h1>{% translate "Cuenta activada" %}</h1><p>{% translate "Ya puedes iniciar sesión en la aplicación móvil con tu correo y la contraseña que acabas de crear." %}</p>{% endblock %}

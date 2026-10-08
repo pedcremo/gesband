@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ValidationError as DjangoValidationError
 from django.core.files.base import ContentFile
 from django.db import transaction
-from django.db.models import Count, Prefetch
+from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -90,12 +90,27 @@ def _roles_in(request, association):
 @login_required
 def dashboard(request):
     association = _association_for(request)
-    activities = Activity.objects.filter(association=association).annotate(invited=Count("invitations"))[:10]
+    now = timezone.now()
+    with_counts = Activity.objects.filter(association=association).annotate(
+        invited=Count("invitations"),
+        accepted=Count("invitations", filter=Q(invitations__response="accepted")),
+        declined=Count("invitations", filter=Q(invitations__response="declined")),
+    )
+    upcoming = list(with_counts.filter(starts_at__gte=now).order_by("starts_at", "title")[:12])
+    # El cartel es la próxima actividad publicada; los borradores van en la lista.
+    next_activity = next((item for item in upcoming if item.status == Activity.Status.PUBLISHED), None)
+    for item in upcoming:
+        item.answered = item.accepted + item.declined
+        item.pending = item.invited - item.answered
+        item.accepted_pct = round(100 * item.accepted / item.invited) if item.invited else 0
+        item.declined_pct = round(100 * item.declined / item.invited) if item.invited else 0
     context = {
         "association": association,
         "members_count": Member.objects.filter(association=association, status=Member.Status.ACTIVE).count(),
-        "activities": activities,
-        "now": timezone.now(),
+        "next_activity": next_activity,
+        "activities": [item for item in upcoming if item is not next_activity],
+        "past_activities": with_counts.filter(starts_at__lt=now).order_by("-starts_at")[:5],
+        "now": now,
     }
     return render(request, "shared/dashboard.html", context)
 

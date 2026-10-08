@@ -12,10 +12,11 @@ Lo que solo puede hacer `admin`:
 | Importar miembros desde CSV o XLSX | «Miembros» → «Importar miembros» |
 | Borrar definitivamente una ficha sin historial | Ficha → «Borrar esta ficha…» |
 | Conceder o quitar el rol `admin` | «Miembros» → «Accesos y roles» |
-| Configurar la asociación: nombre, logo, colores, lema | Mediante el operador de la plataforma (ver al final) |
+| Cambiar el nombre o la zona horaria de la asociación | Mediante el operador de la plataforma (ver al final) |
 
-Invitar a los músicos, conceder los demás roles y activar o desactivar accesos lo
-comparte con `board`. Dar de alta, editar y dar de baja fichas lo comparte con `board`,
+Invitar a los músicos, conceder los demás roles, activar o desactivar accesos y
+cambiar la imagen de la banda (logo, colores, lema, estilo y modo, en «Imagen de la
+banda»; ver [junta.md](junta.md#11-imagen-de-la-banda)) lo comparte con `board`. Dar de alta, editar y dar de baja fichas lo comparte con `board`,
 `organizer` y `director`.
 
 ## 1. Importar el censo
@@ -110,6 +111,4 @@ administración.
 
 - Dar de alta cuerdas o instrumentos desde el panel.
 - Borrar una cuenta: solo se desactiva su acceso a la asociación.
-- Cambiar el logo, los colores o el lema desde el panel: lo hace el operador de la
-  plataforma.
 - Restablecer la contraseña de un músico.

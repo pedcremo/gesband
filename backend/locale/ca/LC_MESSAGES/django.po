@@ -2840,3 +2840,104 @@ msgstr "Esborrar esta fitxa…"
 msgid "Crea la primera ficha con «Nueva ficha»."
 msgstr "Crea la primera fitxa amb «Nova fitxa»."
 
+# Sistema visual del panel e imagen de la banda (decisión 0010)
+msgid "Imagen de la banda"
+msgstr "Imatge de la banda"
+
+msgid "Lo que viene"
+msgstr "El que ve"
+
+msgid "%(yes)s asistirán, %(no)s no podrán, %(pending)s sin responder"
+msgstr "%(yes)s hi aniran, %(no)s no podran, %(pending)s sense respondre"
+
+msgid "<strong>%(yes)s</strong> asistirán · <strong>%(no)s</strong> no · <strong>%(pending)s</strong> sin responder"
+msgstr "<strong>%(yes)s</strong> hi aniran · <strong>%(no)s</strong> no · <strong>%(pending)s</strong> sense respondre"
+
+msgid "%(answered)s de %(invited)s han respondido"
+msgstr "%(answered)s de %(invited)s han respost"
+
+msgid "Crea un ensayo o una actuación y convoca a la banda."
+msgstr "Crea un assaig o una actuació i convoca la banda."
+
+msgid "Lo que elijas aquí viste el panel y la app de todos los músicos de la banda."
+msgstr "El que tries ací vist el panell i l'app de tots els músics de la banda."
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Colores"
+msgstr "Colors"
+
+msgid "Escenario: oscura y contundente. Partitura: clásica y editorial. Festa: cálida y popular."
+msgstr "Escenari: fosca i contundent. Partitura: clàssica i editorial. Festa: càlida i popular."
+
+msgid "Guardar"
+msgstr "Guardar"
+
+msgid "Vista previa"
+msgstr "Previsualització"
+
+msgid "Próxima actuación"
+msgstr "Pròxima actuació"
+
+msgid "Concierto de ejemplo"
+msgstr "Concert d'exemple"
+
+msgid "Así se verá el cartel de la próxima actividad."
+msgstr "Així es veurà el cartell de la pròxima activitat."
+
+msgid "Asistiré"
+msgstr "Hi aniré"
+
+msgid "La vista previa cambia al elegir; nada se guarda hasta pulsar «Guardar»."
+msgstr "La previsualització canvia en triar; no es guarda res fins que prems «Guardar»."
+
+msgid "PNG, JPG o WebP de hasta 2 MB. Se recorta en un cuadrado con esquinas redondeadas."
+msgstr "PNG, JPG o WebP de fins a 2 MB. Es retalla en un quadrat amb cantons arredonits."
+
+msgid "Quitar el logo y usar las iniciales"
+msgstr "Llevar el logo i usar les inicials"
+
+msgid "Cualquier color: el panel y la app ajustan el texto para que se lea."
+msgstr "Qualsevol color: el panell i l'app ajusten el text perquè es llija."
+
+msgid "Cada persona puede cambiarlo en su dispositivo."
+msgstr "Cada persona pot canviar-ho en el seu dispositiu."
+
+msgid "Escenario"
+msgstr "Escenari"
+
+msgid "Partitura"
+msgstr "Partitura"
+
+msgid "Festa"
+msgstr "Festa"
+
+msgid "Según el dispositivo"
+msgstr "Segons el dispositiu"
+
+msgid "Claro"
+msgstr "Clar"
+
+msgid "Oscuro"
+msgstr "Fosc"
+
+msgid "estilo visual"
+msgstr "estil visual"
+
+msgid "modo de color"
+msgstr "mode de color"
+
+msgid "El logo supera 2 MB."
+msgstr "El logo supera 2 MB."
+
+msgid "Imagen de la banda guardada."
+msgstr "Imatge de la banda guardada."
+
+msgid "Cambiar la imagen de la banda: logo, colores, lema y estilo"
+msgstr "Canviar la imatge de la banda: logo, colors, lema i estil"
+
+msgid "%(member_count)s active member"
+msgid_plural "%(member_count)s active members"
+msgstr[0] "%(member_count)s membre actiu"
+msgstr[1] "%(member_count)s membres actius"

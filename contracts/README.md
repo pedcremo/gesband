@@ -36,6 +36,10 @@ declaran su permiso en `x-permissions`. Los permisos del MVP son:
 | `members.private_data.view` | Ver datos personales restringidos. |
 | `members.photo.view` / `members.photo.manage` | Descargar o cambiar fotos privadas. |
 | `imports.manage` | Preparar y confirmar importaciones. |
+| `accounts.manage` | Invitar y activar o desactivar accesos (`admin`, `board`). |
+| `roles.manage` | Conceder y quitar roles; `admin` solo lo concede otro `admin` (`admin`, `board`). |
+| `branding.manage` | Cambiar logo, colores, lema, estilo y modo de color (`admin`, `board`). |
+| `members.delete` | Borrar definitivamente fichas sin historial (`admin`). |
 | `activities.view` / `activities.manage` | Consultar o mantener actividades. |
 | `invitations.manage` | Previsualizar y emitir convocatorias. |
 | `attendance.manage` | Registrar asistencia real. |

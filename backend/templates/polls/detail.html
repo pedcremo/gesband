@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{{ poll.question }} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'panel-polls' %}?association_id={{ association.id }}">← {% translate "Encuestas" %}</a></p>
+<p><a class="back" href="{% url 'panel-polls' %}?association_id={{ association.id }}">← {% translate "Encuestas" %}</a></p>
 <h1>{{ poll.question }}</h1>
 {% if poll.description %}<p>{{ poll.description|linebreaksbr }}</p>{% endif %}
 <p>

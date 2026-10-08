@@ -2,14 +2,21 @@
 {% load i18n %}
 {% block title %}{{ activity.title }} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
-<h1>{{ activity.title }}</h1>
-<p>{{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }} · {{ activity.location }}</p>
-<p>{{ activity.uniform }}</p>
-{% if activity.is_mandatory %}
-  <p class="status">{% translate "Asistencia obligatoria" %}</p>
-{% endif %}
-<p class="status">{{ activity.get_status_display }}</p>
+<p><a class="back" href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
+<div class="page-head">
+  <div>
+    <span class="eyebrow">{{ activity.get_kind_display }} · {{ activity.starts_at|date:"SHORT_DATETIME_FORMAT" }}</span>
+    <h1>{{ activity.title }}</h1>
+    <div class="row">
+      <span class="status {{ activity.status }}">{{ activity.get_status_display }}</span>
+      {% if activity.is_mandatory %}<span class="status warn">{% translate "Asistencia obligatoria" %}</span>{% endif %}
+    </div>
+  </div>
+</div>
+<div class="cards">
+  {% if activity.location %}<div class="card"><span class="eyebrow">{% translate "Lugar" %}</span><p class="display" style="font-size:1.5rem">{{ activity.location }}</p></div>{% endif %}
+  {% if activity.uniform %}<div class="card"><span class="eyebrow">{% translate "Uniforme" %}</span><p class="display" style="font-size:1.5rem">{{ activity.uniform }}</p></div>{% endif %}
+</div>
 {% with programme=activity.programme.all %}
   {% if programme %}
     <h2>{% translate "Repertorio" %}</h2>
@@ -115,7 +122,7 @@
 </form>
 {% endif %}
 <h2>{% translate "Invitations" %}</h2>
-<table>
+<div class="table-wrap"><table>
   <thead>
     <tr>
       <th>{% translate "Musician" %}</th>
@@ -128,16 +135,16 @@
     {% for invitation in activity.invitations.all %}
       <tr>
         <td>{{ invitation.member }}</td>
-        <td>{{ invitation.get_response_display }}</td>
+        <td><span class="status {{ invitation.response }}">{{ invitation.get_response_display }}</span></td>
         <td>
           {% if invitation.attendance %}
-            {{ invitation.attendance.get_status_display }}
+            <span class="status {{ invitation.attendance.status }}">{{ invitation.attendance.get_status_display }}</span>
           {% else %}
             {% translate "Not recorded" %}
           {% endif %}
         </td>
         <td>
-          <form method="post">
+          <form method="post" class="inline">
             {% csrf_token %}
             <input type="hidden" name="attendance_id" value="{{ invitation.id }}">
             <select name="attendance" aria-label="{% translate 'Attendance' %}">
@@ -153,5 +160,5 @@
       <tr><td colspan="4">{% translate "There are no invited members." %}</td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% endblock %}

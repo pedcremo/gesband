@@ -6,7 +6,7 @@
 <div class="actions">
   <a class="button" href="{% url 'panel-poll-new' %}?association_id={{ association.id }}">{% translate "Nueva encuesta" %}</a>
 </div>
-<table>
+<div class="table-wrap"><table>
   <thead>
     <tr>
       <th>{% translate "Enunciado" %}</th>
@@ -27,5 +27,5 @@
       <tr><td colspan="4">{% translate "Todavía no hay encuestas." %}</td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% endblock %}

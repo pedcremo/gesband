@@ -2,14 +2,14 @@
 {% load i18n %}
 {% block title %}{% translate "Accesos de músicos" %} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
+<p><a class="back" href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
 <h1>{% translate "Accesos de músicos" %}</h1>
 <p>{% translate "Envía un enlace personal para que cada músico cree su contraseña. Reenviar invalida el enlace anterior." %}</p>
 
 <form method="post">
   {% csrf_token %}
   <input type="hidden" name="association_id" value="{{ association.id }}">
-  <table>
+  <div class="table-wrap"><table>
     <thead>
       <tr>
         <th><span class="visually-hidden">{% translate "Seleccionar" %}</span></th>
@@ -58,7 +58,7 @@
         <tr><td colspan="5">{% translate "No hay músicos activos." %}</td></tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
   <div class="actions">
     <button class="button" type="submit" name="action" value="invite_selected">{% translate "Enviar o reenviar a seleccionados" %}</button>
     <button class="button" type="submit" name="action" value="invite_all">{% translate "Enviar o reenviar a todos los elegibles" %}</button>

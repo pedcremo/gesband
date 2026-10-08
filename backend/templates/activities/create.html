@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% translate "Nueva actividad" %} · Gesband{% endblock %}
 {% block content %}
-<p><a href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
+<p><a class="back" href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
 <h1>{% translate "Nueva actividad" %}</h1>
 <p class="muted">
   {% translate "La actividad se guarda en borrador: nadie recibe avisos hasta que la publiques. Después podrás convocar a toda la banda, a unas cuerdas, a unos instrumentos o a personas concretas." %}

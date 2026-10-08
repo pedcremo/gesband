@@ -1,6 +1,6 @@
 {% load i18n %}
 <h2>{% if results.kind == 'final' %}{% translate "Resultado definitivo" %}{% else %}{% translate "Recuento provisional" %}{% endif %}</h2>
-<table>
+<div class="table-wrap"><table>
   <thead>
     <tr>
       <th>{% translate "Opción" %}</th>
@@ -19,5 +19,5 @@
       </tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 <p>{% blocktranslate with cast=results.votes_cast recipients=participation.recipients %}Votos emitidos: {{ cast }} de {{ recipients }} personas consultadas.{% endblocktranslate %}</p>

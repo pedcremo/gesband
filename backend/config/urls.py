@@ -12,6 +12,7 @@ from apps.polls.api import PollViewSet
 from apps.polls.views import poll_create, poll_detail, poll_list
 from apps.accounts.forms import PanelLoginForm
 from apps.accounts.panel_views import access_roles
+from apps.associations.panel_views import branding
 from apps.accounts.views import activate_invitation, activation_complete
 from apps.members.views import member_create, member_delete, member_detail, member_photo, member_status
 from apps.communications.api import (
@@ -89,6 +90,7 @@ urlpatterns = [
     path("panel/members/<uuid:member_id>/status/", member_status, name="panel-member-status"),
     path("panel/members/<uuid:member_id>/delete/", member_delete, name="panel-member-delete"),
     path("panel/access/", access_roles, name="panel-access-roles"),
+    path("panel/branding/", branding, name="panel-branding"),
     path("panel/members/import/", member_import_start, name="member-import-start"),
     path("panel/members/import/template.csv", member_import_template, name="member-import-template"),
     path("panel/members/import/<uuid:batch_id>/", member_import_detail, name="member-import-detail"),

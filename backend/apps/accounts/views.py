@@ -31,7 +31,8 @@ def activate_invitation(request, token):
     return render(
         request,
         "accounts/activate_invitation.html",
-        {"invitation": invitation, "errors": errors},
+        # La página se viste con la marca de la banda que invita (decisión 0010).
+        {"invitation": invitation, "association": invitation.association, "errors": errors},
     )
 
 
