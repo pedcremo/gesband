@@ -2462,3 +2462,382 @@ msgstr "Invited"
 #: templates/shared/dashboard.html:42
 msgid "There are no activities yet."
 msgstr "There are no activities yet."
+
+# Decision 0009: fichas, accesos y roles desde el panel.
+msgid "Rol"
+msgstr "Role"
+
+msgid "Rol concedido"
+msgstr "Role granted"
+
+msgid "Rol retirado"
+msgstr "Role removed"
+
+msgid "Acceso desactivado"
+msgstr "Access deactivated"
+
+msgid "Acceso reactivado"
+msgstr "Access reactivated"
+
+msgid "realizado por"
+msgstr "done by"
+
+msgid "acción"
+msgstr "action"
+
+msgid "fecha"
+msgstr "date"
+
+msgid "cambio de acceso"
+msgstr "access change"
+
+msgid "cambios de acceso"
+msgstr "access changes"
+
+msgid "Ese acceso no pertenece a esta asociación."
+msgstr "That access does not belong to this association."
+
+msgid "Elige un rol válido."
+msgstr "Choose a valid role."
+
+#, python-format
+msgid "Rol «%(role)s» concedido a %(account)s."
+msgstr "Role “%(role)s” granted to %(account)s."
+
+#, python-format
+msgid "%(account)s ya tenía ese rol."
+msgstr "%(account)s already had that role."
+
+#, python-format
+msgid "Quitar el rol «%(role)s» a %(account)s"
+msgstr "Remove the “%(role)s” role from %(account)s"
+
+msgid "Perderá los permisos de ese rol en esta asociación. Podrás concedérselo de nuevo."
+msgstr "They will lose that role's permissions in this association. You can grant it again later."
+
+msgid "Quitar rol"
+msgstr "Remove role"
+
+#, python-format
+msgid "Rol «%(role)s» retirado a %(account)s."
+msgstr "Role “%(role)s” removed from %(account)s."
+
+#, python-format
+msgid "Desactivar el acceso de %(account)s"
+msgstr "Deactivate %(account)s's access"
+
+msgid "No podrá entrar en esta asociación ni en la app ni en el panel. Su cuenta, sus roles y su acceso a otras asociaciones se conservan, y podrás reactivarlo."
+msgstr "They will not be able to enter this association in the app or the panel. Their account, roles and access to other associations are kept, and you can reactivate it."
+
+msgid "Desactivar acceso"
+msgstr "Deactivate access"
+
+#, python-format
+msgid "Acceso de %(account)s desactivado."
+msgstr "%(account)s's access deactivated."
+
+#, python-format
+msgid "Acceso de %(account)s reactivado."
+msgstr "%(account)s's access reactivated."
+
+msgid "Rol no válido."
+msgstr "Invalid role."
+
+msgid "Este rol lo asigna el operador de la plataforma, no la asociación."
+msgstr "This role is assigned by the platform operator, not by the association."
+
+msgid "Solo una cuenta con rol de administración puede conceder ese rol."
+msgstr "Only an account with the administration role can grant that role."
+
+msgid "El acceso está desactivado. Reactívalo antes de concederle roles."
+msgstr "The access is deactivated. Reactivate it before granting roles."
+
+msgid "Solo una cuenta con rol de administración puede quitar ese rol."
+msgstr "Only an account with the administration role can remove that role."
+
+msgid "La asociación se quedaría sin ninguna cuenta de administración activa."
+msgstr "The association would be left without any active administration account."
+
+msgid "Solo una cuenta con rol de administración puede cambiar el acceso de otra que lo tenga."
+msgstr "Only an account with the administration role can change the access of another account that has it."
+
+msgid "No puedes desactivar tu propio acceso."
+msgstr "You cannot deactivate your own access."
+
+msgid "Borrar definitivamente fichas sin historial"
+msgstr "Permanently delete records without history"
+
+msgid "Invitar y activar o desactivar accesos"
+msgstr "Invite and activate or deactivate access"
+
+msgid "Asignar y quitar roles"
+msgstr "Assign and remove roles"
+
+msgid "Instrumento principal"
+msgstr "Main instrument"
+
+msgid "Su cuerda es la del instrumento principal."
+msgstr "Their section is the main instrument's section."
+
+msgid "Cargos"
+msgstr "Positions"
+
+msgid "Los cargos son informativos: no conceden permisos en Gesband. Los permisos se dan con roles."
+msgstr "Positions are informative: they grant no permissions in Gesband. Permissions are given through roles."
+
+msgid "Número de socio u otro identificador estable de la asociación. Opcional."
+msgstr "Membership number or another stable association identifier. Optional."
+
+msgid "Opcional. Pídelo solo si la asociación lo necesita."
+msgstr "Optional. Ask for it only if the association needs it."
+
+msgid "Una ficha inactiva está de baja: no se convoca, pero conserva su historial."
+msgstr "An inactive record has left: it is not called up, but keeps its history."
+
+msgid "Foto"
+msgstr "Photo"
+
+msgid "JPEG, PNG o WebP, hasta 5 MB. Se eliminan los metadatos y solo la ven la persona y la junta."
+msgstr "JPEG, PNG or WebP, up to 5 MB. Metadata is removed and only the person and the board can see it."
+
+msgid "actualizada por"
+msgstr "updated by"
+
+msgid "fecha del cambio de estado"
+msgstr "status change date"
+
+msgid "estado cambiado por"
+msgstr "status changed by"
+
+msgid "Presidencia"
+msgstr "Presidency"
+
+msgid "Vicepresidencia"
+msgstr "Vice-presidency"
+
+msgid "Secretaría"
+msgstr "Secretary"
+
+msgid "Tesorería"
+msgstr "Treasury"
+
+msgid "Contratista"
+msgstr "Contractor"
+
+msgid "Vocalía"
+msgstr "Board member"
+
+msgid "cargo"
+msgstr "position"
+
+msgid "cargo de miembro"
+msgstr "member position"
+
+msgid "cargos de miembros"
+msgstr "member positions"
+
+msgid "Cargo no válido."
+msgstr "Invalid position."
+
+msgid "Ya hay otra ficha con este identificador externo en la asociación."
+msgstr "Another record in the association already has this external identifier."
+
+msgid "Estado no válido."
+msgstr "Invalid status."
+
+msgid "Tiene convocatorias o asistencia registradas."
+msgstr "It has call-ups or recorded attendance."
+
+msgid "Ha sido destinataria de encuestas."
+msgstr "It has received polls."
+
+msgid "Tiene transporte asignado."
+msgstr "It has transport assigned."
+
+msgid "Tiene una cuenta de acceso vinculada."
+msgstr "It has a linked access account."
+
+msgid "No se puede borrar esta ficha sin perder su historial. Dala de baja en su lugar."
+msgstr "This record cannot be deleted without losing its history. Mark it as left instead."
+
+msgid "Ficha creada."
+msgstr "Record created."
+
+msgid "Ficha actualizada."
+msgstr "Record updated."
+
+msgid "Esta ficha no tiene foto."
+msgstr "This record has no photo."
+
+msgid "Foto eliminada."
+msgstr "Photo removed."
+
+msgid "Foto guardada."
+msgstr "Photo saved."
+
+#, python-format
+msgid "Dar de baja a %(member)s"
+msgstr "Mark %(member)s as left"
+
+msgid "La ficha quedará inactiva: no se la podrá convocar ni invitar, pero se conservan sus convocatorias, respuestas y asistencia. Podrás reactivarla cuando quieras."
+msgstr "The record will become inactive: it cannot be called up or invited, but its call-ups, responses and attendance are kept. You can reactivate it whenever you want."
+
+msgid "Dar de baja"
+msgstr "Mark as left"
+
+msgid "Ficha reactivada."
+msgstr "Record reactivated."
+
+msgid "Ficha dada de baja. Su historial se conserva."
+msgstr "Record marked as left. Its history is kept."
+
+msgid "Ficha borrada definitivamente."
+msgstr "Record permanently deleted."
+
+#, python-format
+msgid "Borrar definitivamente a %(member)s"
+msgstr "Permanently delete %(member)s"
+
+msgid "El borrado no se puede deshacer. Solo se permite si la ficha no tiene historial ni cuenta vinculada."
+msgstr "Deletion cannot be undone. It is only allowed if the record has no history and no linked account."
+
+msgid "Borrar definitivamente"
+msgstr "Delete permanently"
+
+msgid "Accesos y roles"
+msgstr "Access and roles"
+
+msgid "Los roles dan los permisos en esta asociación; los cargos de la ficha no. Solo administración concede o quita el rol de administración, y siempre debe quedar al menos una cuenta de administración activa. Para dar acceso a alguien nuevo, invítalo desde «Gestionar accesos»."
+msgstr "Roles grant permissions in this association; record positions do not. Only administration grants or removes the administration role, and at least one active administration account must always remain. To give someone new access, invite them from “Manage access”."
+
+msgid "Cuenta"
+msgstr "Account"
+
+msgid "Ficha"
+msgstr "Record"
+
+msgid "Acceso"
+msgstr "Access"
+
+msgid "Sin ficha"
+msgstr "No record"
+
+msgid "Quitar"
+msgstr "Remove"
+
+msgid "Lo asigna el operador de la plataforma"
+msgstr "Assigned by the platform operator"
+
+msgid "Sin roles"
+msgstr "No roles"
+
+msgid "Conceder rol"
+msgstr "Grant role"
+
+msgid "Desactivar"
+msgstr "Deactivate"
+
+msgid "Desactivado"
+msgstr "Deactivated"
+
+msgid "Reactivar"
+msgstr "Reactivate"
+
+msgid "Nadie tiene acceso todavía a esta asociación."
+msgstr "Nobody has access to this association yet."
+
+msgid "Últimos cambios"
+msgstr "Latest changes"
+
+msgid "Fecha"
+msgstr "Date"
+
+msgid "Cambio"
+msgstr "Change"
+
+msgid "Realizado por"
+msgstr "Done by"
+
+msgid "Todavía no hay cambios registrados."
+msgstr "No changes recorded yet."
+
+msgid "No se puede hacer por estos motivos; usa la baja en su lugar:"
+msgstr "It cannot be done for these reasons; mark as left instead:"
+
+msgid "Volver"
+msgstr "Back"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Nueva ficha"
+msgstr "New record"
+
+msgid "Con cuenta de acceso vinculada"
+msgstr "With a linked access account"
+
+msgid "Solo son obligatorios el nombre y los apellidos. Crear una ficha no envía ninguna invitación."
+msgstr "Only first name and surnames are required. Creating a record sends no invitation."
+
+msgid "La asociación todavía no tiene instrumentos dados de alta."
+msgstr "The association has no instruments yet."
+
+msgid "Crear ficha"
+msgstr "Create record"
+
+#, python-format
+msgid "Foto de %(member)s"
+msgstr "Photo of %(member)s"
+
+msgid "Eliminar foto"
+msgstr "Remove photo"
+
+msgid "Sin foto."
+msgstr "No photo."
+
+msgid "Sustituir foto"
+msgstr "Replace photo"
+
+msgid "Subir foto"
+msgstr "Upload photo"
+
+msgid "Historial"
+msgstr "History"
+
+#, python-format
+msgid "%(counter)s convocatoria"
+msgid_plural "%(counter)s convocatorias"
+msgstr[0] "%(counter)s call-up"
+msgstr[1] "%(counter)s call-ups"
+
+#, python-format
+msgid "%(counter)s encuesta"
+msgid_plural "%(counter)s encuestas"
+msgstr[0] "%(counter)s poll"
+msgstr[1] "%(counter)s polls"
+
+#, python-format
+msgid "%(counter)s asignación de transporte"
+msgid_plural "%(counter)s asignaciones de transporte"
+msgstr[0] "%(counter)s transport assignment"
+msgstr[1] "%(counter)s transport assignments"
+
+#, python-format
+msgid "Último cambio de estado: %(date)s por %(who)s."
+msgstr "Last status change: %(date)s by %(who)s."
+
+msgid "Alta y baja"
+msgstr "Joining and leaving"
+
+msgid "La baja conserva el historial y se puede deshacer."
+msgstr "Leaving keeps the history and can be undone."
+
+msgid "Esta ficha no se puede borrar sin perder su historial. Usa la baja."
+msgstr "This record cannot be deleted without losing its history. Mark it as left."
+
+msgid "Borrar esta ficha…"
+msgstr "Delete this record…"
+
+msgid "Crea la primera ficha con «Nueva ficha»."
+msgstr "Create the first record with “New record”."
+

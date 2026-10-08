@@ -347,6 +347,23 @@ paths:
         '404': {$ref: '#/components/responses/NotFound'}
         '412': {$ref: '#/components/responses/PreconditionFailed'}
         '422': {$ref: '#/components/responses/ValidationError'}
+    delete:
+      tags: [Members]
+      operationId: deleteMember
+      summary: Borra definitivamente una ficha sin historial.
+      description: >-
+        Solo `admin`. Se rechaza con 409 si la ficha tiene convocatorias o
+        asistencia, ha recibido encuestas, tiene transporte o una cuenta vinculada:
+        en esos casos se da de baja con `status: inactive`, que conserva el
+        historial y es reversible. Decisión 0009.
+      x-permissions: [members.delete]
+      parameters:
+        - {$ref: '#/components/parameters/AssociationId'}
+      responses:
+        '204': {description: Ficha borrada.}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
   /members/{memberId}/photo:
     parameters:
       - {$ref: '#/components/parameters/MemberId'}
@@ -1305,7 +1322,11 @@ components:
         associations: {type: array, items: {$ref: '#/components/schemas/AssociationMembership'}}
     Permission:
       type: string
-      enum: [association.view, association.manage, members.view, members.manage, members.private_data.view, members.photo.view, members.photo.manage, imports.manage, activities.view, activities.manage, invitations.manage, attendance.manage, transport.view, transport.manage, notifications.view, devices.manage_own]
+      enum: [association.view, association.manage, members.view, members.manage, members.delete, members.private_data.view, members.photo.view, members.photo.manage, imports.manage, accounts.manage, roles.manage, activities.view, activities.manage, invitations.manage, attendance.manage, transport.view, transport.manage, notifications.view, devices.manage_own]
+      description: >-
+        `accounts.manage` (invitar y activar o desactivar accesos) y `roles.manage`
+        (conceder y quitar roles) los tienen `admin` y `board`; `members.delete`
+        (borrado físico de fichas sin historial), solo `admin`. Decisión 0009.
     AssociationMembership:
       type: object
       required: [id, name, permissions]

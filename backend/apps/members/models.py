@@ -98,6 +98,34 @@ class Member(models.Model):
     photo = models.ImageField(_("foto"), upload_to=private_member_photo_path, blank=True)
     created_at = models.DateTimeField(_("fecha de creación"), auto_now_add=True)
     updated_at = models.DateTimeField(_("fecha de actualización"), auto_now=True)
+    # Trazabilidad minima (decision 0009): quien creo la ficha, quien la toco
+    # por ultima vez y quien cambio su estado. Las importaciones dejan su rastro
+    # en el lote, no aqui.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        null=True,
+        blank=True,
+        verbose_name=_("creada por"),
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        null=True,
+        blank=True,
+        verbose_name=_("actualizada por"),
+    )
+    status_changed_at = models.DateTimeField(_("fecha del cambio de estado"), null=True, blank=True)
+    status_changed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        null=True,
+        blank=True,
+        verbose_name=_("estado cambiado por"),
+    )
 
     class Meta:
         ordering = ["last_name", "first_name"]
@@ -138,6 +166,31 @@ class MemberInstrument(models.Model):
 
         if self.member.association_id != self.instrument.association_id:
             raise ValidationError({"instrument": _("El instrumento pertenece a otra asociación.")})
+
+
+class MemberPosition(models.Model):
+    """Cargo registrable de la ficha (ANALISIS.md 2). No concede ningún permiso."""
+
+    class Position(models.TextChoices):
+        PRESIDENT = "president", _("Presidencia")
+        VICE_PRESIDENT = "vice_president", _("Vicepresidencia")
+        SECRETARY = "secretary", _("Secretaría")
+        TREASURER = "treasurer", _("Tesorería")
+        CONTRACTOR = "contractor", _("Contratista")
+        BOARD_MEMBER = "board_member", _("Vocalía")
+
+    member = models.ForeignKey(
+        Member, on_delete=models.CASCADE, related_name="positions", verbose_name=_("miembro")
+    )
+    position = models.CharField(_("cargo"), max_length=24, choices=Position.choices)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["member", "position"], name="unique_member_position")]
+        verbose_name = _("cargo de miembro")
+        verbose_name_plural = _("cargos de miembros")
+
+    def __str__(self):
+        return self.get_position_display()
 
 
 class ImportBatch(models.Model):

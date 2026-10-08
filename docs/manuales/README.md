@@ -1,6 +1,6 @@
 # Manuales de uso de Gesband
 
-Estado a 30 de septiembre de 2026. Describen lo que el MVP permite hacer hoy, no lo
+Estado a 8 de octubre de 2026. Describen lo que el MVP permite hacer hoy, no lo
 previsto en [ANALISIS.md](../../ANALISIS.md). Cada manual indica al final qué
 **todavía no** se puede hacer desde su rol.
 
@@ -51,5 +51,7 @@ seguir estos manuales sin datos reales.
 
 - **No hay recuperación de contraseña.** Si alguien la olvida, la debe restablecer el
   operador de la plataforma.
-- **Los roles de gestión los asigna el operador de la plataforma** desde la
-  administración interna. Una invitación de acceso solo concede el rol `member`.
+- **Una invitación de acceso solo concede el rol `member`.** Los demás roles los
+  conceden `admin` y `board` desde «Accesos y roles»; el rol `admin`, solo otro `admin`
+  ([decisión 0009](../decisions/0009-fichas-accesos-y-roles-desde-el-panel.md)).
+  `platform` y `web_editor` los sigue asignando el operador de la plataforma.

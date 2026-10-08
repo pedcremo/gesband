@@ -11,7 +11,9 @@ from rest_framework.routers import DefaultRouter
 from apps.polls.api import PollViewSet
 from apps.polls.views import poll_create, poll_detail, poll_list
 from apps.accounts.forms import PanelLoginForm
+from apps.accounts.panel_views import access_roles
 from apps.accounts.views import activate_invitation, activation_complete
+from apps.members.views import member_create, member_delete, member_detail, member_photo, member_status
 from apps.communications.api import (
     DeviceDetailView,
     DeviceListView,
@@ -81,6 +83,12 @@ urlpatterns = [
     path("panel/", dashboard, name="panel"),
     path("panel/members/", members, name="panel-members"),
     path("panel/members/access/", member_access_invitations, name="member-access-invitations"),
+    path("panel/members/new/", member_create, name="panel-member-new"),
+    path("panel/members/<uuid:member_id>/", member_detail, name="panel-member-detail"),
+    path("panel/members/<uuid:member_id>/photo/", member_photo, name="panel-member-photo"),
+    path("panel/members/<uuid:member_id>/status/", member_status, name="panel-member-status"),
+    path("panel/members/<uuid:member_id>/delete/", member_delete, name="panel-member-delete"),
+    path("panel/access/", access_roles, name="panel-access-roles"),
     path("panel/members/import/", member_import_start, name="member-import-start"),
     path("panel/members/import/template.csv", member_import_template, name="member-import-template"),
     path("panel/members/import/<uuid:batch_id>/", member_import_detail, name="member-import-detail"),

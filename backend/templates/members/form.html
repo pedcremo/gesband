@@ -1,0 +1,85 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% if member %}{{ member }}{% else %}{% translate "Nueva ficha" %}{% endif %} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
+{% if member %}
+  <h1>{{ member }}</h1>
+  <p>
+    <span class="status">{{ member.get_status_display }}</span>
+    {% if member.account_id %}<span class="muted">{% translate "Con cuenta de acceso vinculada" %}</span>{% endif %}
+  </p>
+{% else %}
+  <h1>{% translate "Nueva ficha" %}</h1>
+  <p class="muted">{% translate "Solo son obligatorios el nombre y los apellidos. Crear una ficha no envía ninguna invitación." %}</p>
+{% endif %}
+
+<form method="post" action="{% if member %}{% url 'panel-member-detail' member.id %}{% else %}{% url 'panel-member-new' %}{% endif %}">
+  {% csrf_token %}
+  <input type="hidden" name="association_id" value="{{ association.id }}">
+  {{ form.as_p }}
+  {% if not form.instruments.field.queryset.exists %}
+    <p class="muted">{% translate "La asociación todavía no tiene instrumentos dados de alta." %}</p>
+  {% endif %}
+  <div class="actions">
+    <button class="button" type="submit">{% if member %}{% translate "Guardar cambios" %}{% else %}{% translate "Crear ficha" %}{% endif %}</button>
+  </div>
+</form>
+
+{% if member %}
+  <h2>{% translate "Foto" %}</h2>
+  {% if member.photo %}
+    <p><img src="{% url 'panel-member-photo' member.id %}?association_id={{ association.id }}" alt="{% blocktranslate with member=member %}Foto de {{ member }}{% endblocktranslate %}" width="160"></p>
+    <form method="post" action="{% url 'panel-member-photo' member.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="association_id" value="{{ association.id }}">
+      <input type="hidden" name="action" value="delete">
+      <button class="button secondary" type="submit">{% translate "Eliminar foto" %}</button>
+    </form>
+  {% else %}
+    <p class="muted">{% translate "Sin foto." %}</p>
+  {% endif %}
+  <form method="post" action="{% url 'panel-member-photo' member.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="association_id" value="{{ association.id }}">
+    {{ photo_form.as_p }}
+    <div class="actions">
+      <button class="button" type="submit">{% if member.photo %}{% translate "Sustituir foto" %}{% else %}{% translate "Subir foto" %}{% endif %}</button>
+    </div>
+  </form>
+
+  <h2>{% translate "Historial" %}</h2>
+  <ul>
+    <li>{% blocktranslate count counter=history.invitations %}{{ counter }} convocatoria{% plural %}{{ counter }} convocatorias{% endblocktranslate %}</li>
+    <li>{% blocktranslate count counter=history.poll_recipients %}{{ counter }} encuesta{% plural %}{{ counter }} encuestas{% endblocktranslate %}</li>
+    <li>{% blocktranslate count counter=history.transport_assignments %}{{ counter }} asignación de transporte{% plural %}{{ counter }} asignaciones de transporte{% endblocktranslate %}</li>
+  </ul>
+  {% if member.status_changed_at %}
+    <p class="muted">{% blocktranslate with date=member.status_changed_at|date:"SHORT_DATETIME_FORMAT" who=member.status_changed_by|default:"—" %}Último cambio de estado: {{ date }} por {{ who }}.{% endblocktranslate %}</p>
+  {% endif %}
+
+  <h2>{% translate "Alta y baja" %}</h2>
+  <form method="post" action="{% url 'panel-member-status' member.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="association_id" value="{{ association.id }}">
+    {% if member.status == 'active' %}
+      <input type="hidden" name="status" value="inactive">
+      <p class="muted">{% translate "La baja conserva el historial y se puede deshacer." %}</p>
+      <button class="button" type="submit">{% translate "Dar de baja" %}</button>
+    {% else %}
+      <input type="hidden" name="status" value="active">
+      <button class="button" type="submit">{% translate "Reactivar" %}</button>
+    {% endif %}
+  </form>
+
+  {% if can_delete %}
+    <h2>{% translate "Borrar definitivamente" %}</h2>
+    {% if deletion_blockers %}
+      <p class="muted">{% translate "Esta ficha no se puede borrar sin perder su historial. Usa la baja." %}</p>
+      <ul class="muted">{% for blocker in deletion_blockers %}<li>{{ blocker }}</li>{% endfor %}</ul>
+    {% else %}
+      <p><a href="{% url 'panel-member-delete' member.id %}?association_id={{ association.id }}">{% translate "Borrar esta ficha…" %}</a></p>
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% endblock %}

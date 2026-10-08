@@ -1,13 +1,15 @@
 import mimetypes
+from contextlib import contextmanager
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from rest_framework import decorators, permissions, response, status, viewsets
 from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.views import APIView
 
@@ -17,7 +19,7 @@ from apps.associations.models import Association, AssociationAccess, Association
 from apps.associations.permissions import MANAGER_ROLES, PARTICIPANT_ROLES, accessible_association_ids, get_access_or_403, permissions_for, require_roles
 from apps.communications.models import Notification
 from apps.communications.services import revoke_account_devices
-from apps.members.images import sanitize_member_photo
+from apps.members import services as member_services
 from apps.members.models import ImportBatch, Instrument, Member, MemberInstrument, Section
 from apps.members.services import confirm_import, parse_import
 from apps.transport.models import Transport, TransportAssignment
@@ -365,13 +367,25 @@ class MemberViewSet(ScopedViewSet):
         self.check_access(manager=True)
         return Member.objects.filter(association_id=association_id).prefetch_related("member_instruments__instrument")
 
+    # Altas, cambios, bajas y borrados pasan por `apps.members.services`, que
+    # tambien usa el panel (decision 0009).
     def perform_create(self, serializer):
-        self.check_access(manager=True)
-        serializer.save(association_id=self.association_id())
+        access = self.check_access(manager=True)
+        with _domain_errors():
+            serializer.instance = member_services.create_member(
+                association=access.association, actor=self.request.user, data=serializer.validated_data
+            )
 
     def perform_update(self, serializer):
         self.check_access(manager=True)
-        serializer.save()
+        with _domain_errors():
+            serializer.instance = member_services.update_member(
+                member=serializer.instance, actor=self.request.user, data=serializer.validated_data
+            )
+
+    def perform_destroy(self, instance):
+        with _domain_errors(conflict=True):
+            member_services.delete_member(member=instance, actor=self.request.user)
 
     @decorators.action(detail=True, methods=["get", "put", "delete"], url_path="photo")
     def photo(self, request, pk=None):
@@ -382,17 +396,35 @@ class MemberViewSet(ScopedViewSet):
             from django.http import FileResponse
 
             return FileResponse(member.photo.open("rb"), content_type="image/webp")
-        self.check_access(manager=True) if request.user != member.account else None
         if request.method == "DELETE":
-            member.photo.delete(save=False)
-            member.save(update_fields=["photo", "updated_at"])
+            member_services.delete_member_photo(member=member, actor=request.user)
             return response.Response(status=204)
         if "photo" not in request.FILES:
             raise ValidationError({"photo": _("Adjunta una imagen.")})
-        sanitized = sanitize_member_photo(request.FILES["photo"])
-        member.photo.delete(save=False)
-        member.photo.save("photo.webp", sanitized, save=True)
+        with _domain_errors(field="photo"):
+            member = member_services.replace_member_photo(member=member, actor=request.user, upload=request.FILES["photo"])
         return response.Response(MemberSerializer(member, context={"request": request}).data)
+
+
+class MemberConflict(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_code = "conflict"
+
+
+@contextmanager
+def _domain_errors(conflict=False, field=None):
+    """Traduce la `ValidationError` de Django de los servicios a la de DRF.
+
+    Sin esto una regla de negocio incumplida llegaria al cliente como un 500.
+    """
+    try:
+        yield
+    except DjangoValidationError as exc:
+        if conflict:
+            raise MemberConflict(" ".join(exc.messages)) from exc
+        if hasattr(exc, "error_dict"):
+            raise ValidationError(exc.message_dict) from exc
+        raise ValidationError({field: exc.messages} if field else exc.messages) from exc
 
 
 class MemberMeView(APIView):
@@ -424,15 +456,13 @@ class MemberMePhotoView(MemberMeView):
         member = self._member(request)
         if "photo" not in request.FILES:
             raise ValidationError({"photo": _("Adjunta una imagen.")})
-        sanitized = sanitize_member_photo(request.FILES["photo"])
-        member.photo.delete(save=False)
-        member.photo.save("photo.webp", sanitized, save=True)
+        with _domain_errors(field="photo"):
+            member = member_services.replace_member_photo(member=member, actor=request.user, upload=request.FILES["photo"])
         return response.Response(MemberSerializer(member, context={"request": request}).data)
 
     def delete(self, request):
         member = self._member(request)
-        member.photo.delete(save=False)
-        member.save(update_fields=["photo", "updated_at"])
+        member_services.delete_member_photo(member=member, actor=request.user)
         return response.Response(status=204)
 
 

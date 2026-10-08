@@ -2461,3 +2461,382 @@ msgstr "Persones convocades"
 #: templates/shared/dashboard.html:42
 msgid "There are no activities yet."
 msgstr "Encara no hi ha activitats."
+
+# Decision 0009: fichas, accesos y roles desde el panel.
+msgid "Rol"
+msgstr "Rol"
+
+msgid "Rol concedido"
+msgstr "Rol concedit"
+
+msgid "Rol retirado"
+msgstr "Rol retirat"
+
+msgid "Acceso desactivado"
+msgstr "Accés desactivat"
+
+msgid "Acceso reactivado"
+msgstr "Accés reactivat"
+
+msgid "realizado por"
+msgstr "realitzat per"
+
+msgid "acción"
+msgstr "acció"
+
+msgid "fecha"
+msgstr "data"
+
+msgid "cambio de acceso"
+msgstr "canvi d'accés"
+
+msgid "cambios de acceso"
+msgstr "canvis d'accés"
+
+msgid "Ese acceso no pertenece a esta asociación."
+msgstr "Eixe accés no pertany a esta associació."
+
+msgid "Elige un rol válido."
+msgstr "Tria un rol vàlid."
+
+#, python-format
+msgid "Rol «%(role)s» concedido a %(account)s."
+msgstr "Rol «%(role)s» concedit a %(account)s."
+
+#, python-format
+msgid "%(account)s ya tenía ese rol."
+msgstr "%(account)s ja tenia eixe rol."
+
+#, python-format
+msgid "Quitar el rol «%(role)s» a %(account)s"
+msgstr "Llevar el rol «%(role)s» a %(account)s"
+
+msgid "Perderá los permisos de ese rol en esta asociación. Podrás concedérselo de nuevo."
+msgstr "Perdrà els permisos d'eixe rol en esta associació. Podràs concedir-li'l de nou."
+
+msgid "Quitar rol"
+msgstr "Llevar rol"
+
+#, python-format
+msgid "Rol «%(role)s» retirado a %(account)s."
+msgstr "Rol «%(role)s» retirat a %(account)s."
+
+#, python-format
+msgid "Desactivar el acceso de %(account)s"
+msgstr "Desactivar l'accés de %(account)s"
+
+msgid "No podrá entrar en esta asociación ni en la app ni en el panel. Su cuenta, sus roles y su acceso a otras asociaciones se conservan, y podrás reactivarlo."
+msgstr "No podrà entrar en esta associació ni en l'aplicació ni en el panell. El seu compte, els seus rols i el seu accés a altres associacions es conserven, i podràs reactivar-lo."
+
+msgid "Desactivar acceso"
+msgstr "Desactivar l'accés"
+
+#, python-format
+msgid "Acceso de %(account)s desactivado."
+msgstr "Accés de %(account)s desactivat."
+
+#, python-format
+msgid "Acceso de %(account)s reactivado."
+msgstr "Accés de %(account)s reactivat."
+
+msgid "Rol no válido."
+msgstr "Rol no vàlid."
+
+msgid "Este rol lo asigna el operador de la plataforma, no la asociación."
+msgstr "Este rol l'assigna l'operador de la plataforma, no l'associació."
+
+msgid "Solo una cuenta con rol de administración puede conceder ese rol."
+msgstr "Només un compte amb rol d'administració pot concedir eixe rol."
+
+msgid "El acceso está desactivado. Reactívalo antes de concederle roles."
+msgstr "L'accés està desactivat. Reactiva'l abans de concedir-li rols."
+
+msgid "Solo una cuenta con rol de administración puede quitar ese rol."
+msgstr "Només un compte amb rol d'administració pot llevar eixe rol."
+
+msgid "La asociación se quedaría sin ninguna cuenta de administración activa."
+msgstr "L'associació es quedaria sense cap compte d'administració actiu."
+
+msgid "Solo una cuenta con rol de administración puede cambiar el acceso de otra que lo tenga."
+msgstr "Només un compte amb rol d'administració pot canviar l'accés d'un altre que el tinga."
+
+msgid "No puedes desactivar tu propio acceso."
+msgstr "No pots desactivar el teu propi accés."
+
+msgid "Borrar definitivamente fichas sin historial"
+msgstr "Esborrar definitivament fitxes sense historial"
+
+msgid "Invitar y activar o desactivar accesos"
+msgstr "Convidar i activar o desactivar accessos"
+
+msgid "Asignar y quitar roles"
+msgstr "Assignar i llevar rols"
+
+msgid "Instrumento principal"
+msgstr "Instrument principal"
+
+msgid "Su cuerda es la del instrumento principal."
+msgstr "La seua corda és la de l'instrument principal."
+
+msgid "Cargos"
+msgstr "Càrrecs"
+
+msgid "Los cargos son informativos: no conceden permisos en Gesband. Los permisos se dan con roles."
+msgstr "Els càrrecs són informatius: no concedeixen permisos en Gesband. Els permisos es donen amb rols."
+
+msgid "Número de socio u otro identificador estable de la asociación. Opcional."
+msgstr "Número de soci o un altre identificador estable de l'associació. Opcional."
+
+msgid "Opcional. Pídelo solo si la asociación lo necesita."
+msgstr "Opcional. Demana'l només si l'associació el necessita."
+
+msgid "Una ficha inactiva está de baja: no se convoca, pero conserva su historial."
+msgstr "Una fitxa inactiva està de baixa: no es convoca, però conserva el seu historial."
+
+msgid "Foto"
+msgstr "Foto"
+
+msgid "JPEG, PNG o WebP, hasta 5 MB. Se eliminan los metadatos y solo la ven la persona y la junta."
+msgstr "JPEG, PNG o WebP, fins a 5 MB. S'eliminen les metadades i només la veuen la persona i la junta."
+
+msgid "actualizada por"
+msgstr "actualitzada per"
+
+msgid "fecha del cambio de estado"
+msgstr "data del canvi d'estat"
+
+msgid "estado cambiado por"
+msgstr "estat canviat per"
+
+msgid "Presidencia"
+msgstr "Presidència"
+
+msgid "Vicepresidencia"
+msgstr "Vicepresidència"
+
+msgid "Secretaría"
+msgstr "Secretaria"
+
+msgid "Tesorería"
+msgstr "Tresoreria"
+
+msgid "Contratista"
+msgstr "Contractista"
+
+msgid "Vocalía"
+msgstr "Vocalia"
+
+msgid "cargo"
+msgstr "càrrec"
+
+msgid "cargo de miembro"
+msgstr "càrrec de membre"
+
+msgid "cargos de miembros"
+msgstr "càrrecs de membres"
+
+msgid "Cargo no válido."
+msgstr "Càrrec no vàlid."
+
+msgid "Ya hay otra ficha con este identificador externo en la asociación."
+msgstr "Ja hi ha una altra fitxa amb este identificador extern en l'associació."
+
+msgid "Estado no válido."
+msgstr "Estat no vàlid."
+
+msgid "Tiene convocatorias o asistencia registradas."
+msgstr "Té convocatòries o assistència registrades."
+
+msgid "Ha sido destinataria de encuestas."
+msgstr "Ha sigut destinatària d'enquestes."
+
+msgid "Tiene transporte asignado."
+msgstr "Té transport assignat."
+
+msgid "Tiene una cuenta de acceso vinculada."
+msgstr "Té un compte d'accés vinculat."
+
+msgid "No se puede borrar esta ficha sin perder su historial. Dala de baja en su lugar."
+msgstr "No es pot esborrar esta fitxa sense perdre el seu historial. Dona-la de baixa en el seu lloc."
+
+msgid "Ficha creada."
+msgstr "Fitxa creada."
+
+msgid "Ficha actualizada."
+msgstr "Fitxa actualitzada."
+
+msgid "Esta ficha no tiene foto."
+msgstr "Esta fitxa no té foto."
+
+msgid "Foto eliminada."
+msgstr "Foto eliminada."
+
+msgid "Foto guardada."
+msgstr "Foto guardada."
+
+#, python-format
+msgid "Dar de baja a %(member)s"
+msgstr "Donar de baixa %(member)s"
+
+msgid "La ficha quedará inactiva: no se la podrá convocar ni invitar, pero se conservan sus convocatorias, respuestas y asistencia. Podrás reactivarla cuando quieras."
+msgstr "La fitxa quedarà inactiva: no es podrà convocar ni convidar, però es conserven les seues convocatòries, respostes i assistència. Podràs reactivar-la quan vulgues."
+
+msgid "Dar de baja"
+msgstr "Donar de baixa"
+
+msgid "Ficha reactivada."
+msgstr "Fitxa reactivada."
+
+msgid "Ficha dada de baja. Su historial se conserva."
+msgstr "Fitxa donada de baixa. El seu historial es conserva."
+
+msgid "Ficha borrada definitivamente."
+msgstr "Fitxa esborrada definitivament."
+
+#, python-format
+msgid "Borrar definitivamente a %(member)s"
+msgstr "Esborrar definitivament %(member)s"
+
+msgid "El borrado no se puede deshacer. Solo se permite si la ficha no tiene historial ni cuenta vinculada."
+msgstr "L'esborrament no es pot desfer. Només es permet si la fitxa no té historial ni compte vinculat."
+
+msgid "Borrar definitivamente"
+msgstr "Esborrar definitivament"
+
+msgid "Accesos y roles"
+msgstr "Accessos i rols"
+
+msgid "Los roles dan los permisos en esta asociación; los cargos de la ficha no. Solo administración concede o quita el rol de administración, y siempre debe quedar al menos una cuenta de administración activa. Para dar acceso a alguien nuevo, invítalo desde «Gestionar accesos»."
+msgstr "Els rols donen els permisos en esta associació; els càrrecs de la fitxa no. Només administració concedeix o lleva el rol d'administració, i sempre ha de quedar almenys un compte d'administració actiu. Per a donar accés a algú nou, convida'l des de «Gestionar accessos»."
+
+msgid "Cuenta"
+msgstr "Compte"
+
+msgid "Ficha"
+msgstr "Fitxa"
+
+msgid "Acceso"
+msgstr "Accés"
+
+msgid "Sin ficha"
+msgstr "Sense fitxa"
+
+msgid "Quitar"
+msgstr "Llevar"
+
+msgid "Lo asigna el operador de la plataforma"
+msgstr "L'assigna l'operador de la plataforma"
+
+msgid "Sin roles"
+msgstr "Sense rols"
+
+msgid "Conceder rol"
+msgstr "Concedir rol"
+
+msgid "Desactivar"
+msgstr "Desactivar"
+
+msgid "Desactivado"
+msgstr "Desactivat"
+
+msgid "Reactivar"
+msgstr "Reactivar"
+
+msgid "Nadie tiene acceso todavía a esta asociación."
+msgstr "Encara no té ningú accés a esta associació."
+
+msgid "Últimos cambios"
+msgstr "Últims canvis"
+
+msgid "Fecha"
+msgstr "Data"
+
+msgid "Cambio"
+msgstr "Canvi"
+
+msgid "Realizado por"
+msgstr "Realitzat per"
+
+msgid "Todavía no hay cambios registrados."
+msgstr "Encara no hi ha canvis registrats."
+
+msgid "No se puede hacer por estos motivos; usa la baja en su lugar:"
+msgstr "No es pot fer per estos motius; usa la baixa en el seu lloc:"
+
+msgid "Volver"
+msgstr "Tornar"
+
+msgid "Cancelar"
+msgstr "Cancel·lar"
+
+msgid "Nueva ficha"
+msgstr "Nova fitxa"
+
+msgid "Con cuenta de acceso vinculada"
+msgstr "Amb compte d'accés vinculat"
+
+msgid "Solo son obligatorios el nombre y los apellidos. Crear una ficha no envía ninguna invitación."
+msgstr "Només són obligatoris el nom i els cognoms. Crear una fitxa no envia cap invitació."
+
+msgid "La asociación todavía no tiene instrumentos dados de alta."
+msgstr "L'associació encara no té instruments donats d'alta."
+
+msgid "Crear ficha"
+msgstr "Crear la fitxa"
+
+#, python-format
+msgid "Foto de %(member)s"
+msgstr "Foto de %(member)s"
+
+msgid "Eliminar foto"
+msgstr "Eliminar la foto"
+
+msgid "Sin foto."
+msgstr "Sense foto."
+
+msgid "Sustituir foto"
+msgstr "Substituir la foto"
+
+msgid "Subir foto"
+msgstr "Pujar una foto"
+
+msgid "Historial"
+msgstr "Historial"
+
+#, python-format
+msgid "%(counter)s convocatoria"
+msgid_plural "%(counter)s convocatorias"
+msgstr[0] "%(counter)s convocatòria"
+msgstr[1] "%(counter)s convocatòries"
+
+#, python-format
+msgid "%(counter)s encuesta"
+msgid_plural "%(counter)s encuestas"
+msgstr[0] "%(counter)s enquesta"
+msgstr[1] "%(counter)s enquestes"
+
+#, python-format
+msgid "%(counter)s asignación de transporte"
+msgid_plural "%(counter)s asignaciones de transporte"
+msgstr[0] "%(counter)s assignació de transport"
+msgstr[1] "%(counter)s assignacions de transport"
+
+#, python-format
+msgid "Último cambio de estado: %(date)s por %(who)s."
+msgstr "Últim canvi d'estat: %(date)s per %(who)s."
+
+msgid "Alta y baja"
+msgstr "Alta i baixa"
+
+msgid "La baja conserva el historial y se puede deshacer."
+msgstr "La baixa conserva l'historial i es pot desfer."
+
+msgid "Esta ficha no se puede borrar sin perder su historial. Usa la baja."
+msgstr "Esta fitxa no es pot esborrar sense perdre el seu historial. Usa la baixa."
+
+msgid "Borrar esta ficha…"
+msgstr "Esborrar esta fitxa…"
+
+msgid "Crea la primera ficha con «Nueva ficha»."
+msgstr "Crea la primera fitxa amb «Nova fitxa»."
+

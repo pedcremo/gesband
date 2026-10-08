@@ -1,0 +1,25 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{{ title }} · Gesband{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<p>{{ explanation }}</p>
+{% if blockers %}
+  <p class="errors">{% translate "No se puede hacer por estos motivos; usa la baja en su lugar:" %}</p>
+  <ul class="errors">
+    {% for blocker in blockers %}<li>{{ blocker }}</li>{% endfor %}
+  </ul>
+  <p><a href="{{ cancel_url }}">← {% translate "Volver" %}</a></p>
+{% else %}
+  <form method="post" action="{{ action_url }}">
+    {% csrf_token %}
+    <input type="hidden" name="association_id" value="{{ association.id }}">
+    <input type="hidden" name="confirmed" value="1">
+    {% for name, value in fields.items %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+    <div class="actions">
+      <button class="button" type="submit">{{ confirm_label }}</button>
+      <a href="{{ cancel_url }}">{% translate "Cancelar" %}</a>
+    </div>
+  </form>
+{% endif %}
+{% endblock %}

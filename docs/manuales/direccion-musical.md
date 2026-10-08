@@ -3,8 +3,9 @@
 Para planificar los ensayos, fijar el programa de cada actividad, convocar por cuerdas
 y saber con quién se cuenta. Se trabaja desde el **panel de la junta**.
 
-El rol `director` tiene los mismos permisos que `board` y `organizer`. El paso a paso
-detallado de cada pantalla está en [junta.md](junta.md).
+El rol `director` comparte con `board` y `organizer` las actividades, las encuestas y
+las fichas del censo; las invitaciones, los accesos y los roles son de `board` y
+`admin`. El paso a paso detallado de cada pantalla está en [junta.md](junta.md).
 
 ## Preparar un ensayo
 
@@ -40,6 +41,13 @@ Solo se convoca a músicos activos, y nadie queda convocado dos veces. Después 
 Las cuerdas y los instrumentos que aparecen son los del censo de la banda. Si falta
 alguno, pídelo a la administración.
 
+## Mantener las fichas de la plantilla
+
+Desde «Miembros» puedes dar de alta una ficha, corregir sus datos, asignarle
+instrumentos e instrumento principal (de él sale su cuerda), subir su foto y darla de
+baja o reactivarla. La baja conserva su historial. El detalle está en
+[junta.md](junta.md#8-censo-fichas-de-los-miembros).
+
 ## Saber con quién cuentas
 
 La tabla «Convocatorias» muestra la respuesta de cada músico, que es su previsión:
@@ -61,3 +69,4 @@ recorrido completo está en [junta.md](junta.md#7-encuestas).
 - Ver un resumen de participación por cuerda o instrumento.
 - Duplicar un ensayo habitual o crear ensayos recurrentes.
 - Adjuntar partituras: la biblioteca musical está fuera del MVP.
+- Invitar a los músicos, conceder roles o borrar fichas definitivamente.

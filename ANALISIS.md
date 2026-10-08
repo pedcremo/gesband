@@ -55,6 +55,15 @@ El recorrido que debe quedar completo es:
 - Selección de asociación cuando una cuenta participe en varias.
 - Configuración de nombre, logo, colores y lema, con límites que mantengan legibilidad.
 - Permisos diferenciados para miembros, organizadores, dirección y administración.
+- Reparto acordado el 08/10/2026
+  ([decisión 0009](docs/decisions/0009-fichas-accesos-y-roles-desde-el-panel.md)):
+  `admin`, `board`, `organizer` y `director` dan de alta, editan, gestionan la foto y
+  dan de baja fichas del censo; la baja es lógica y reversible. Solo `admin` borra
+  definitivamente una ficha, y solo si no tiene historial ni cuenta vinculada. `admin` y
+  `board` invitan, conceden y quitan roles y activan o desactivan accesos; el rol
+  `admin` solo lo concede o quita otro `admin` y nunca se deja una asociación sin un
+  `admin` activo. `platform` y `web_editor` los asigna el operador de la plataforma. La
+  importación del censo sigue siendo de `admin`.
 - Infraestructura de traducción desde el inicio e interfaces esenciales en castellano y valenciano, con revisión de textos durante el piloto.
 - Sin registro comercial, checkout ni cobro por usar Gesband.
 

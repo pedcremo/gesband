@@ -27,7 +27,7 @@ from apps.activities.services import (
 from apps.accounts.models import AccessInvitation
 from apps.accounts.services import deliver_access_invitation, issue_access_invitation, revoke_access_invitation
 from apps.associations.models import AssociationAccess, AssociationRole
-from apps.associations.permissions import MANAGER_ROLES, capabilities_for, permissions_for
+from apps.associations.permissions import ACCESS_MANAGER_ROLES, MANAGER_ROLES, capabilities_for, permissions_for
 from apps.members.models import ImportBatch, Instrument, Member, MemberInstrument, Section
 from apps.members.services import confirm_import, inspect_import, parse_import, suggest_import_mapping
 
@@ -104,20 +104,23 @@ def dashboard(request):
 def members(request):
     association = _association_for(request)
     member_list = Member.objects.filter(association=association).prefetch_related("member_instruments__instrument")
+    roles = _roles_in(request, association)
     return render(
         request,
         "members/list.html",
         {
             "association": association,
             "members": member_list,
-            "can_manage_census": AssociationRole.Role.ADMIN in _roles_in(request, association),
+            # Importar sigue siendo solo de `admin`; los accesos, de `admin` y `board`.
+            "can_import": AssociationRole.Role.ADMIN in roles,
+            "can_manage_access": bool(roles & ACCESS_MANAGER_ROLES),
         },
     )
 
 
 @login_required
 def member_access_invitations(request):
-    association = _association_for(request, {AssociationRole.Role.ADMIN})
+    association = _association_for(request, ACCESS_MANAGER_ROLES)
     member_list = Member.objects.filter(
         association=association,
         status=Member.Status.ACTIVE,

@@ -31,10 +31,14 @@ identificador corto (`slug`), zona horaria (`Europe/Madrid`), logo, colores y le
 1. Crea la cuenta (Cuentas) con usuario, correo y contraseña provisional, y comunícala
    por un canal seguro. La persona entra con su correo.
 2. Crea su acceso a la asociación y añádele el rol `admin`. A partir de ahí, la propia
-   banda importa el censo e invita a los músicos.
+   banda importa el censo, invita a los músicos y reparte los roles desde el panel
+   («Miembros» → «Accesos y roles»).
 
-**Asignar roles de junta.** Añade `board`, `organizer` o `director` al acceso de la
-persona. Los roles se acumulan: un músico de la junta tiene `member` y `board`.
+**Asignar roles de junta.** Lo hace la propia banda: `admin` y `board` conceden
+`member`, `board`, `organizer` y `director`, y solo `admin` concede `admin`. Interviene
+solo si la banda se ha quedado sin nadie que pueda hacerlo. Los roles `platform` y
+`web_editor` siguen siendo tuyos. Los roles se acumulan: un músico de la junta tiene
+`member` y `board`. El panel nunca deja una asociación sin un `admin` activo.
 
 **Restablecer una contraseña.** Desde la ficha de la cuenta en la administración
 interna. Todavía no hay recuperación de contraseña por correo.

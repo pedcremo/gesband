@@ -2400,3 +2400,385 @@ msgstr "Convocados"
 #: templates/shared/dashboard.html:42
 msgid "There are no activities yet."
 msgstr "Todavía no hay actividades."
+
+# Decision 0009: fichas, accesos y roles desde el panel.
+msgid "Rol"
+msgstr ""
+
+msgid "Rol concedido"
+msgstr ""
+
+msgid "Rol retirado"
+msgstr ""
+
+msgid "Acceso desactivado"
+msgstr ""
+
+msgid "Acceso reactivado"
+msgstr ""
+
+msgid "realizado por"
+msgstr ""
+
+msgid "acción"
+msgstr ""
+
+msgid "fecha"
+msgstr ""
+
+msgid "cambio de acceso"
+msgstr ""
+
+msgid "cambios de acceso"
+msgstr ""
+
+msgid "Ese acceso no pertenece a esta asociación."
+msgstr ""
+
+msgid "Elige un rol válido."
+msgstr ""
+
+#, python-format
+msgid "Rol «%(role)s» concedido a %(account)s."
+msgstr ""
+
+#, python-format
+msgid "%(account)s ya tenía ese rol."
+msgstr ""
+
+#, python-format
+msgid "Quitar el rol «%(role)s» a %(account)s"
+msgstr ""
+
+msgid "Perderá los permisos de ese rol en esta asociación. Podrás concedérselo de nuevo."
+msgstr ""
+
+msgid "Quitar rol"
+msgstr ""
+
+#, python-format
+msgid "Rol «%(role)s» retirado a %(account)s."
+msgstr ""
+
+#, python-format
+msgid "Desactivar el acceso de %(account)s"
+msgstr ""
+
+msgid "No podrá entrar en esta asociación ni en la app ni en el panel. Su cuenta, sus roles y su acceso a otras asociaciones se conservan, y podrás reactivarlo."
+msgstr ""
+
+msgid "Desactivar acceso"
+msgstr ""
+
+#, python-format
+msgid "Acceso de %(account)s desactivado."
+msgstr ""
+
+#, python-format
+msgid "Acceso de %(account)s reactivado."
+msgstr ""
+
+msgid "Rol no válido."
+msgstr ""
+
+msgid "Este rol lo asigna el operador de la plataforma, no la asociación."
+msgstr ""
+
+msgid "Solo una cuenta con rol de administración puede conceder ese rol."
+msgstr ""
+
+msgid "El acceso está desactivado. Reactívalo antes de concederle roles."
+msgstr ""
+
+msgid "Solo una cuenta con rol de administración puede quitar ese rol."
+msgstr ""
+
+msgid "La asociación se quedaría sin ninguna cuenta de administración activa."
+msgstr ""
+
+msgid "Solo una cuenta con rol de administración puede cambiar el acceso de otra que lo tenga."
+msgstr ""
+
+msgid "No puedes desactivar tu propio acceso."
+msgstr ""
+
+msgid "Borrar definitivamente fichas sin historial"
+msgstr ""
+
+msgid "Invitar y activar o desactivar accesos"
+msgstr ""
+
+msgid "Asignar y quitar roles"
+msgstr ""
+
+msgid "Instrumento principal"
+msgstr ""
+
+msgid "Su cuerda es la del instrumento principal."
+msgstr ""
+
+msgid "Cargos"
+msgstr ""
+
+msgid "Los cargos son informativos: no conceden permisos en Gesband. Los permisos se dan con roles."
+msgstr ""
+
+msgid "Número de socio u otro identificador estable de la asociación. Opcional."
+msgstr ""
+
+msgid "Opcional. Pídelo solo si la asociación lo necesita."
+msgstr ""
+
+msgid "Una ficha inactiva está de baja: no se convoca, pero conserva su historial."
+msgstr ""
+
+msgid "Foto"
+msgstr ""
+
+msgid "JPEG, PNG o WebP, hasta 5 MB. Se eliminan los metadatos y solo la ven la persona y la junta."
+msgstr ""
+
+msgid "actualizada por"
+msgstr ""
+
+msgid "fecha del cambio de estado"
+msgstr ""
+
+msgid "estado cambiado por"
+msgstr ""
+
+msgid "Presidencia"
+msgstr ""
+
+msgid "Vicepresidencia"
+msgstr ""
+
+msgid "Secretaría"
+msgstr ""
+
+msgid "Tesorería"
+msgstr ""
+
+msgid "Contratista"
+msgstr ""
+
+msgid "Vocalía"
+msgstr ""
+
+msgid "cargo"
+msgstr ""
+
+msgid "cargo de miembro"
+msgstr ""
+
+msgid "cargos de miembros"
+msgstr ""
+
+msgid "Cargo no válido."
+msgstr ""
+
+msgid "Ya hay otra ficha con este identificador externo en la asociación."
+msgstr ""
+
+msgid "Estado no válido."
+msgstr ""
+
+msgid "Tiene convocatorias o asistencia registradas."
+msgstr ""
+
+msgid "Ha sido destinataria de encuestas."
+msgstr ""
+
+msgid "Tiene transporte asignado."
+msgstr ""
+
+msgid "Tiene una cuenta de acceso vinculada."
+msgstr ""
+
+msgid "No se puede borrar esta ficha sin perder su historial. Dala de baja en su lugar."
+msgstr ""
+
+msgid "Ficha creada."
+msgstr ""
+
+msgid "Ficha actualizada."
+msgstr ""
+
+msgid "Esta ficha no tiene foto."
+msgstr ""
+
+msgid "Foto eliminada."
+msgstr ""
+
+msgid "Foto guardada."
+msgstr ""
+
+#, python-format
+msgid "Dar de baja a %(member)s"
+msgstr ""
+
+msgid "La ficha quedará inactiva: no se la podrá convocar ni invitar, pero se conservan sus convocatorias, respuestas y asistencia. Podrás reactivarla cuando quieras."
+msgstr ""
+
+msgid "Dar de baja"
+msgstr ""
+
+msgid "Ficha reactivada."
+msgstr ""
+
+msgid "Ficha dada de baja. Su historial se conserva."
+msgstr ""
+
+msgid "Ficha borrada definitivamente."
+msgstr ""
+
+#, python-format
+msgid "Borrar definitivamente a %(member)s"
+msgstr ""
+
+msgid "El borrado no se puede deshacer. Solo se permite si la ficha no tiene historial ni cuenta vinculada."
+msgstr ""
+
+msgid "Borrar definitivamente"
+msgstr ""
+
+msgid "Accesos y roles"
+msgstr ""
+
+msgid "Los roles dan los permisos en esta asociación; los cargos de la ficha no. Solo administración concede o quita el rol de administración, y siempre debe quedar al menos una cuenta de administración activa. Para dar acceso a alguien nuevo, invítalo desde «Gestionar accesos»."
+msgstr ""
+
+msgid "Cuenta"
+msgstr ""
+
+msgid "Ficha"
+msgstr ""
+
+msgid "Acceso"
+msgstr ""
+
+msgid "Sin ficha"
+msgstr ""
+
+msgid "Quitar"
+msgstr ""
+
+msgid "Lo asigna el operador de la plataforma"
+msgstr ""
+
+msgid "Sin roles"
+msgstr ""
+
+msgid "Conceder rol"
+msgstr ""
+
+msgid "Desactivar"
+msgstr ""
+
+msgid "Desactivado"
+msgstr ""
+
+msgid "Reactivar"
+msgstr ""
+
+msgid "Nadie tiene acceso todavía a esta asociación."
+msgstr ""
+
+msgid "Últimos cambios"
+msgstr ""
+
+msgid "Fecha"
+msgstr ""
+
+msgid "Cambio"
+msgstr ""
+
+msgid "Realizado por"
+msgstr ""
+
+msgid "Todavía no hay cambios registrados."
+msgstr ""
+
+msgid "No se puede hacer por estos motivos; usa la baja en su lugar:"
+msgstr ""
+
+msgid "Volver"
+msgstr ""
+
+msgid "Cancelar"
+msgstr ""
+
+msgid "Nueva ficha"
+msgstr ""
+
+msgid "Con cuenta de acceso vinculada"
+msgstr ""
+
+msgid "Solo son obligatorios el nombre y los apellidos. Crear una ficha no envía ninguna invitación."
+msgstr ""
+
+msgid "La asociación todavía no tiene instrumentos dados de alta."
+msgstr ""
+
+msgid "Crear ficha"
+msgstr ""
+
+#, python-format
+msgid "Foto de %(member)s"
+msgstr ""
+
+msgid "Eliminar foto"
+msgstr ""
+
+msgid "Sin foto."
+msgstr ""
+
+msgid "Sustituir foto"
+msgstr ""
+
+msgid "Subir foto"
+msgstr ""
+
+msgid "Historial"
+msgstr ""
+
+#, python-format
+msgid "%(counter)s convocatoria"
+msgid_plural "%(counter)s convocatorias"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, python-format
+msgid "%(counter)s encuesta"
+msgid_plural "%(counter)s encuestas"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, python-format
+msgid "%(counter)s asignación de transporte"
+msgid_plural "%(counter)s asignaciones de transporte"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, python-format
+msgid "Último cambio de estado: %(date)s por %(who)s."
+msgstr ""
+
+msgid "Alta y baja"
+msgstr ""
+
+msgid "La baja conserva el historial y se puede deshacer."
+msgstr ""
+
+msgid "Esta ficha no se puede borrar sin perder su historial. Usa la baja."
+msgstr ""
+
+msgid "Borrar esta ficha…"
+msgstr ""
+
+msgid "Crea la primera ficha con «Nueva ficha»."
+msgstr ""
+

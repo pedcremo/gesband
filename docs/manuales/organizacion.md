@@ -4,9 +4,10 @@ Para preparar actuaciones y salidas: crear la actividad con su logística, convo
 la plantilla que hace falta, seguir la disponibilidad y comunicar los cambios. Se
 trabaja desde el **panel de la junta**.
 
-El rol `organizer` tiene los mismos permisos en el panel que `board` y `director`. El
-paso a paso detallado de cada pantalla está en [junta.md](junta.md). Aquí se cuenta
-el recorrido de una actuación.
+El rol `organizer` comparte con `board` y `director` las actividades, las encuestas y
+las fichas del censo; las invitaciones, los accesos y los roles son de `board` y
+`admin`. El paso a paso detallado de cada pantalla está en [junta.md](junta.md). Aquí
+se cuenta el recorrido de una actuación.
 
 ## Recorrido de una actuación
 
@@ -65,9 +66,10 @@ compensaciones por coche.
 
 Un músico de otra banda que viene de refuerzo se da de alta en el censo como
 *colaborador musical externo*. Así se le puede convocar sin crear otra asociación ni
-darle acceso al resto del censo. El alta la hace la administración
-([administracion.md](administracion.md)). Gesband todavía no busca refuerzos entre
-bandas.
+darle acceso al resto del censo. Puedes darlo de alta tú mismo: «Miembros» → «Nueva
+ficha», tipo «Colaborador musical externo» y su instrumento
+([junta.md](junta.md#8-censo-fichas-de-los-miembros)). Cuando acabe la colaboración,
+«Dar de baja» conserva su historial. Gesband todavía no busca refuerzos entre bandas.
 
 ## Todavía no se puede
 
@@ -77,3 +79,4 @@ bandas.
   tabla.
 - Compartir un mensaje preparado por WhatsApp.
 - Calcular pagos por actuación o por coche: están fuera del MVP.
+- Invitar a los músicos, conceder roles o borrar fichas definitivamente.

@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied as DjangoPermissionDenied
 from rest_framework.exceptions import PermissionDenied
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
@@ -15,6 +16,20 @@ MANAGER_ROLES = {
 # `platform` y `web_editor` quedan fuera a proposito: operan la plataforma o el
 # complemento web, no asisten a ensayos ni salidas.
 PARTICIPANT_ROLES = {AssociationRole.Role.MEMBER, *MANAGER_ROLES}
+
+# Roles que gestionan quien entra en la asociacion: invitaciones, accesos y
+# roles (decision 0009). `organizer` y `director` gestionan fichas, no accesos.
+ACCESS_MANAGER_ROLES = {AssociationRole.Role.ADMIN, AssociationRole.Role.BOARD}
+
+# Roles que se conceden y se quitan desde el panel. `platform` y `web_editor`
+# los asigna el operador de la plataforma, no la propia asociacion.
+PANEL_ASSIGNABLE_ROLES = [
+    AssociationRole.Role.MEMBER,
+    AssociationRole.Role.BOARD,
+    AssociationRole.Role.ORGANIZER,
+    AssociationRole.Role.DIRECTOR,
+    AssociationRole.Role.ADMIN,
+]
 
 
 def get_access_or_403(user, association_id):
@@ -60,7 +75,8 @@ MANAGER_PERMISSIONS = {
     "transport.manage",
     "polls.manage",
 }
-ADMIN_PERMISSIONS = {"association.manage", "imports.manage"}
+ACCESS_MANAGER_PERMISSIONS = {"accounts.manage", "roles.manage"}
+ADMIN_PERMISSIONS = {"association.manage", "imports.manage", "members.delete"}
 
 
 def permissions_for_roles(roles):
@@ -71,6 +87,8 @@ def permissions_for_roles(roles):
         permissions |= PARTICIPANT_PERMISSIONS
     if roles.intersection(MANAGER_ROLES):
         permissions |= MANAGER_PERMISSIONS
+    if roles.intersection(ACCESS_MANAGER_ROLES):
+        permissions |= ACCESS_MANAGER_PERMISSIONS
     if AssociationRole.Role.ADMIN in roles:
         permissions |= ADMIN_PERMISSIONS
     return permissions
@@ -90,11 +108,26 @@ def permissions_for(account, association):
     return sorted(permissions_for_roles(access.role_assignments.values_list("role", flat=True)))
 
 
+def has_permission(account, association, permission):
+    """Si la cuenta tiene ese permiso en la asociacion, segun `permissions_for`."""
+    if not account or not account.is_authenticated:
+        return False
+    granted = permissions_for(account, association)
+    return "*" in granted or permission in granted
+
+
+def ensure_permission(account, association, permission):
+    """Lo que usan los servicios de negocio: 403 de Django, que DRF y el panel entienden."""
+    if not has_permission(account, association, permission):
+        raise DjangoPermissionDenied(_("No tienes permisos para realizar esta acción."))
+
+
 # Capacidades que se explican a la persona en «Mi acceso», en el orden en que se
 # muestran. Cada una se concede si tiene el permiso indicado.
 CAPABILITIES = [
     ("members.view", gettext_lazy("Ver el censo")),
     ("members.manage", gettext_lazy("Gestionar el censo")),
+    ("members.delete", gettext_lazy("Borrar definitivamente fichas sin historial")),
     ("imports.manage", gettext_lazy("Importar miembros desde CSV o XLSX")),
     ("activities.view", gettext_lazy("Ver actividades y responder a las convocatorias")),
     ("activities.manage", gettext_lazy("Crear y publicar actividades")),
@@ -103,6 +136,8 @@ CAPABILITIES = [
     ("transport.manage", gettext_lazy("Organizar el transporte")),
     ("polls.view", gettext_lazy("Ver y votar encuestas")),
     ("polls.manage", gettext_lazy("Crear, abrir y publicar encuestas")),
+    ("accounts.manage", gettext_lazy("Invitar y activar o desactivar accesos")),
+    ("roles.manage", gettext_lazy("Asignar y quitar roles")),
     ("association.manage", gettext_lazy("Configurar la asociación")),
 ]
 

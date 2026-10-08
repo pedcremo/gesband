@@ -1,0 +1,93 @@
+{% extends 'shared/base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Accesos y roles" %} · Gesband{% endblock %}
+{% block content %}
+<p><a href="{% url 'panel-members' %}?association_id={{ association.id }}">← {% translate "Volver al censo" %}</a></p>
+<h1>{% translate "Accesos y roles" %}</h1>
+<p class="muted">{% translate "Los roles dan los permisos en esta asociación; los cargos de la ficha no. Solo administración concede o quita el rol de administración, y siempre debe quedar al menos una cuenta de administración activa. Para dar acceso a alguien nuevo, invítalo desde «Gestionar accesos»." %}</p>
+<table>
+  <thead>
+    <tr>
+      <th>{% translate "Cuenta" %}</th>
+      <th>{% translate "Ficha" %}</th>
+      <th>{% translate "Roles" %}</th>
+      <th>{% translate "Acceso" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+      <tr>
+        <td>{{ row.access.account }}<br><span class="muted">{{ row.access.account.email }}</span></td>
+        <td>{% if row.member %}<a href="{% url 'panel-member-detail' row.member.id %}?association_id={{ association.id }}">{{ row.member }}</a>{% else %}<span class="muted">{% translate "Sin ficha" %}</span>{% endif %}</td>
+        <td>
+          {% for role in row.roles %}
+            {% if role.removable %}
+              <form method="post" class="logout">
+                {% csrf_token %}
+                <input type="hidden" name="association_id" value="{{ association.id }}">
+                <input type="hidden" name="access_id" value="{{ row.access.id }}">
+                <input type="hidden" name="role" value="{{ role.code }}">
+                <span class="status">{{ role.label }}</span>
+                <button class="link-button" type="submit" name="action" value="revoke_role">{% translate "Quitar" %}</button>
+              </form>
+            {% else %}
+              <span class="status" title="{% translate 'Lo asigna el operador de la plataforma' %}">{{ role.label }}</span>
+            {% endif %}
+          {% empty %}
+            <span class="muted">{% translate "Sin roles" %}</span>
+          {% endfor %}
+          {% if row.access.is_active %}
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="association_id" value="{{ association.id }}">
+              <input type="hidden" name="access_id" value="{{ row.access.id }}">
+              <label for="role-{{ row.access.id }}" class="visually-hidden">{% translate "Rol" %}</label>
+              <select id="role-{{ row.access.id }}" name="role">
+                {% for value, label in role_form.fields.role.choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+              </select>
+              <button class="button secondary" type="submit" name="action" value="grant_role">{% translate "Conceder rol" %}</button>
+            </form>
+          {% endif %}
+        </td>
+        <td>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="association_id" value="{{ association.id }}">
+            <input type="hidden" name="access_id" value="{{ row.access.id }}">
+            {% if row.access.is_active %}
+              <span class="status">{% translate "Activo" %}</span>
+              {% if not row.is_self %}
+                <button class="link-button" type="submit" name="action" value="deactivate">{% translate "Desactivar" %}</button>
+              {% endif %}
+            {% else %}
+              <span class="muted">{% translate "Desactivado" %}</span>
+              <button class="link-button" type="submit" name="action" value="reactivate">{% translate "Reactivar" %}</button>
+            {% endif %}
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">{% translate "Nadie tiene acceso todavía a esta asociación." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>{% translate "Últimos cambios" %}</h2>
+{% if changes %}
+  <table>
+    <thead><tr><th>{% translate "Fecha" %}</th><th>{% translate "Cuenta" %}</th><th>{% translate "Cambio" %}</th><th>{% translate "Realizado por" %}</th></tr></thead>
+    <tbody>
+      {% for item in changes %}
+        <tr>
+          <td>{{ item.change.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          <td>{{ item.change.access.account }}</td>
+          <td>{{ item.change.get_action_display }}{% if item.role_label %}: {{ item.role_label }}{% endif %}</td>
+          <td>{{ item.change.actor|default:"—" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="muted">{% translate "Todavía no hay cambios registrados." %}</p>
+{% endif %}
+{% endblock %}

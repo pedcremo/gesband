@@ -1,12 +1,14 @@
 # Manual de la junta (`board`)
 
 Para planificar ensayos y actuaciones, convocar, pasar lista, consultar a la banda con
-encuestas y revisar el censo. Se trabaja desde el **panel de la junta**, en un
-ordenador o una tableta.
+encuestas, mantener el censo y gestionar quién entra en la asociación. Se trabaja desde
+el **panel de la junta**, en un ordenador o una tableta.
 
-El rol `board` tiene los mismos permisos que `organizer` y `director`. La importación
-del censo, las invitaciones de acceso y la configuración de la asociación son del rol
-`admin` ([administracion.md](administracion.md)).
+El rol `board` comparte con `organizer` y `director` las actividades, las encuestas y
+las fichas del censo. Además, como `admin`, invita a los músicos y gestiona accesos y
+roles (apartado 9), salvo el rol de administración. La importación del censo, el borrado
+definitivo de fichas y la configuración de la asociación son solo de `admin`
+([administracion.md](administracion.md)).
 
 Si además tocas en la banda, tu cuenta tendrá también el rol `member`: consulta
 [musico.md](musico.md) para la app móvil.
@@ -105,13 +107,61 @@ En «Encuestas» → «Nueva encuesta»:
 persona. Por eso nadie puede cambiar ni retirar un voto emitido, tampoco a petición de
 quien lo emitió.
 
-## 8. Censo
+## 8. Censo: fichas de los miembros
 
 «Miembros» lista la banda: nombre, tipo (músico socio, socio colaborador/mecenas o
-colaborador musical externo), instrumento y estado. Con el rol `board` es de
-**consulta**. La importación y los accesos los gestiona `admin`.
+colaborador musical externo), instrumento y estado. Pulsa un nombre para abrir su ficha.
 
-## 9. Compartir por WhatsApp
+**Dar de alta.** «Miembros» → «Nueva ficha». Solo son obligatorios el nombre y los
+apellidos. Puedes indicar el identificador externo (número de socio, único dentro de la
+banda), tipo, estado, correo, teléfono, dirección, DNI/NIE si la banda lo necesita,
+instrumentos, instrumento principal (su cuerda es la que cuenta al convocar por cuerdas)
+y cargos. Pulsa «Crear ficha». Crear una ficha no envía ninguna invitación.
+
+**Editar.** En la ficha cambia lo que haga falta y pulsa «Guardar cambios». Si algo no
+es válido, por ejemplo un número de socio repetido, el panel lo indica junto al campo y
+no guarda nada.
+
+**Cargos.** Presidencia, vicepresidencia, secretaría, tesorería, contratista y vocalía
+son informativos: **no dan permisos**. Los permisos se dan con roles (apartado 9).
+
+**Foto.** En «Foto», elige un JPEG, PNG o WebP de hasta 5 MB y pulsa «Subir foto» o
+«Sustituir foto». Se comprueba que sea una imagen real, se quitan sus metadatos y solo
+la ven la propia persona y quien gestiona la banda. «Eliminar foto» la borra.
+
+**Dar de baja y reactivar.** «Dar de baja» pide confirmación y deja la ficha
+*inactiva*: ya no se la puede convocar ni invitar, pero se conservan sus convocatorias,
+respuestas, asistencia, encuestas y transporte. «Reactivar» la devuelve a activa. La
+ficha muestra quién hizo el último cambio de estado y cuándo.
+
+El borrado definitivo de una ficha es solo de `admin`.
+
+## 9. Accesos y roles
+
+La ficha es el registro en el censo; la cuenta es el acceso. Con el rol `board` puedes:
+
+- **Invitar** a los músicos a crear su cuenta, reenviar y revocar invitaciones:
+  «Miembros» → «Gestionar accesos». El recorrido está en
+  [administracion.md](administracion.md#2-invitar-a-los-músicos).
+- **Conceder y quitar roles:** «Miembros» → «Accesos y roles». En cada cuenta elige un
+  rol y pulsa «Conceder rol», o pulsa «Quitar» junto a un rol y confírmalo. Puedes dar
+  `member`, `board`, `organizer` y `director`.
+- **Desactivar y reactivar un acceso:** «Desactivar» (con confirmación) impide a esa
+  cuenta entrar en esta banda, sin borrar la cuenta ni tocar sus otras bandas.
+  «Reactivar» lo deshace.
+
+Límites que aplica el servidor:
+
+- El rol `admin` solo lo concede o lo quita alguien con `admin`, y solo `admin` puede
+  desactivar el acceso de otra cuenta que lo tenga.
+- Siempre debe quedar al menos una cuenta de administración activa.
+- No puedes desactivar tu propio acceso.
+- Los roles `platform` y `web_editor` los asigna el operador de la plataforma.
+
+Al final de la página, «Últimos cambios» muestra quién concedió o quitó cada rol y quién
+activó o desactivó cada acceso.
+
+## 10. Compartir por WhatsApp
 
 Todavía no hay una función de «compartir mensaje preparado». De momento, copia el texto
 de la actividad y compártelo tú desde WhatsApp. Gesband no envía nada por WhatsApp.
@@ -124,5 +174,7 @@ de la actividad y compártelo tú desde WhatsApp. Gesband no envía nada por Wha
 - Ver un resumen de confirmaciones y asistencias por cuerda o instrumento.
 - Organizar el transporte desde el panel. Existe en el servidor, pero todavía no tiene
   pantallas; ver [organizacion.md](organizacion.md).
-- Editar una ficha del censo o su foto desde el panel.
+- Importar el censo o borrar definitivamente una ficha: es de `admin`.
+- Conceder o quitar el rol `admin`.
+- Dar de alta cuerdas o instrumentos desde el panel.
 - Gestionar cuotas, pagos o liquidaciones: están fuera del MVP.

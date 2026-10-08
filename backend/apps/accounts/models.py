@@ -68,3 +68,50 @@ class AccessInvitation(models.Model):
 
     def __str__(self):
         return f"{self.member} · {self.email}"
+
+
+class AccessChange(models.Model):
+    """Rastro de quién concedió o quitó un rol, o activó o desactivó un acceso.
+
+    `AssociationRole` no guarda fechas ni autor; este registro lo completa sin
+    tocar el modelo de asociaciones (decisión 0009). No guarda datos personales:
+    solo las referencias al acceso, a quien actuó y lo que cambió.
+    """
+
+    class Action(models.TextChoices):
+        ROLE_GRANTED = "role_granted", _("Rol concedido")
+        ROLE_REVOKED = "role_revoked", _("Rol retirado")
+        ACCESS_DEACTIVATED = "access_deactivated", _("Acceso desactivado")
+        ACCESS_REACTIVATED = "access_reactivated", _("Acceso reactivado")
+
+    association = models.ForeignKey(
+        "associations.Association",
+        on_delete=models.CASCADE,
+        related_name="access_changes",
+        verbose_name=_("asociación"),
+    )
+    access = models.ForeignKey(
+        "associations.AssociationAccess",
+        on_delete=models.CASCADE,
+        related_name="changes",
+        verbose_name=_("acceso"),
+    )
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        null=True,
+        blank=True,
+        verbose_name=_("realizado por"),
+    )
+    action = models.CharField(_("acción"), max_length=24, choices=Action.choices)
+    role = models.CharField(_("rol"), max_length=24, blank=True)
+    created_at = models.DateTimeField(_("fecha"), auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("cambio de acceso")
+        verbose_name_plural = _("cambios de acceso")
+
+    def __str__(self):
+        return f"{self.access} · {self.get_action_display()}"

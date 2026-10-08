@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
@@ -24,3 +25,18 @@ class PanelLoginForm(AuthenticationForm):
             if len(matches) == 1:
                 self.cleaned_data["username"] = matches[0]
         return super().clean()
+
+
+class RoleForm(forms.Form):
+    """Rol que se concede desde el panel; `platform` y `web_editor` no se ofrecen."""
+
+    role = forms.ChoiceField(label=_("Rol"), choices=[])
+
+    def __init__(self, *args, **kwargs):
+        from apps.associations.models import AssociationRole
+        from apps.associations.permissions import PANEL_ASSIGNABLE_ROLES
+
+        super().__init__(*args, **kwargs)
+        self.fields["role"].choices = [
+            (role.value, role.label) for role in AssociationRole.Role if role in PANEL_ASSIGNABLE_ROLES
+        ]
