@@ -8,6 +8,7 @@ import '../../core/theme/gesband_tokens.dart';
 import '../../core/ui/components.dart';
 import '../../core/ui/formatting.dart';
 import 'absence_reason_dialog.dart';
+import 'agenda_widgets.dart';
 
 class ActivityDetailScreen extends StatefulWidget {
   const ActivityDetailScreen(
@@ -121,6 +122,7 @@ class _ActivityDetailBody extends StatelessWidget {
     final summary = activity.summary;
     final response = summary.invitationResponse;
     final transport = activity.transport;
+    final paid = paidLabel(context, summary);
 
     final notice = switch (summary.status) {
       ActivityStatus.cancelled => strings.activityCancelledNotice,
@@ -175,6 +177,11 @@ class _ActivityDetailBody extends StatelessWidget {
                 tone: Tone.brand),
             if (summary.isMandatory)
               StatusPill(label: strings.mandatoryShort, tone: Tone.warning),
+            if (paid != null)
+              StatusPill(
+                  key: const Key('paid-indicator'),
+                  label: paid,
+                  tone: Tone.success),
           ],
         ),
         const SizedBox(height: GesbandSpacing.md),

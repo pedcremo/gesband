@@ -22,3 +22,6 @@ staticfiles/
 
 # APK de pruebas servido en /descargas/: se copia en el servidor, no se versiona
 infra/downloads/*.apk
+
+# Ajustes locales de Claude Code
+.claude/settings.local.json

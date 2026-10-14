@@ -1,6 +1,6 @@
 # Instrucciones de prueba del MVP
 
-Estado a 24 de septiembre de 2026. Complementa a [README.md](README.md) (cómo
+Estado a 14 de octubre de 2026. Complementa a [README.md](README.md) (cómo
 levantar el entorno) y a [AGENTS.md](AGENTS.md) (reglas de trabajo).
 
 ## 1. Cuentas de prueba por rol
@@ -19,6 +19,32 @@ Contraseña común: `Gesband.demo.2026`
 | `admin` | prova-admin@gesband.invalid | prova-admin |
 | `platform` | prova-platform@gesband.invalid | prova-platform |
 | `web_editor` | prova-web_editor@gesband.invalid | prova-web_editor |
+
+### Segunda asociación: SIM Alfafara
+
+Sembradas el 14/10/2026 en el entorno de pruebas (`https://gesband.fertion.com`),
+en la asociación **SIM Alfafara** (slug `SIMA`), con la misma contraseña común.
+Son cuentas distintas de las de AUMB: sirven para comprobar que una banda no ve
+nada de la otra.
+
+| Rol | Correo (móvil y API) | Usuario (panel web) |
+| --- | --- | --- |
+| `member` | alfafara-member@gesband.invalid | alfafara-member |
+| `board` | alfafara-board@gesband.invalid | alfafara-board |
+| `organizer` | alfafara-organizer@gesband.invalid | alfafara-organizer |
+| `director` | alfafara-director@gesband.invalid | alfafara-director |
+| `admin` | alfafara-admin@gesband.invalid | alfafara-admin |
+| `platform` | alfafara-platform@gesband.invalid | alfafara-platform |
+| `web_editor` | alfafara-web_editor@gesband.invalid | alfafara-web_editor |
+
+La asociación empieza vacía: sin censo, actividades ni imagen propia. Con
+`alfafara-admin` se configura «Imagen de la banda» y se importa el censo. Para
+volver a sembrarlas en el servidor:
+
+```bash
+docker compose -f infra/compose.yaml -f infra/compose.edge.yaml exec web \
+    python manage.py seed_role_accounts --association SIMA --prefix alfafara --force
+```
 
 El dominio `.invalid` está reservado por la IANA: ninguna de estas direcciones
 puede corresponder a una persona real ni recibir correo.

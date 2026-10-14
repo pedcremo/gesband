@@ -1,4 +1,4 @@
-{% load i18n static panel_shell %}
+{% load i18n static panel_shell activity_payments %}
 {% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
 <html lang="{{ LANGUAGE_CODE }}" {% brand_attributes association %}>
@@ -6,10 +6,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{% block title %}Gesband{% endblock %}</title>
+  <link rel="icon" href="{% static 'panel/icon.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'panel/panel.css' %}">
 </head>
 <body>
 {% panel_permissions association as can %}
+{% can_manage_payments association as can_pay %}
 {% with current=request.resolver_match.url_name association_query=association.id|default_if_none:'' %}
 <header class="shell-header">
   <div class="shell-bar">
@@ -25,6 +27,9 @@
       <a href="{% url 'panel' %}?association_id={{ association_query }}"{% if current == 'panel' or current == 'panel-activity-detail' or current == 'activity-create' %} aria-current="page"{% endif %}>{% translate "Home" %}</a>
       <a href="{% url 'panel-members' %}?association_id={{ association_query }}"{% if current|slice:':13' == 'panel-members' or current|slice:':12' == 'panel-member' or current|slice:':13' == 'member-import' or current == 'member-access-invitations' %} aria-current="page"{% endif %}>{% translate "Members" %}</a>
       <a href="{% url 'panel-polls' %}?association_id={{ association_query }}"{% if current|slice:':10' == 'panel-poll' %} aria-current="page"{% endif %}>{% translate "Encuestas" %}</a>
+      {% if can_pay %}
+        <a href="{% url 'panel-payments' %}?association_id={{ association_query }}"{% if current == 'panel-payments' %} aria-current="page"{% endif %}>{% translate "Pagos a músicos" %}</a>
+      {% endif %}
       {% if 'accounts.manage' in can or '*' in can %}
         <a href="{% url 'panel-access-roles' %}?association_id={{ association_query }}"{% if current == 'panel-access-roles' %} aria-current="page"{% endif %}>{% translate "Accesos y roles" %}</a>
       {% endif %}

@@ -638,6 +638,8 @@ class MvpApiTests(APITestCase):
                     "phone": "phone",
                     "email": "email",
                     "kind": "kind",
+                    "section": "section",
+                    "instrument": "instrument",
                 },
             )
 
@@ -673,6 +675,10 @@ class MvpApiTests(APITestCase):
             member = Member.objects.get(external_id="MUS-001")
             self.assertEqual(member.first_name, "Marina")
             self.assertEqual(member.last_name, "Soler Ferri")
+            self.assertEqual(
+                list(member.member_instruments.values_list("instrument__name", "instrument__section__name")),
+                [("Clarinete", "Madera")],
+            )
 
     def test_import_requires_name_and_surname_mapping(self):
         csv_content = b"codigo,nombre_persona\nMUS-101,Persona\n"

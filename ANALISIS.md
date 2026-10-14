@@ -35,7 +35,7 @@ La persona registrada y la cuenta de acceso son conceptos distintos: un socio pu
 | Junta | Mantener miembros, importar datos, planificar actividades, convocar y pasar lista. |
 | Contratista u organizador | Preparar actuaciones, conocer disponibilidad y gestionar refuerzos y desplazamientos. |
 | Director musical | Preparar ensayos y programas y consultar participación por instrumentos o cuerdas. |
-| Tesorería | En una fase posterior, gestionar cuotas y liquidaciones. El cargo se podrá registrar desde el MVP. |
+| Tesorería | Registrar qué se ha pagado a cada músico por las actividades remuneradas (desde el 14/10/2026, decisión 0011). Las cuotas quedan para una fase posterior. |
 | Socio colaborador o mecenas | Figurar en el censo sin necesitar una cuenta ni participar en convocatorias musicales. |
 | Administrador de plataforma | Operar el servicio, dar soporte y gestionar asociaciones con acceso restringido y auditable. |
 | Editor web | En el complemento futuro, preparar y publicar contenidos públicos de su asociación. |
@@ -112,6 +112,7 @@ En el MVP las fotos se subirán desde cada ficha; la carga masiva de fotos queda
 - Modificación y cancelación con aviso a las personas afectadas.
 - Cambios relevantes de fecha o lugar podrán requerir una nueva confirmación; se conservará el historial de respuestas.
 - Programa o repertorio básico mediante una lista ordenada de títulos y notas. La biblioteca de partituras queda aplazada.
+- Actividad remunerada con importe único por músico. Devenga solo la asistencia real «presente» de una actividad no cancelada; la junta marca lo pagado y cada músico ve lo que se le adeuda (decisión 0011, 14/10/2026).
 
 La junta y el director tendrán vistas de grupo según sus permisos. Cada músico verá sus convocatorias y respuestas; no recibirá por defecto información personal completa de los demás.
 
@@ -195,7 +196,7 @@ porque el sistema no sabe cuál es suyo.
 | Función | Tratamiento previsto |
 | --- | --- |
 | Cuotas de socios, donaciones y recibos | Siguiente fase funcional tras validar el uso operativo. |
-| Liquidaciones por actuación y coche | Definir reglas reales con las bandas antes de automatizar cálculos. |
+| Liquidaciones de transporte (coche) y reglas económicas más allá de la decisión 0011 | Definir reglas reales con las bandas antes de automatizar cálculos. La liquidación básica por actuación entra en el MVP (sección 3.4). |
 | Ejecución de pagos, remesas y conciliación bancaria | Proyecto posterior; registrar importes no equivale a mover dinero. |
 | Suscripciones de Gesband, precios y prueba de seis meses | Aplazados hasta validar aceptación. |
 | Web pública de la asociación | Complemento opcional especificado en la sección 5. |
@@ -314,7 +315,7 @@ Los nombres son orientativos hasta cerrar el contrato y las primeras migraciones
 | DeviceRegistration | Dispositivo y token push vinculados a una cuenta, con revocación. |
 | AuditEntry | Cambios relevantes y accesos administrativos excepcionales, sin copiar secretos o datos completos. |
 
-El complemento futuro añadirá configuración de sitio, páginas, noticias y publicaciones de actividades. La tesorería futura añadirá cuotas y liquidaciones. No se crearán todavía tablas comerciales o financieras vacías por anticipación.
+El complemento futuro añadirá configuración de sitio, páginas, noticias y publicaciones de actividades. La tesorería futura añadirá cuotas y otras liquidaciones; el MVP ya registra los pagos por actividad remunerada. No se crearán todavía tablas comerciales o financieras vacías por anticipación.
 
 ## 8. Privacidad, seguridad y operación
 
@@ -391,7 +392,7 @@ Cada oleada se adapta a las dependencias reales: no se mantienen agentes ocupado
 - Si el complemento web se pide para el piloto; por defecto permanece fuera del MVP.
 - Si compartir manualmente por WhatsApp cubre el piloto; automatizar grupos requiere una validación distinta.
 
-Las decisiones sobre pagos a músicos, cuotas, precios y suscripciones se retomarán al abordar esos módulos.
+Las reglas básicas de pagos a músicos por actividad quedan fijadas en la decisión 0011. Las cuotas, los precios y las suscripciones se retomarán al abordar esos módulos.
 
 ## 13. Antecedentes y referencias
 

@@ -4,6 +4,8 @@ import io
 import logging
 import re
 import unicodedata
+from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from pathlib import Path
 from zipfile import BadZipFile
 
@@ -14,13 +16,17 @@ from django.utils.translation import gettext as _
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
-from .models import ImportBatch, Member
+from apps.associations.models import Association
+
+from .models import ImportBatch, Instrument, Member, Section
 
 logger = logging.getLogger(__name__)
 
 MODEL_COLUMNS = {"external_id", "first_name", "last_name", "national_id", "address", "phone", "email", "kind"}
 SURNAME_COLUMNS = {"first_surname", "second_surname"}
-ALLOWED_COLUMNS = MODEL_COLUMNS | SURNAME_COLUMNS
+# Columnas opcionales que se resuelven contra el catálogo de la asociación.
+CATALOG_COLUMNS = {"section", "instrument"}
+ALLOWED_COLUMNS = MODEL_COLUMNS | SURNAME_COLUMNS | CATALOG_COLUMNS
 MAX_IMPORT_ROWS = 1000
 MAX_IMPORT_BYTES = 5 * 1024 * 1024
 
@@ -35,7 +41,14 @@ HEADER_ALIASES = {
     "phone": {"phone", "telefono", "telefon", "movil", "mobil"},
     "email": {"email", "correo", "correo electronico", "correu", "correu electronic"},
     "kind": {"kind", "tipo", "tipo de miembro", "tipus", "tipus de membre"},
+    "section": {"section", "cuerda", "corda", "seccion", "seccio"},
+    "instrument": {"instrument", "instrumento", "instrumentos", "instruments"},
 }
+# Una celda puede traer varios instrumentos: «Clarinete; Requinto» o «Clarinete / Requinto».
+INSTRUMENT_SEPARATORS = re.compile(r"[;/]")
+# Un nombre de catálogo que empieza así se interpretaría como fórmula al exportarlo.
+FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+CATALOG_NAME_MAX_LENGTH = 80
 
 
 def _normalize_header(value):
@@ -102,7 +115,12 @@ def inspect_import(upload):
     return content, hashlib.sha256(content).hexdigest(), headers, rows
 
 
-def parse_import(upload, mapping):
+def parse_import(upload, mapping, association=None):
+    """Valida el fichero con su mapeo sin escribir en el censo ni en el catálogo.
+
+    Con `association`, las filas incluyen además los errores y avisos de
+    cuerdas e instrumentos frente al catálogo de esa asociación.
+    """
     content, content_hash, headers, rows = inspect_import(upload)
 
     invalid_targets = set(mapping.values()) - ALLOWED_COLUMNS
@@ -151,8 +169,208 @@ def parse_import(upload, mapping):
                 errors.append(_("Identificador externo duplicado en el fichero."))
             else:
                 external_ids[external_id] = row_number
-        normalized.append({"row": row_number, "data": data, "errors": errors})
+        warnings = _parse_catalog_cells(data, errors)
+        normalized.append({"row": row_number, "data": data, "errors": errors, "warnings": warnings})
+    if association is not None and uses_catalog_columns(mapping):
+        normalized, _plan = review_import(association, normalized)
     return content, content_hash, normalized
+
+
+# --- Cuerdas e instrumentos en la importación --------------------------------
+#
+# La previsualización solo lee el catálogo: informa de qué cuerdas e
+# instrumentos faltan, pero no los crea. Se crean al confirmar, en la misma
+# transacción que las fichas. Siempre se busca en el catálogo de la asociación
+# del lote; el de otra asociación nunca se reutiliza.
+
+
+def uses_catalog_columns(mapping):
+    return bool(CATALOG_COLUMNS.intersection((mapping or {}).values()))
+
+
+def catalog_key(value):
+    """Clave para comparar nombres sin distinguir mayúsculas, acentos ni espacios."""
+    without_accents = "".join(
+        character
+        for character in unicodedata.normalize("NFKD", str(value))
+        if not unicodedata.combining(character)
+    )
+    return "".join(without_accents.casefold().split())
+
+
+def _clean_catalog_name(value):
+    return " ".join(str(value or "").split())
+
+
+def _catalog_name_errors(name, kind_label):
+    errors = []
+    if name.startswith(FORMULA_PREFIXES):
+        errors.append(
+            _("%(kind)s «%(name)s» no puede empezar por =, +, - o @.") % {"kind": kind_label, "name": name}
+        )
+    if len(name) > CATALOG_NAME_MAX_LENGTH:
+        errors.append(
+            _("%(kind)s «%(name)s» supera %(limit)s caracteres.")
+            % {"kind": kind_label, "name": name[:20] + "…", "limit": CATALOG_NAME_MAX_LENGTH}
+        )
+    return errors
+
+
+def _parse_catalog_cells(data, errors):
+    """Normaliza las celdas de cuerda e instrumentos de una fila; devuelve avisos.
+
+    Deja `data["section"]` como texto y `data["instruments"]` como lista sin
+    repetidos (el primero es el principal). Los errores se añaden a `errors`.
+    """
+    warnings = []
+    if "section" in data:
+        data["section"] = _clean_catalog_name(data["section"])
+        if data["section"]:
+            errors.extend(_catalog_name_errors(data["section"], _("La cuerda")))
+    if "instrument" in data:
+        names = []
+        seen = set()
+        for part in INSTRUMENT_SEPARATORS.split(data.pop("instrument")):
+            name = _clean_catalog_name(part)
+            key = catalog_key(name)
+            if not key or key in seen:
+                continue
+            seen.add(key)
+            names.append(name)
+            errors.extend(_catalog_name_errors(name, _("El instrumento")))
+        data["instruments"] = names
+    if data.get("section") and not data.get("instruments"):
+        warnings.append(
+            _("La cuerda «%(section)s» se ignora: la cuerda de una ficha es la de su instrumento.")
+            % {"section": data["section"]}
+        )
+    return warnings
+
+
+@dataclass
+class ImportCatalogPlan:
+    """Qué hay ya en el catálogo de la asociación y qué habría que crear."""
+
+    sections: dict = dataclass_field(default_factory=dict)  # clave -> Section existente
+    instruments: dict = dataclass_field(default_factory=dict)  # clave -> Instrument existente
+    new_sections: dict = dataclass_field(default_factory=dict)  # clave -> nombre
+    new_instruments: dict = dataclass_field(default_factory=dict)  # clave -> {"name", "section"}
+    row_errors: dict = dataclass_field(default_factory=dict)  # fila -> [mensajes]
+    row_warnings: dict = dataclass_field(default_factory=dict)  # fila -> [mensajes]
+
+    def section_name(self, key):
+        if key in self.sections:
+            return self.sections[key].name
+        return self.new_sections.get(key, "")
+
+    def new_instrument_labels(self):
+        labels = []
+        for item in self.new_instruments.values():
+            section = self.section_name(item["section"]) if item["section"] else ""
+            labels.append(f"{item['name']} ({section})" if section else item["name"])
+        return labels
+
+
+def plan_import_catalog(association, rows):
+    """Resuelve cuerdas e instrumentos de las filas válidas sin escribir nada.
+
+    Un instrumento que ya existe bajo otra cuerda, o que el propio fichero pone
+    en dos cuerdas distintas, invalida la fila: no se reasigna en silencio.
+    """
+    plan = ImportCatalogPlan()
+    for section in Section.objects.filter(association=association).order_by("pk"):
+        plan.sections.setdefault(catalog_key(section.name), section)
+    for instrument in Instrument.objects.filter(association=association).select_related("section").order_by("pk"):
+        plan.instruments.setdefault(catalog_key(instrument.name), instrument)
+
+    for item in rows:
+        names = item["data"].get("instruments") or []
+        if item["errors"] or not names:
+            continue
+        section_label = item["data"].get("section", "")
+        section_key = catalog_key(section_label) or None
+        errors = []
+        warnings = []
+        planned = {}
+        for name in names:
+            key = catalog_key(name)
+            existing = plan.instruments.get(key)
+            if existing is not None:
+                current = catalog_key(existing.section.name) if existing.section_id else None
+                if section_key and current and current != section_key:
+                    errors.append(
+                        _(
+                            "El instrumento «%(instrument)s» ya está en la cuerda «%(current)s» del catálogo, "
+                            "no en «%(section)s». Corrige el fichero o el catálogo."
+                        )
+                        % {"instrument": existing.name, "current": existing.section.name, "section": section_label}
+                    )
+                elif section_key and not current:
+                    warnings.append(
+                        _("El instrumento «%(instrument)s» no tiene cuerda en el catálogo; no se le asigna «%(section)s».")
+                        % {"instrument": existing.name, "section": section_label}
+                    )
+                continue
+            pending = plan.new_instruments.get(key)
+            if pending and section_key and pending["section"] and pending["section"] != section_key:
+                errors.append(
+                    _("El instrumento «%(instrument)s» aparece en el fichero con las cuerdas «%(first)s» y «%(section)s».")
+                    % {
+                        "instrument": pending["name"],
+                        "first": plan.section_name(pending["section"]),
+                        "section": section_label,
+                    }
+                )
+                continue
+            planned[key] = name
+        if errors:
+            plan.row_errors[item["row"]] = errors
+            continue
+        if warnings:
+            plan.row_warnings[item["row"]] = warnings
+        for key, name in planned.items():
+            pending = plan.new_instruments.setdefault(key, {"name": name, "section": None})
+            if section_key and not pending["section"]:
+                pending["section"] = section_key
+                if section_key not in plan.sections:
+                    plan.new_sections.setdefault(section_key, section_label)
+    return plan
+
+
+def _merge_messages(current, extra):
+    return list(current) + [message for message in extra if message not in current]
+
+
+def review_import(association, rows):
+    """Filas con los errores y avisos del catálogo añadidos, y el plan usado."""
+    plan = plan_import_catalog(association, rows)
+    reviewed = []
+    for item in rows:
+        row = item["row"]
+        reviewed.append(
+            {
+                **item,
+                "errors": _merge_messages(item["errors"], plan.row_errors.get(row, [])),
+                "warnings": _merge_messages(item.get("warnings", []), plan.row_warnings.get(row, [])),
+            }
+        )
+    return reviewed, plan
+
+
+def _create_planned_catalog(association, plan):
+    """Crea lo que falta del catálogo y devuelve clave -> Instrument."""
+    next_order = max((section.order for section in plan.sections.values()), default=0) + 1
+    sections = dict(plan.sections)
+    for offset, (key, name) in enumerate(plan.new_sections.items()):
+        sections[key] = Section.objects.create(association=association, name=name, order=next_order + offset)
+    instruments = dict(plan.instruments)
+    for key, item in plan.new_instruments.items():
+        instruments[key] = Instrument.objects.create(
+            association=association,
+            name=item["name"],
+            section=sections.get(item["section"]) if item["section"] else None,
+        )
+    return instruments
 
 
 @transaction.atomic
@@ -162,13 +380,21 @@ def confirm_import(batch):
         return locked.result
     if locked.status != ImportBatch.Status.PREVIEW:
         raise ValidationError(_("Genera la previsualización antes de confirmar."))
-    if not any(not item["errors"] for item in locked.preview):
+    rows = locked.preview
+    uses_catalog = uses_catalog_columns(locked.mapping)
+    if uses_catalog:
+        # Bloquear la asociación serializa la creación de catálogo entre lotes
+        # concurrentes; el plan se recalcula porque el catálogo pudo cambiar.
+        association = Association.objects.select_for_update().get(pk=locked.association_id)
+        rows, plan = review_import(association, rows)
+    if not any(not item["errors"] for item in rows):
         raise ValidationError(_("No hay filas válidas que confirmar. Corrige el mapeo o el fichero."))
+    instruments_by_key = _create_planned_catalog(association, plan) if uses_catalog else {}
     created = 0
     updated = 0
     rejected = 0
     report = []
-    for item in locked.preview:
+    for item in rows:
         report_item = {**item}
         if item["errors"]:
             rejected += 1
@@ -177,14 +403,21 @@ def confirm_import(batch):
             continue
         data = item["data"].copy()
         external_id = data.pop("external_id", "")
+        data.pop("section", None)
+        instrument_names = data.pop("instruments", None) or []
         defaults = {**data, "kind": data.get("kind") or Member.Kind.MUSICIAN}
         if external_id:
-            _member, was_created = Member.objects.update_or_create(
+            member, was_created = Member.objects.update_or_create(
                 association=locked.association, external_id=external_id, defaults=defaults
             )
         else:
-            Member.objects.create(association=locked.association, **defaults)
+            member = Member.objects.create(association=locked.association, **defaults)
             was_created = True
+        if instrument_names:
+            # La celda manda: al reimportar se sustituyen los instrumentos de la
+            # ficha sin duplicarlos; una celda vacía no toca los que ya tenga.
+            instruments = [instruments_by_key[catalog_key(name)] for name in instrument_names]
+            _sync_instruments(member, instruments, instruments[0])
         created += int(was_created)
         updated += int(not was_created)
         report_item["action"] = "created" if was_created else "updated"
@@ -193,6 +426,9 @@ def confirm_import(batch):
     locked.confirmed_at = timezone.now()
     locked.preview = report
     locked.result = {"created": created, "updated": updated, "rejected": rejected}
+    if uses_catalog:
+        locked.result["sections_created"] = list(plan.new_sections.values())
+        locked.result["instruments_created"] = plan.new_instrument_labels()
     source_name = locked.source_file.name
     source_storage = locked.source_file.storage
     locked.source_file = ""

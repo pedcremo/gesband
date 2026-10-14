@@ -1,13 +1,16 @@
 {% extends 'shared/base.html' %}
-{% load i18n %}
+{% load i18n member_import %}
 {% block title %}{% translate "Member import" %} · Gesband{% endblock %}
 {% block content %}
 <p><a class="back" href="{% url 'member-import-start' %}?association_id={{ association.id }}">← {% translate "Back to imports" %}</a></p>
 <h1>{% translate "Member import" %}</h1>
 <p><strong>{{ batch.filename }}</strong> · <span class="status">{{ batch.get_status_display }}</span></p>
 
+{% import_field_choices as import_fields %}
+{% import_review batch as review %}
 {% if batch.status != 'confirmed' %}
   <p>{% translate "Choose which census field corresponds to each source column. Leave columns you do not need unassigned." %}</p>
+  <p class="muted">{% translate "Las columnas Cuerda e Instrumentos son opcionales. Una celda puede llevar varios instrumentos separados por ; o /; el primero será el principal." %}</p>
   <form method="post">
     {% csrf_token %}
     <input type="hidden" name="association_id" value="{{ association.id }}">
@@ -42,16 +45,44 @@
       <div class="card"><strong>{{ batch.result.rejected|default:0 }}</strong><br>{% translate "rejected" %}</div>
     </div>
   {% endif %}
+  {% if review.uses_catalog %}
+    <section class="import-catalog" aria-labelledby="import-catalog-title">
+      <h2 id="import-catalog-title">{% translate "Catálogo de cuerdas e instrumentos" %}</h2>
+      {% if review.new_sections or review.new_instruments %}
+        {% if batch.status == 'preview' %}
+          <p>{% translate "Al confirmar se añadirá al catálogo de la banda lo que todavía no existe. Revisa que los nombres sean correctos." %}</p>
+        {% endif %}
+        <ul>
+          {% if review.new_sections %}
+            <li>{% if batch.status == 'preview' %}{% blocktranslate count counter=review.new_sections|length %}Se creará {{ counter }} cuerda:{% plural %}Se crearán {{ counter }} cuerdas:{% endblocktranslate %}{% else %}{% blocktranslate count counter=review.new_sections|length %}Se creó {{ counter }} cuerda:{% plural %}Se crearon {{ counter }} cuerdas:{% endblocktranslate %}{% endif %}
+              {{ review.new_sections|join:", " }}</li>
+          {% endif %}
+          {% if review.new_instruments %}
+            <li>{% if batch.status == 'preview' %}{% blocktranslate count counter=review.new_instruments|length %}Se creará {{ counter }} instrumento:{% plural %}Se crearán {{ counter }} instrumentos:{% endblocktranslate %}{% else %}{% blocktranslate count counter=review.new_instruments|length %}Se creó {{ counter }} instrumento:{% plural %}Se crearon {{ counter }} instrumentos:{% endblocktranslate %}{% endif %}
+              {{ review.new_instruments|join:", " }}</li>
+          {% endif %}
+        </ul>
+      {% elif batch.status == 'preview' %}
+        <p>{% translate "Todas las cuerdas e instrumentos del fichero ya existen en el catálogo de la banda." %}</p>
+      {% else %}
+        <p>{% translate "No se añadió ninguna cuerda ni instrumento al catálogo." %}</p>
+      {% endif %}
+    </section>
+  {% endif %}
   <div class="table-wrap"><table>
     <thead>
-      <tr><th>{% translate "Row" %}</th><th>{% translate "External ID" %}</th><th>{% translate "Name" %}</th><th>{% translate "Result" %}</th></tr>
+      <tr><th>{% translate "Row" %}</th><th>{% translate "External ID" %}</th><th>{% translate "Name" %}</th>{% if review.uses_catalog %}<th>{% translate "Cuerda" %}</th><th>{% translate "Instrumentos" %}</th>{% endif %}<th>{% translate "Result" %}</th></tr>
     </thead>
     <tbody>
-      {% for item in batch.preview %}
+      {% for item in review.rows %}
         <tr>
           <td>{{ item.row }}</td>
           <td>{{ item.data.external_id|default:"—" }}</td>
           <td>{{ item.data.first_name }} {{ item.data.last_name }}</td>
+          {% if review.uses_catalog %}
+            <td>{{ item.data.section|default:"—" }}</td>
+            <td>{% if item.data.instruments %}{{ item.data.instruments|join:", " }}{% else %}—{% endif %}</td>
+          {% endif %}
           <td>
             {% if item.errors %}
               <ul class="errors">{% for error in item.errors %}<li>{{ error }}</li>{% endfor %}</ul>
@@ -59,13 +90,16 @@
             {% elif item.action == 'updated' %}{% translate "Updated" %}
             {% elif item.action == 'rejected' %}{% translate "Rejected" %}
             {% else %}{% translate "Ready" %}{% endif %}
+            {% if item.warnings %}
+              <ul class="muted warnings">{% for warning in item.warnings %}<li>{{ warning }}</li>{% endfor %}</ul>
+            {% endif %}
           </td>
         </tr>
       {% endfor %}
     </tbody>
   </table></div>
   {% if batch.status == 'preview' %}
-    {% if can_confirm %}
+    {% if review.can_confirm %}
       <form method="post" class="actions">
         {% csrf_token %}
         <input type="hidden" name="association_id" value="{{ association.id }}">

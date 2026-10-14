@@ -5,11 +5,20 @@ import 'package:dio/dio.dart';
 import '../storage/secure_session_store.dart';
 
 class ApiException implements Exception {
-  const ApiException(this.message, {this.statusCode, this.code});
+  const ApiException(
+    this.message, {
+    this.statusCode,
+    this.code,
+    this.fromServer = false,
+  });
 
   final String message;
   final int? statusCode;
   final String? code;
+
+  /// `message` es el texto que envió el servidor (ya en el idioma pedido con
+  /// `Accept-Language`) y no el genérico de la app.
+  final bool fromServer;
 
   @override
   String toString() => message;
@@ -46,16 +55,16 @@ class ApiClient {
         onError: (error, handler) {
           final data = error.response?.data;
           final body = data is Map<String, dynamic> ? data : null;
+          final message = serverMessageOf(data);
           handler.reject(
             DioException(
               requestOptions: error.requestOptions,
               response: error.response,
               error: ApiException(
-                (body?['message'] as String?) ??
-                    (body?['detail'] as String?) ??
-                    'No se pudo completar la petición',
+                message ?? 'No se pudo completar la petición',
                 statusCode: error.response?.statusCode,
                 code: body?['code'] as String?,
+                fromServer: message != null,
               ),
             ),
           );
@@ -63,6 +72,40 @@ class ApiClient {
       ),
     );
   }
+
+  /// Primer texto legible de un error del API. Admite el `problem+json` del
+  /// contrato (`detail` y `errors[].message`), `message`, y la forma por
+  /// defecto de DRF (`{"photo": ["..."]}`, `["..."]`).
+  static String? serverMessageOf(Object? data) {
+    String? first(Object? value) => switch (value) {
+          String() when value.trim().isNotEmpty => value.trim(),
+          List() => value.map(first).nonNulls.firstOrNull,
+          Map() => first(value['message']) ??
+              value.values.map(first).nonNulls.firstOrNull,
+          _ => null,
+        };
+    if (data is Map<String, dynamic>) {
+      return first(data['message']) ??
+          first(data['errors']) ??
+          first(data['detail']) ??
+          first(data['non_field_errors']) ??
+          first({
+            for (final entry in data.entries)
+              if (!_problemMembers.contains(entry.key)) entry.key: entry.value,
+          });
+    }
+    return first(data is List ? data : null);
+  }
+
+  /// Miembros de `problem+json` que no son el mensaje para la persona.
+  static const _problemMembers = {
+    'type',
+    'title',
+    'status',
+    'code',
+    'trace_id',
+    'instance',
+  };
 
   final Dio _dio;
   final SessionStore _sessionStore;
@@ -188,14 +231,31 @@ class ApiClient {
     }
   }
 
-  Future<Map<String, dynamic>> uploadFile(
+  /// Sube un archivo en memoria como `multipart/form-data` con `PUT`, que es
+  /// como el API sustituye un recurso (la foto propia).
+  Future<Map<String, dynamic>> putFile(
     String path, {
     required String field,
-    required String filePath,
-  }) async {
+    required Uint8List bytes,
+    required String filename,
+  }) {
     final form = FormData.fromMap({
-      field: await MultipartFile.fromFile(filePath),
+      field: MultipartFile.fromBytes(
+        bytes,
+        filename: filename,
+        contentType: _imageTypeOf(filename),
+      ),
     });
-    return postObject(path, data: form);
+    return putObject(path, data: form);
+  }
+
+  static DioMediaType? _imageTypeOf(String filename) {
+    final extension = filename.split('.').last.toLowerCase();
+    return switch (extension) {
+      'jpg' || 'jpeg' => DioMediaType('image', 'jpeg'),
+      'png' => DioMediaType('image', 'png'),
+      'webp' => DioMediaType('image', 'webp'),
+      _ => null,
+    };
   }
 }

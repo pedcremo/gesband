@@ -10,6 +10,7 @@
     <button class="button" type="submit">{% translate "Log in" %}</button>
     {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
   </form>
+  <p class="muted"><a href="/descargas/">{% translate "Download the Android app (beta)" %}</a></p>
 {% endblock %}
 {% block after %}
   {% get_current_language as LANGUAGE_CODE %}

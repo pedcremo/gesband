@@ -91,3 +91,21 @@ class PhotoForm(forms.Form):
         widget=forms.ClearableFileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
     )
 
+
+
+# Campos del censo que ofrece el asistente de importación, en el orden en que
+# se muestran. Debe cubrir `services.ALLOWED_COLUMNS`.
+IMPORT_FIELD_CHOICES = [
+    ("external_id", _("Identificador externo")),
+    ("first_name", _("Nombre")),
+    ("last_name", _("Apellidos (juntos)")),
+    ("first_surname", _("Primer apellido")),
+    ("second_surname", _("Segundo apellido")),
+    ("national_id", _("DNI/NIE")),
+    ("address", _("Dirección")),
+    ("phone", _("Teléfono")),
+    ("email", _("Correo electrónico")),
+    ("kind", _("Tipo de miembro")),
+    ("section", _("Cuerda")),
+    ("instrument", _("Instrumentos (separados por ; o /)")),
+]

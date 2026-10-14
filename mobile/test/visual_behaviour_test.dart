@@ -184,6 +184,9 @@ void main() {
       await tester.tap(find.byKey(const Key('nav-profile')));
       await tester.pumpAndSettle();
 
+      // Los ajustes quedan bajo la foto y «Lo que se me debe».
+      await tester.ensureVisible(find.byKey(const Key('color-mode-choice')));
+      await tester.pumpAndSettle();
       await tester
           .tap(find.byKey(const ValueKey('choice-ColorModeChoice.light')));
       await tester.pumpAndSettle();
@@ -211,6 +214,8 @@ void main() {
       await tester.tap(find.byKey(const Key('nav-profile')));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.byKey(const Key('language-choice')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('choice-ca')));
       await tester.pumpAndSettle();
 

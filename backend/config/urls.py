@@ -13,6 +13,7 @@ from apps.polls.views import poll_create, poll_detail, poll_list
 from apps.accounts.forms import PanelLoginForm
 from apps.accounts.panel_views import access_roles
 from apps.associations.panel_views import branding
+from apps.activities.panel_views import payments_overview
 from apps.accounts.views import activate_invitation, activation_complete
 from apps.members.views import member_create, member_delete, member_detail, member_photo, member_status
 from apps.communications.api import (
@@ -32,6 +33,7 @@ from apps.api import (
     RefreshView,
     LogoutView,
     MemberViewSet,
+    MemberEarningsView,
     MemberMeView,
     MemberMePhotoView,
     MeView,
@@ -97,6 +99,7 @@ urlpatterns = [
     path("panel/me/", my_access, name="panel-my-access"),
     path("panel/activities/new/", activity_create, name="activity-create"),
     path("panel/activities/<uuid:activity_id>/", activity_detail, name="panel-activity-detail"),
+    path("panel/payments/", payments_overview, name="panel-payments"),
     path("panel/polls/", poll_list, name="panel-polls"),
     path("panel/polls/new/", poll_create, name="panel-poll-new"),
     path("panel/polls/<uuid:poll_id>/", poll_detail, name="panel-poll-detail"),
@@ -116,6 +119,7 @@ urlpatterns = [
     path("api/v1/push-tests/<uuid:push_test_id>/confirm", PushTestConfirmView.as_view(), name="api-push-test-confirm"),
     path("api/v1/members/me/", MemberMeView.as_view(), name="api-member-me"),
     path("api/v1/members/me/photo/", MemberMePhotoView.as_view(), name="api-member-me-photo"),
+    path("api/v1/members/me/earnings/", MemberEarningsView.as_view(), name="api-member-me-earnings"),
     path("api/v1/imports/preview", ImportPreviewView.as_view(), name="api-import-preview"),
     path("api/v1/imports/<uuid:pk>/confirm", ImportConfirmView.as_view(), name="api-import-confirm"),
     path("api/v1/", include(router.urls)),

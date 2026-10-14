@@ -1,10 +1,12 @@
 import mimetypes
+from datetime import timezone as dt_timezone
 from contextlib import contextmanager
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from rest_framework import decorators, permissions, response, status, viewsets
@@ -13,7 +15,8 @@ from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.views import APIView
 
-from apps.activities.models import Activity, Attendance, Invitation, ProgrammeItem
+from apps.activities.models import Activity, Attendance, Invitation, ProgrammeItem, remuneration_error
+from apps.activities.payments import member_earnings
 from apps.activities.services import record_attendance, respond
 from apps.associations.models import Association, AssociationAccess, AssociationRole
 from apps.associations.permissions import MANAGER_ROLES, PARTICIPANT_ROLES, accessible_association_ids, get_access_or_403, permissions_for, require_roles
@@ -102,9 +105,14 @@ class MemberSerializer(serializers.ModelSerializer):
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
-        if obj.photo and request:
-            return request.build_absolute_uri(f"/api/v1/members/{obj.pk}/photo/")
-        return None
+        if not obj.photo or not request:
+            return None
+        if self.context.get("own_profile"):
+            # La ficha propia se descarga por /members/me/photo/: la ruta por id
+            # exige gestionar el censo y daria 403 al musico. La asociacion va en
+            # la consulta para que la URL funcione tambien sin la cabecera.
+            return request.build_absolute_uri(f"/api/v1/members/me/photo/?association_id={obj.association_id}")
+        return request.build_absolute_uri(f"/api/v1/members/{obj.pk}/photo/")
 
 
 class ProgrammeSerializer(serializers.ModelSerializer):
@@ -179,10 +187,25 @@ class ActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Activity
-        fields = ["id", "association", "kind", "status", "title", "description", "location", "starts_at", "ends_at", "meeting_at", "response_deadline", "uniform", "is_mandatory", "version", "programme", "invitations", "my_invitation", "my_transport"]
+        fields = ["id", "association", "kind", "status", "title", "description", "location", "starts_at", "ends_at", "meeting_at", "response_deadline", "uniform", "is_mandatory", "is_paid", "fee_amount", "version", "programme", "invitations", "my_invitation", "my_transport"]
         # `status` solo cambia por las acciones publish y cancel, que avisan a
         # quien esta convocado; un PATCH lo cambiaria en silencio.
         read_only_fields = ["id", "association", "created_by", "status", "version", "invitations"]
+
+    def validate(self, attrs):
+        """Remunerada exige importe positivo; no remunerada guarda el importe vacio.
+
+        La regla es la del modelo (`remuneration_error`), compartida con el panel.
+        """
+        attrs = super().validate(attrs)
+        is_paid = attrs.get("is_paid", getattr(self.instance, "is_paid", False))
+        fee_amount = attrs.get("fee_amount", getattr(self.instance, "fee_amount", None))
+        error = remuneration_error(is_paid, fee_amount)
+        if error:
+            raise serializers.ValidationError({"fee_amount": error})
+        if not is_paid:
+            attrs["fee_amount"] = None
+        return attrs
 
     def create(self, validated_data):
         programme = validated_data.pop("programme", [])
@@ -295,7 +318,7 @@ class LoginView(APIView):
         account = authenticate(request, username=account_record.username if account_record else email, password=password)
         if not account:
             return response.Response({"detail": _("Credenciales no válidas.")}, status=401)
-        token, _ = Token.objects.get_or_create(user=account)
+        token, _created = Token.objects.get_or_create(user=account)
         return response.Response({"access_token": token.key, "refresh_token": token.key, "token_type": "Bearer", "expires_in": 86400, "account": AccountSerializer(account).data})
 
 
@@ -403,11 +426,7 @@ class MemberViewSet(ScopedViewSet):
     def photo(self, request, pk=None):
         member = self.get_object()
         if request.method == "GET":
-            if not member.photo:
-                return response.Response(status=404)
-            from django.http import FileResponse
-
-            return FileResponse(member.photo.open("rb"), content_type="image/webp")
+            return _photo_response(member)
         if request.method == "DELETE":
             member_services.delete_member_photo(member=member, actor=request.user)
             return response.Response(status=204)
@@ -439,6 +458,17 @@ def _domain_errors(conflict=False, field=None):
         raise ValidationError({field: exc.messages} if field else exc.messages) from exc
 
 
+def _photo_response(member):
+    """Foto privada de una ficha ya autorizada: nunca se guarda en caches compartidas."""
+    if not member.photo:
+        return response.Response(status=404)
+    from django.http import FileResponse
+
+    photo = FileResponse(member.photo.open("rb"), content_type="image/webp")
+    photo["Cache-Control"] = "private, no-store"
+    return photo
+
+
 class MemberMeView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
@@ -452,7 +482,7 @@ class MemberMeView(APIView):
 
     def get(self, request):
         member = self._member(request)
-        return response.Response(MemberSerializer(member, context={"request": request}).data)
+        return response.Response(MemberSerializer(member, context={"request": request, "own_profile": True}).data)
 
     def patch(self, request):
         member = self._member(request)
@@ -460,17 +490,64 @@ class MemberMeView(APIView):
             if field in request.data:
                 setattr(member, field, request.data[field])
         member.save(update_fields=["email", "phone", "address", "updated_at"])
-        return response.Response(MemberSerializer(member, context={"request": request}).data)
+        return response.Response(MemberSerializer(member, context={"request": request, "own_profile": True}).data)
 
+
+def _money(value):
+    return f"{value:.2f}"
+
+
+def _utc(moment):
+    """RFC 3339 en UTC terminado en `Z`, como fija el contrato."""
+    return moment.astimezone(dt_timezone.utc).isoformat().replace("+00:00", "Z") if moment else None
+
+
+class MemberEarningsView(MemberMeView):
+    """Lo que se adeuda y se ha pagado a la ficha propia (decision 0011).
+
+    Sin paginar: lo acota el numero de actividades remuneradas de una persona.
+    Nunca devuelve importes de otras fichas.
+    """
+
+    http_method_names = ["get", "head", "options"]
+
+    def get(self, request):
+        member = self._member(request)
+        summary = member_earnings(member)
+        return response.Response(
+            {
+                "currency": "EUR",
+                "owed_total": _money(summary.owed_total),
+                "paid_total": _money(summary.paid_total),
+                "items": [
+                    {
+                        "invitation": str(item.invitation.pk),
+                        "activity": {
+                            "id": str(item.invitation.activity.pk),
+                            "title": item.invitation.activity.title,
+                            "starts_at": _utc(item.invitation.activity.starts_at),
+                        },
+                        "amount": _money(item.amount),
+                        "status": item.status,
+                        "paid_at": _utc(item.payment.paid_at) if item.payment else None,
+                    }
+                    for item in summary.items
+                ],
+            }
+        )
 
 class MemberMePhotoView(MemberMeView):
+    def get(self, request):
+        """Descarga la foto de la ficha propia (rol member o gestor con ficha vinculada)."""
+        return _photo_response(self._member(request))
+
     def put(self, request):
         member = self._member(request)
         if "photo" not in request.FILES:
             raise ValidationError({"photo": _("Adjunta una imagen.")})
         with _domain_errors(field="photo"):
             member = member_services.replace_member_photo(member=member, actor=request.user, upload=request.FILES["photo"])
-        return response.Response(MemberSerializer(member, context={"request": request}).data)
+        return response.Response(MemberSerializer(member, context={"request": request, "own_profile": True}).data)
 
     def delete(self, request):
         member = self._member(request)
@@ -648,7 +725,11 @@ class ActivityViewSet(ScopedViewSet):
     @decorators.action(detail=True, methods=["post"], url_path="attendance/(?P<invitation_id>[^/.]+)")
     def attendance(self, request, pk=None, invitation_id=None):
         self.check_access(manager=True)
-        invitation = Invitation.objects.get(pk=invitation_id, activity_id=pk)
+        # La convocatoria debe ser de esta actividad y de la asociacion comprobada:
+        # sin el filtro, un gestor de otra banda podia pasar lista aqui.
+        invitation = get_object_or_404(
+            Invitation, pk=invitation_id, activity_id=pk, activity__association_id=self.association_id()
+        )
         result = record_attendance(invitation, request.user, request.data.get("status"), request.data.get("note", ""))
         return response.Response({"status": result.status, "note": result.note})
 
@@ -688,7 +769,8 @@ class ImportPreviewView(APIView):
             import json
 
             mapping = json.loads(mapping)
-        _content, content_hash, preview = parse_import(upload, mapping)
+        association = Association.objects.get(pk=association_id)  # require_roles ya comprobó el acceso
+        _content, content_hash, preview = parse_import(upload, mapping, association=association)
         batch = ImportBatch.objects.filter(
             association_id=association_id,
             content_hash=content_hash,
@@ -722,6 +804,6 @@ class ImportPreviewView(APIView):
 
 class ImportConfirmView(APIView):
     def post(self, request, pk):
-        batch = ImportBatch.objects.get(pk=pk)
+        batch = get_object_or_404(ImportBatch, pk=pk)
         require_roles(request.user, batch.association_id, {AssociationRole.Role.ADMIN})
         return response.Response(confirm_import(batch))

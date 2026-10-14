@@ -451,6 +451,101 @@ class AppStrings {
       en: 'Anonymous vote: the app does not keep what you chose.');
   String get reason => _pick(es: 'Motivo', ca: 'Motiu', en: 'Reason');
 
+  // Actividades remuneradas y adeudos
+  String get paidActivity =>
+      _pick(es: 'Remunerada', ca: 'Remunerada', en: 'Paid');
+  String paidWithAmount(String amount) => _pick(
+      es: 'Remunerada · $amount',
+      ca: 'Remunerada · $amount',
+      en: 'Paid · $amount');
+  String get earningsTitle => _pick(
+      es: 'Lo que se me debe', ca: 'El que se’m deu', en: 'What I am owed');
+  String get owedTotal =>
+      _pick(es: 'Total adeudado', ca: 'Total pendent', en: 'Total owed');
+  String get paidTotal =>
+      _pick(es: 'Total pagado', ca: 'Total pagat', en: 'Total paid');
+  String get earningOwed => _pick(es: 'Adeudado', ca: 'Pendent', en: 'Owed');
+  String earningPaidOn(String when) =>
+      _pick(es: 'Pagado el $when', ca: 'Pagat el $when', en: 'Paid on $when');
+  String get earningPaid => _pick(es: 'Pagado', ca: 'Pagat', en: 'Paid');
+  String get earningUnknown =>
+      _pick(es: 'Sin estado', ca: 'Sense estat', en: 'No status');
+  String get earningsEmpty => _pick(
+      es: 'Todavía no tienes actividades remuneradas con asistencia registrada.',
+      ca: 'Encara no tens activitats remunerades amb assistència registrada.',
+      en: 'You have no paid activities with recorded attendance yet.');
+  String get earningsUnavailable => _pick(
+      es: 'No se pudo cargar lo que se te debe.',
+      ca: 'No s’ha pogut carregar el que se’t deu.',
+      en: 'What you are owed could not be loaded.');
+  String get earningsExplanation => _pick(
+      es: 'Cuentan las actividades remuneradas en las que la junta ha '
+          'registrado tu asistencia.',
+      ca: 'Compten les activitats remunerades en què la junta ha registrat '
+          'la teua assistència.',
+      en: 'Paid activities count once the board has recorded your '
+          'attendance.');
+
+  // Foto propia
+  String get addPhoto =>
+      _pick(es: 'Añadir foto', ca: 'Afig una foto', en: 'Add photo');
+  String get changePhoto =>
+      _pick(es: 'Cambiar foto', ca: 'Canvia la foto', en: 'Change photo');
+  String get photoFromGallery => _pick(
+      es: 'Elegir de la galería',
+      ca: 'Tria de la galeria',
+      en: 'Choose from gallery');
+  String get photoFromCamera =>
+      _pick(es: 'Hacer una foto', ca: 'Fes una foto', en: 'Take a photo');
+  String get deletePhoto =>
+      _pick(es: 'Eliminar foto', ca: 'Elimina la foto', en: 'Remove photo');
+  String get deletePhotoTitle => _pick(
+      es: '¿Eliminar tu foto?',
+      ca: 'Vols eliminar la foto?',
+      en: 'Remove your photo?');
+  String get deletePhotoBody => _pick(
+      es: 'Desaparecerá de tu ficha. Podrás subir otra cuando quieras.',
+      ca: 'Desapareixerà de la teua fitxa. Podràs pujar-ne una altra quan vulgues.',
+      en: 'It will be removed from your profile. You can upload another one '
+          'at any time.');
+  String get delete => _pick(es: 'Eliminar', ca: 'Elimina', en: 'Remove');
+  String get photoUploading => _pick(
+      es: 'Subiendo la foto…', ca: 'Pujant la foto…', en: 'Uploading photo…');
+  String get photoSaved => _pick(
+      es: 'Foto actualizada.', ca: 'Foto actualitzada.', en: 'Photo updated.');
+  String get photoDeleted =>
+      _pick(es: 'Foto eliminada.', ca: 'Foto eliminada.', en: 'Photo removed.');
+  String get photoUploadFailed => _pick(
+      es: 'No se pudo subir la foto.',
+      ca: 'No s’ha pogut pujar la foto.',
+      en: 'The photo could not be uploaded.');
+  String get photoDeleteFailed => _pick(
+      es: 'No se pudo eliminar la foto.',
+      ca: 'No s’ha pogut eliminar la foto.',
+      en: 'The photo could not be removed.');
+  String get photoPickerFailed => _pick(
+      es: 'No se pudo abrir la cámara o la galería.',
+      ca: 'No s’ha pogut obrir la càmera o la galeria.',
+      en: 'The camera or gallery could not be opened.');
+  String get galleryPermissionDenied => _pick(
+      es: 'Gesband no tiene permiso para ver tus fotos. Puedes darlo en los '
+          'ajustes del sistema.',
+      ca: 'Gesband no té permís per a veure les teues fotos. Pots donar-lo '
+          'als ajustos del sistema.',
+      en: 'Gesband is not allowed to access your photos. You can allow it in '
+          'system settings.');
+  String get cameraPermissionDenied => _pick(
+      es: 'Gesband no tiene permiso para usar la cámara. Puedes darlo en los '
+          'ajustes del sistema.',
+      ca: 'Gesband no té permís per a usar la càmera. Pots donar-lo als '
+          'ajustos del sistema.',
+      en: 'Gesband is not allowed to use the camera. You can allow it in '
+          'system settings.');
+  String get photoPrivacyNote => _pick(
+      es: 'Tu foto es privada: solo la ves tú y quien gestiona la banda.',
+      ca: 'La teua foto és privada: només la veus tu i qui gestiona la banda.',
+      en: 'Your photo is private: only you and the band managers can see it.');
+
   String permissionName(String name) => switch (name) {
         'notDetermined' => _pick(
             es: 'sin solicitar', ca: 'sense sol·licitar', en: 'not requested'),

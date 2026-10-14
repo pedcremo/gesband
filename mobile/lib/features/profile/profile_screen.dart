@@ -2,9 +2,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../../core/api/api_client.dart';
 import '../../core/app_controller.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/models/models.dart';
+import '../../core/repositories/repositories.dart';
 import '../../core/theme/brand.dart';
 import '../../core/theme/gesband_tokens.dart';
 import '../../core/theme/theme_controller.dart';
@@ -12,13 +14,18 @@ import '../../core/theme/visual_style.dart';
 import '../../core/ui/brand_header.dart';
 import '../../core/ui/components.dart';
 import '../notifications/notification_activation_screen.dart';
+import 'earnings_section.dart';
+import 'photo_picker.dart';
 
-/// Mi ficha: datos propios con la foto y los ajustes del dispositivo
-/// (modo de color, idioma, avisos, banda y sesión).
+/// Mi ficha: datos propios con la foto, lo que se le debe y los ajustes del
+/// dispositivo (modo de color, idioma, avisos, banda y sesión).
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, required this.controller});
+  const ProfileScreen({super.key, required this.controller, this.photoPicker});
 
   final AppController controller;
+
+  /// Selector de fotos; en pruebas, un doble.
+  final PhotoPicker? photoPicker;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -26,21 +33,169 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late Future<(MemberProfile, Uint8List?)> future;
+  late Future<Earnings> earnings;
+  late final PhotoPicker picker =
+      widget.photoPicker ?? ImagePickerPhotoPicker();
+  bool photoBusy = false;
+
+  ProfileRepository get _repository => widget.controller.profileRepository;
+  String get _associationId => widget.controller.activeAssociation!.id;
 
   @override
   void initState() {
     super.initState();
     future = _load();
+    earnings = _repository.getEarnings(_associationId);
   }
 
   Future<(MemberProfile, Uint8List?)> _load() async {
-    final profile = await widget.controller.profileRepository
-        .getMine(widget.controller.activeAssociation!.id);
+    final profile = await _repository.getMine(_associationId);
     final url = profile.photoUrl;
-    // La foto es privada: se pide al API con la sesión, nunca por URL pública.
-    final photo =
-        url == null ? null : await widget.controller.api.getBytes(url);
+    // La foto es privada: se pide al API con la sesión, nunca por URL pública,
+    // y solo se guarda en memoria.
+    final photo = url == null ? null : await _repository.loadPhoto(url);
     return (profile, photo);
+  }
+
+  void _notify(String message, {SnackBarAction? action}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message), action: action));
+  }
+
+  /// Texto de un fallo del API: el mensaje de validación del servidor si lo
+  /// hay (tipo, tamaño o imagen no válida), o el genérico de la app.
+  String _failure(Object error, String fallback) {
+    if (error is ApiException &&
+        error.fromServer &&
+        (error.statusCode ?? 0) >= 400 &&
+        (error.statusCode ?? 0) < 500) {
+      return '$fallback ${error.message}';
+    }
+    return fallback;
+  }
+
+  Future<void> _choosePhotoAction(bool hasPhoto) async {
+    final strings = AppStrings.of(context);
+    final choice = await showModalBottomSheet<_PhotoAction>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              key: const Key('photo-gallery'),
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(strings.photoFromGallery),
+              onTap: () => Navigator.pop(sheetContext, _PhotoAction.gallery),
+            ),
+            ListTile(
+              key: const Key('photo-camera'),
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(strings.photoFromCamera),
+              onTap: () => Navigator.pop(sheetContext, _PhotoAction.camera),
+            ),
+            if (hasPhoto)
+              ListTile(
+                key: const Key('photo-delete'),
+                leading: const Icon(Icons.delete_outline_rounded),
+                title: Text(strings.deletePhoto),
+                onTap: () => Navigator.pop(sheetContext, _PhotoAction.delete),
+              ),
+          ],
+        ),
+      ),
+    );
+    switch (choice) {
+      case _PhotoAction.gallery:
+        await _upload(PhotoSource.gallery);
+      case _PhotoAction.camera:
+        await _upload(PhotoSource.camera);
+      case _PhotoAction.delete:
+        await _delete();
+      case null:
+        break;
+    }
+  }
+
+  Future<void> _upload(PhotoSource source) async {
+    final strings = AppStrings.of(context);
+    final PickedPhoto? picked;
+    try {
+      picked = await picker.pick(source);
+    } on PhotoPermissionDenied catch (error) {
+      _notify(
+        error.source == PhotoSource.camera
+            ? strings.cameraPermissionDenied
+            : strings.galleryPermissionDenied,
+        action: SnackBarAction(
+          label: strings.settings,
+          onPressed: picker.openSettings,
+        ),
+      );
+      return;
+    } catch (_) {
+      _notify(strings.photoPickerFailed);
+      return;
+    }
+    if (picked == null || !mounted) return;
+    setState(() => photoBusy = true);
+    try {
+      final profile = await _repository.updatePhoto(
+        _associationId,
+        picked.bytes,
+        filename: picked.filename,
+      );
+      if (!mounted) return;
+      // Se muestra la imagen que se acaba de subir, que ya está en memoria.
+      setState(() {
+        future = Future.value((profile, picked!.bytes));
+      });
+      _notify(strings.photoSaved);
+    } catch (error) {
+      _notify(_failure(error, strings.photoUploadFailed));
+    } finally {
+      if (mounted) setState(() => photoBusy = false);
+    }
+  }
+
+  Future<void> _delete() async {
+    final strings = AppStrings.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(strings.deletePhotoTitle),
+        content: Text(strings.deletePhotoBody),
+        actions: [
+          TextButton(
+            key: const Key('photo-delete-cancel'),
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(strings.cancel),
+          ),
+          FilledButton(
+            key: const Key('photo-delete-confirm'),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(strings.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => photoBusy = true);
+    try {
+      final profile = await _repository.deletePhoto(_associationId);
+      if (!mounted) return;
+      setState(() {
+        future = Future.value((profile, null));
+      });
+      _notify(strings.photoDeleted);
+    } catch (error) {
+      _notify(_failure(error, strings.photoDeleteFailed));
+    } finally {
+      if (mounted) setState(() => photoBusy = false);
+    }
   }
 
   void _openNotifications() {
@@ -84,15 +239,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       tone: Tone.neutral,
                       message: strings.profileUnavailable,
                       actionLabel: strings.retry,
-                      onAction: () => setState(() => future = _load()),
+                      onAction: () => setState(() {
+                        future = _load();
+                      }),
                     );
                   }
                   if (!snapshot.hasData) {
                     return const SizedBox(height: 120, child: LoadingView());
                   }
                   final (profile, photo) = snapshot.data!;
-                  return _ProfileCard(profile: profile, photo: photo);
+                  return _ProfileCard(
+                    profile: profile,
+                    photo: photo,
+                    busy: photoBusy,
+                    onEditPhoto: () =>
+                        _choosePhotoAction(profile.photoUrl != null),
+                  );
                 },
+              ),
+              const SizedBox(height: GesbandSpacing.xxl),
+              SectionTitle(strings.earningsTitle),
+              gap,
+              EarningsSection(
+                future: earnings,
+                onRetry: () => setState(() {
+                  earnings = _repository.getEarnings(_associationId);
+                }),
               ),
               const SizedBox(height: GesbandSpacing.xxl),
               SectionTitle(strings.settings),
@@ -174,11 +346,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
+enum _PhotoAction { gallery, camera, delete }
+
 class _ProfileCard extends StatelessWidget {
-  const _ProfileCard({required this.profile, required this.photo});
+  const _ProfileCard({
+    required this.profile,
+    required this.photo,
+    required this.busy,
+    required this.onEditPhoto,
+  });
 
   final MemberProfile profile;
   final Uint8List? photo;
+  final bool busy;
+  final VoidCallback onEditPhoto;
 
   @override
   Widget build(BuildContext context) {
@@ -189,24 +370,31 @@ class _ProfileCard extends StatelessWidget {
         t.style == VisualStyle.partitura ? 999 : t.radiusCard);
     final bytes = photo;
     final avatar = Semantics(
-      label: strings.photoOf(profile.fullName),
+      label: busy ? strings.photoUploading : strings.photoOf(profile.fullName),
       image: true,
       child: ClipRRect(
         borderRadius: radius,
         child: SizedBox.square(
           dimension: 88,
-          child: bytes != null
-              ? Image.memory(bytes, fit: BoxFit.cover, gaplessPlayback: true)
-              : ColoredBox(
-                  color: t.primaryTint,
-                  child: Center(
-                    child: Text(
-                      monogramOf(profile.fullName),
-                      textScaler: TextScaler.noScaling,
-                      style: t.display(34, color: t.onPrimaryTint),
+          child: busy
+              ? ColoredBox(
+                  key: const Key('photo-busy'),
+                  color: t.surfaceMuted,
+                  child: const Center(child: CircularProgressIndicator()),
+                )
+              : bytes != null
+                  ? Image.memory(bytes,
+                      fit: BoxFit.cover, gaplessPlayback: true)
+                  : ColoredBox(
+                      color: t.primaryTint,
+                      child: Center(
+                        child: Text(
+                          monogramOf(profile.fullName),
+                          textScaler: TextScaler.noScaling,
+                          style: t.display(34, color: t.onPrimaryTint),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
         ),
       ),
     );
@@ -228,6 +416,21 @@ class _ProfileCard extends StatelessWidget {
               Expanded(child: DisplayText(profile.fullName, size: 28)),
             ],
           ),
+          const SizedBox(height: GesbandSpacing.md),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: OutlinedButton.icon(
+              key: const Key('photo-action'),
+              onPressed: busy ? null : onEditPhoto,
+              icon: const Icon(Icons.photo_camera_outlined),
+              label: Text(profile.photoUrl == null
+                  ? strings.addPhoto
+                  : strings.changePhoto),
+            ),
+          ),
+          const SizedBox(height: GesbandSpacing.xs),
+          Text(strings.photoPrivacyNote,
+              style: text.bodySmall!.copyWith(color: t.muted)),
           if (details.isNotEmpty) const SizedBox(height: GesbandSpacing.md),
           for (final (label, value) in details)
             Padding(

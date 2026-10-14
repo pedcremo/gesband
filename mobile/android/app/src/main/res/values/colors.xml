@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fondo del icono adaptativo: el negro de Escenario. -->
+    <color name="ic_launcher_background">#0F1012</color>
+    <!-- Tinte del icono de las notificaciones: el oro de Gesband. -->
+    <color name="notification_accent">#C9A227</color>
+</resources>

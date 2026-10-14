@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:gesband_mobile/core/theme/theme_controller.dart';
 import 'package:gesband_mobile/core/theme/visual_style.dart';
 import 'package:gesband_mobile/features/notifications/notification_service.dart';
 
+import 'earnings_fixtures.dart';
 import 'fake_notifications.dart';
 
 // Datos sintéticos con la forma exacta del API (AssociationSerializer,
@@ -63,6 +65,7 @@ Map<String, dynamic> activityJson({
   bool mandatory = false,
   bool reconfirm = false,
   Map<String, dynamic>? transport,
+  Map<String, dynamic> pay = unpaidActivityFields,
 }) {
   final starts = DateTime.now().toUtc().add(startsIn);
   return {
@@ -81,6 +84,7 @@ Map<String, dynamic> activityJson({
         starts.subtract(const Duration(days: 1)).toIso8601String(),
     'uniform': 'Gala',
     'is_mandatory': mandatory,
+    ...pay,
     'version': 1,
     'programme': [
       {'id': 'p-1', 'title': 'El Fallero', 'notes': 'Pasodoble', 'order': 1},
@@ -107,6 +111,7 @@ List<Map<String, dynamic>> sampleAgenda() => [
         id: 'a-1',
         title: 'Concierto de Santa Cecilia',
         startsIn: const Duration(days: 2),
+        pay: paidActivityFields,
         transport: {
           'label': 'Autobús 1',
           'kind': 'bus',
@@ -269,14 +274,77 @@ Map<String, dynamic> memberJson() => {
     };
 
 class FakeProfile implements ProfileRepository {
-  FakeProfile({this.fail = false});
+  FakeProfile({
+    this.fail = false,
+    Map<String, dynamic>? member,
+    this.photo,
+    this.earnings,
+    this.uploadError,
+    this.deleteError,
+  }) : member = member ?? memberJson();
 
-  final bool fail;
+  bool fail;
+  Map<String, dynamic> member;
+  Uint8List? photo;
+
+  /// Respuesta de `GET /members/me/earnings`; por defecto, la del contrato.
+  /// Con `earningsError`, falla; con `earningsGate`, espera a completarse.
+  Map<String, dynamic>? earnings;
+  Object? earningsError;
+  Completer<void>? earningsGate;
+  int earningsCalls = 0;
+
+  final Object? uploadError;
+  final Object? deleteError;
+  Completer<void>? uploadGate;
+  final uploads = <(String, Uint8List, String)>[];
+  final deletions = <String>[];
 
   @override
   Future<MemberProfile> getMine(String associationId) async {
     if (fail) throw const ApiException('No hay una ficha vinculada');
-    return MemberProfile.fromJson(memberJson());
+    return MemberProfile.fromJson(member);
+  }
+
+  @override
+  Future<Uint8List?> loadPhoto(String url) async => photo;
+
+  @override
+  Future<MemberProfile> updatePhoto(
+    String associationId,
+    Uint8List bytes, {
+    required String filename,
+  }) async {
+    uploads.add((associationId, bytes, filename));
+    await uploadGate?.future;
+    final error = uploadError;
+    if (error != null) throw error;
+    member = {
+      ...member,
+      'photo_url':
+          'https://gesband.example.test/api/v1/members/${member['id']}/photo/',
+    };
+    photo = bytes;
+    return MemberProfile.fromJson(member);
+  }
+
+  @override
+  Future<MemberProfile> deletePhoto(String associationId) async {
+    deletions.add(associationId);
+    final error = deleteError;
+    if (error != null) throw error;
+    member = {...member, 'photo_url': null};
+    photo = null;
+    return MemberProfile.fromJson(member);
+  }
+
+  @override
+  Future<Earnings> getEarnings(String associationId) async {
+    earningsCalls++;
+    await earningsGate?.future;
+    final error = earningsError;
+    if (error != null) throw error;
+    return Earnings.fromJson(earnings ?? earningsContractJson());
   }
 
   @override
@@ -359,6 +427,7 @@ Future<({ThemeController theme, LocaleController locale})> pumpThemed(
   double textScale = 1,
   Size size = const Size(390, 844),
   String language = 'es',
+  bool settle = true,
 }) async {
   tester.view
     ..physicalSize = size * 3
@@ -396,7 +465,11 @@ Future<({ThemeController theme, LocaleController locale})> pumpThemed(
       home: home(),
     ),
   ));
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+  }
   return (theme: theme, locale: locale);
 }
 

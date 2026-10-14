@@ -124,6 +124,11 @@ class AppController extends ChangeNotifier {
     scaffoldMessengerKey.currentState?.clearSnackBars();
     await notifications.unbindSession();
     await agendaCache.clearAll();
+    // Las fotos privadas solo viven en memoria: tampoco quedan en la caché de
+    // imágenes al cerrar la sesión.
+    PaintingBinding.instance.imageCache
+      ..clear()
+      ..clearLiveImages();
     await auth.logout();
     api.selectAssociation(null);
     _activeAssociation = null;

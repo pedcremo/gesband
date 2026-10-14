@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Gesband">
-  <rect width="192" height="192" rx="40" fill="#1B4965"/>
-  <circle cx="72" cy="126" r="22" fill="#CAE9FF"/>
-  <circle cx="132" cy="112" r="18" fill="#CAE9FF"/>
-  <path d="M90 126V54l60-14v58" fill="none" stroke="#CAE9FF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Gesband"><rect width="100" height="100" fill="#0F1012"/><g fill="none" stroke="#C9A227" stroke-width="2.6" stroke-linecap="round"><path d="M59.9 42.1 A14 14 0 1 0 64 52"/><path d="M62.7 39.3 A18 18 0 1 0 68 52"/><path d="M65.6 36.4 A22 22 0 1 0 72 52"/><path d="M68.4 33.6 A26 26 0 1 0 76 52"/><path d="M71.2 30.8 A30 30 0 1 0 80 52"/><line x1="58" y1="52" x2="80" y2="52"/></g></svg>

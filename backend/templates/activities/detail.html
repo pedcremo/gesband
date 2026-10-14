@@ -1,5 +1,5 @@
 {% extends 'shared/base.html' %}
-{% load i18n %}
+{% load i18n activity_payments %}
 {% block title %}{{ activity.title }} · Gesband{% endblock %}
 {% block content %}
 <p><a class="back" href="{% url 'panel' %}?association_id={{ association.id }}">← {% translate "Back" %}</a></p>
@@ -10,6 +10,7 @@
     <div class="row">
       <span class="status {{ activity.status }}">{{ activity.get_status_display }}</span>
       {% if activity.is_mandatory %}<span class="status warn">{% translate "Asistencia obligatoria" %}</span>{% endif %}
+      {% if activity.is_paid %}<span class="status">{% blocktranslate with amount=activity.fee_amount|euros %}Remunerada · {{ amount }} por músico{% endblocktranslate %}</span>{% endif %}
     </div>
   </div>
 </div>
@@ -121,7 +122,28 @@
   </div>
 </form>
 {% endif %}
-<h2>{% translate "Invitations" %}</h2>
+<h2 id="pagos">{% translate "Invitations" %}</h2>
+{% if show_payments %}
+  <p class="muted">
+    {% translate "Solo devenga el importe quien consta como presente en la lista. La respuesta a la convocatoria no cuenta." %}
+  </p>
+  {% if payment_incidents %}
+    <p class="status warn">
+      {% blocktranslate count incident_count=payment_incidents %}Hay {{ incident_count }} pago registrado que ya no corresponde a una asistencia presente. Revísalo y anúlalo si procede.{% plural %}Hay {{ incident_count }} pagos registrados que ya no corresponden a una asistencia presente. Revísalos y anúlalos si procede.{% endblocktranslate %}
+    </p>
+  {% endif %}
+  {% if can_manage_payments and pending_payments %}
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="association_id" value="{{ association.id }}">
+      <div class="actions">
+        <button class="button" name="payment_action" value="mark_all_paid">
+          {% blocktranslate count pending_count=pending_payments %}Marcar pagado el presente pendiente ({{ pending_count }}){% plural %}Marcar pagados todos los presentes ({{ pending_count }}){% endblocktranslate %}
+        </button>
+      </div>
+    </form>
+  {% endif %}
+{% endif %}
 <div class="table-wrap"><table>
   <thead>
     <tr>
@@ -129,10 +151,15 @@
       <th>{% translate "Response" %}</th>
       <th>{% translate "Attendance" %}</th>
       <th>{% translate "Action" %}</th>
+      {% if show_payments %}
+        <th>{% translate "Importe" %}</th>
+        <th>{% translate "Pago" %}</th>
+      {% endif %}
     </tr>
   </thead>
   <tbody>
-    {% for invitation in activity.invitations.all %}
+    {% for state in payment_states %}
+      {% with invitation=state.invitation %}
       <tr>
         <td>{{ invitation.member }}</td>
         <td><span class="status {{ invitation.response }}">{{ invitation.get_response_display }}</span></td>
@@ -155,9 +182,40 @@
             <button class="button">{% translate "Save" %}</button>
           </form>
         </td>
+        {% if show_payments %}
+          <td>{% if state.amount is not None %}{{ state.amount|euros }}{% else %}<span class="muted">—</span>{% endif %}</td>
+          <td>
+            {% if state.status == 'paid' %}
+              <span class="status ok">{% translate "Pagado" %}</span>
+              <span class="muted">{{ state.payment.paid_at|date:"SHORT_DATETIME_FORMAT" }}</span>
+              {% if state.incident %}<span class="status bad">{% translate "Incidencia: ya no devenga" %}</span>{% endif %}
+              {% if can_manage_payments %}
+                <form method="post" class="inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="association_id" value="{{ association.id }}">
+                  <input type="hidden" name="payment_id" value="{{ state.payment.id }}">
+                  <button class="button ghost" name="payment_action" value="void_payment">{% translate "Anular pago" %}</button>
+                </form>
+              {% endif %}
+            {% elif state.status == 'owed' %}
+              <span class="status pending">{% translate "Adeudado" %}</span>
+              {% if can_manage_payments %}
+                <form method="post" class="inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="association_id" value="{{ association.id }}">
+                  <input type="hidden" name="invitation_id" value="{{ invitation.id }}">
+                  <button class="button" name="payment_action" value="mark_paid">{% translate "Marcar pagado" %}</button>
+                </form>
+              {% endif %}
+            {% else %}
+              <span class="muted">{% translate "No devenga" %}</span>
+            {% endif %}
+          </td>
+        {% endif %}
       </tr>
+      {% endwith %}
     {% empty %}
-      <tr><td colspan="4">{% translate "There are no invited members." %}</td></tr>
+      <tr><td colspan="{% if show_payments %}6{% else %}4{% endif %}">{% translate "There are no invited members." %}</td></tr>
     {% endfor %}
   </tbody>
 </table></div>

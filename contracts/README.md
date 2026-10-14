@@ -83,10 +83,10 @@ prueba, en el idioma declarado por la instalación.
 
 ## Validación
 
-Desde la raíz del repositorio, si está disponible `npx`:
+Desde `contracts/`, para que Redocly lea `redocly.yaml` (versión fijada):
 
 ```bash
-npx --yes @redocly/cli lint contracts/openapi.yaml
+cd contracts && npx --yes @redocly/cli@1.34.5 lint openapi.yaml
 ```
 
 Como comprobación sin descargar dependencias, cualquier analizador YAML 1.2 puede cargar

@@ -1,0 +1,70 @@
+{% extends 'shared/base.html' %}
+{% load i18n activity_payments %}
+{% block title %}{% translate "Pagos a músicos" %} · Gesband{% endblock %}
+{% block content %}
+<h1>{% translate "Pagos a músicos" %}</h1>
+<p class="muted">
+  {% translate "Lo que se adeuda a cada músico por las actividades remuneradas a las que consta como presente. Registrar un pago no mueve dinero: deja constancia de que ya se ha pagado." %}
+</p>
+<div class="cards">
+  <div class="card"><span class="eyebrow">{% translate "Total adeudado" %}</span><p class="display" style="font-size:1.5rem">{{ owed_total|euros }}</p></div>
+  <div class="card"><span class="eyebrow">{% translate "Total pagado" %}</span><p class="display" style="font-size:1.5rem">{{ paid_total|euros }}</p></div>
+  {% if incidents %}
+    <div class="card"><span class="eyebrow">{% translate "Incidencias" %}</span><p class="display" style="font-size:1.5rem">{{ incidents }}</p></div>
+  {% endif %}
+</div>
+{% if incidents %}
+  <p>
+    <span class="status bad">{% translate "Incidencia" %}</span>
+    {% translate "Hay pagos registrados de asistencias que ya no constan como presentes, o de actividades canceladas o que ya no son remuneradas. Revísalos en el detalle de la actividad." %}
+  </p>
+{% endif %}
+<div class="table-wrap"><table>
+  <thead>
+    <tr>
+      <th>{% translate "Musician" %}</th>
+      <th>{% translate "Actividades adeudadas" %}</th>
+      <th>{% translate "Adeudado" %}</th>
+      <th>{% translate "Pagado" %}</th>
+      <th>{% translate "Desglose" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for member, summary in rows %}
+      <tr>
+        <td>{{ member }}{% if summary.incidents %} <span class="status bad">{% translate "Incidencia" %}</span>{% endif %}</td>
+        <td>{{ summary.owed_count }}</td>
+        <td><strong>{{ summary.owed_total|euros }}</strong></td>
+        <td>{{ summary.paid_total|euros }}</td>
+        <td>
+          <details>
+            <summary>{% translate "Ver desglose" %}</summary>
+            <ul>
+              {% for item in summary.items %}
+                <li>
+                  <a href="{% url 'panel-activity-detail' activity_id=item.invitation.activity.id %}?association_id={{ association.id }}#pagos">{{ item.invitation.activity.title }}</a>
+                  <span class="muted">· {{ item.invitation.activity.starts_at|date:"SHORT_DATE_FORMAT" }} · {{ item.amount|euros }}</span>
+                  {% if item.status == 'paid' %}
+                    <span class="status ok">{% translate "Pagado" %}</span>
+                    {% if item.incident %}<span class="status bad">{% translate "Incidencia: ya no devenga" %}</span>{% endif %}
+                  {% else %}
+                    <span class="status pending">{% translate "Adeudado" %}</span>
+                    <form method="post" class="inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="association_id" value="{{ association.id }}">
+                      <input type="hidden" name="invitation_id" value="{{ item.invitation.id }}">
+                      <button class="button">{% translate "Marcar pagado" %}</button>
+                    </form>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">{% translate "No hay importes devengados ni pagos registrados." %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

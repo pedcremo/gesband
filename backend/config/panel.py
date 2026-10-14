@@ -29,21 +29,11 @@ from apps.accounts.services import deliver_access_invitation, issue_access_invit
 from apps.associations.models import AssociationAccess, AssociationRole
 from apps.associations.permissions import ACCESS_MANAGER_ROLES, MANAGER_ROLES, capabilities_for, permissions_for
 from apps.members.models import ImportBatch, Instrument, Member, MemberInstrument, Section
+from apps.members.forms import IMPORT_FIELD_CHOICES
 from apps.members.services import confirm_import, inspect_import, parse_import, suggest_import_mapping
 
 
-IMPORT_FIELDS = [
-    ("external_id", gettext_lazy("Identificador externo")),
-    ("first_name", gettext_lazy("Nombre")),
-    ("last_name", gettext_lazy("Apellidos (juntos)")),
-    ("first_surname", gettext_lazy("Primer apellido")),
-    ("second_surname", gettext_lazy("Segundo apellido")),
-    ("national_id", gettext_lazy("DNI/NIE")),
-    ("address", gettext_lazy("Dirección")),
-    ("phone", gettext_lazy("Teléfono")),
-    ("email", gettext_lazy("Correo electrónico")),
-    ("kind", gettext_lazy("Tipo de miembro")),
-]
+IMPORT_FIELDS = IMPORT_FIELD_CHOICES
 
 
 def _access_for(request, roles=MANAGER_ROLES):
@@ -268,7 +258,7 @@ def member_import_detail(request, batch_id):
         else:
             try:
                 with batch.source_file.open("rb") as upload:
-                    _content, content_hash, preview = parse_import(upload, mapping)
+                    _content, content_hash, preview = parse_import(upload, mapping, association=association)
                 if content_hash != batch.content_hash:
                     raise DjangoValidationError(_("El fichero temporal no coincide con la carga original."))
             except DjangoValidationError as exc:
@@ -318,8 +308,8 @@ def member_import_detail(request, batch_id):
 def member_import_template(request):
     association = _association_for(request, {AssociationRole.Role.ADMIN})
     content = (
-        "external_id,first_name,first_surname,second_surname,national_id,address,phone,email,kind\r\n"
-        "MUS-001,Marina,Soler,Ferri,,Carrer Exemple 1,+34960000001,marina@example.invalid,musician\r\n"
+        "external_id,first_name,first_surname,second_surname,national_id,address,phone,email,kind,section,instrument\r\n"
+        "MUS-001,Marina,Soler,Ferri,,Carrer Exemple 1,+34960000001,marina@example.invalid,musician,Madera,Clarinete\r\n"
     )
     response = HttpResponse("\ufeff" + content, content_type="text/csv; charset=utf-8")
     response["Content-Disposition"] = 'attachment; filename="plantilla-miembros.csv"'
@@ -383,6 +373,10 @@ def activity_detail(request, activity_id):
     association = _association_for(request)
     activity = get_object_or_404(Activity.objects.prefetch_related("invitations__member", "invitations__attendance"), id=activity_id, association=association)
     change_form = ActivityChangeForm(instance=activity)
+    if request.method == "POST" and request.POST.get("payment_action"):
+        from apps.activities.panel_views import handle_activity_payment_action
+
+        return handle_activity_payment_action(request, association, activity)
     if request.method == "POST":
         if "publish" in request.POST:
             result = publish_activity(activity, request.user)
@@ -451,12 +445,20 @@ def _render_activity_detail(request, association, activity, change_form):
             )
         )
     )
+    from apps.activities.payments import activity_payment_states, can_manage_payments
+
+    payment_states = activity_payment_states(activity)
     return render(
         request,
         "activities/detail.html",
         {
             "association": association,
             "activity": activity,
+            "payment_states": payment_states,
+            "can_manage_payments": can_manage_payments(request.user, association),
+            "show_payments": activity.is_paid or any(state.payment for state in payment_states),
+            "pending_payments": sum(1 for state in payment_states if state.can_mark_paid),
+            "payment_incidents": sum(1 for state in payment_states if state.incident),
             "active_musicians_count": active_musicians_count,
             "change_form": change_form,
             "sections": Section.objects.filter(association=association),

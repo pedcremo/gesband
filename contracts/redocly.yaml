@@ -1,0 +1,7 @@
+# Configuración del lint del contrato. Las rutas propias de la cuenta
+# (`/members/me/`, `/members/me/photo/`, `/members/me/earnings/`) llevan barra final
+# porque así las sirve Django y así las llama la app.
+extends:
+  - recommended
+rules:
+  no-path-trailing-slash: off

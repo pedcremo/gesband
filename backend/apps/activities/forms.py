@@ -30,6 +30,8 @@ class ActivityChangeForm(forms.ModelForm):
             "uniform",
             "response_deadline",
             "is_mandatory",
+            "is_paid",
+            "fee_amount",
             "description",
         ]
         widgets = {
@@ -39,10 +41,25 @@ class ActivityChangeForm(forms.ModelForm):
             "response_deadline": DateTimeLocalInput(),
             "description": forms.Textarea(attrs={"rows": 3}),
         }
-        labels = {"is_mandatory": _("Asistencia obligatoria")}
+        labels = {
+            "is_mandatory": _("Asistencia obligatoria"),
+            "is_paid": _("Remunerada"),
+            "fee_amount": _("Importe por músico (€)"),
+        }
+        help_texts = {
+            "fee_amount": _(
+                "Mismo importe para cada músico que conste como presente. "
+                "Cambiarlo no altera los pagos ya registrados."
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Acepta «25,00» y «25.00»; el modelo exige un importe positivo si es remunerada.
+        fee = self.fields["fee_amount"]
+        fee.localize = True
+        fee.widget = forms.TextInput(attrs={"inputmode": "decimal", "autocomplete": "off"})
+        fee.widget.is_localized = True
         for name in ["starts_at", "ends_at", "meeting_at", "response_deadline"]:
             self.fields[name].input_formats = ["%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S"]
 

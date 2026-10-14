@@ -16,7 +16,8 @@ Límites de alcance:
 - Incluir encuestas a los miembros según `ANALISIS.md` 3.7, añadidas el 23/09/2026. El voto único y el anonimato son requisitos del servidor, no del cliente: el registro de participación y las papeletas no pueden compartir clave.
 - Prescindir de Hitobito y otros productos base en esta etapa.
 - No implementar monetización, periodos comerciales de prueba, checkout, precios ni bloqueo por impago.
-- No implementar todavía cuotas, liquidaciones ni pagos bancarios. Son funciones de las asociaciones, distintas de la futura monetización de Gesband.
+- Incluir actividades remuneradas con importe único por músico, devengo por asistencia real y registro de pagos por la junta, según `docs/decisions/0011-actividades-remuneradas.md` (14/10/2026).
+- No implementar todavía cuotas, otras liquidaciones ni pagos bancarios. Son funciones de las asociaciones, distintas de la futura monetización de Gesband.
 - Documentar y preservar el encaje del complemento web; no construirlo hasta que una tarea lo incluya expresamente.
 - WhatsApp en el MVP significa compartir manualmente mensajes preparados. No implica envío automático ni confirmación de entrega.
 

@@ -120,6 +120,8 @@ class ActivitySummary {
     this.transportLabel,
     this.responseDeadline,
     this.hasInvitation = false,
+    this.isPaid = false,
+    this.feeAmount,
   });
 
   factory ActivitySummary.fromJson(Map<String, dynamic> json) =>
@@ -149,6 +151,8 @@ class ActivitySummary {
         responseDeadline: _localDate(json['response_deadline']),
         hasInvitation:
             json['my_invitation'] != null || json['has_invitation'] == true,
+        isPaid: json['is_paid'] as bool? ?? false,
+        feeAmount: Money.tryParse(json['fee_amount']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -166,6 +170,8 @@ class ActivitySummary {
         'transport_label': transportLabel,
         'response_deadline': responseDeadline?.toUtc().toIso8601String(),
         'has_invitation': hasInvitation,
+        'is_paid': isPaid,
+        'fee_amount': feeAmount?.toWire(),
       };
 
   final String id;
@@ -186,6 +192,11 @@ class ActivitySummary {
 
   /// Hay convocatoria propia (`my_invitation`).
   final bool hasInvitation;
+
+  /// Actividad remunerada (`is_paid`) y su importe (`fee_amount`, en EUR).
+  /// Puede ser remunerada sin importe fijado.
+  final bool isPaid;
+  final Money? feeAmount;
 
   /// Mismo criterio que [ActivityDetail.canRespond], con los datos de la
   /// agenda: publicada, futura, con convocatoria propia y plazo abierto.
@@ -454,4 +465,135 @@ class Poll {
   /// Plazo vencido y resultado todavia sin publicar por la junta.
   bool awaitingPublication(DateTime now) =>
       status == PollStatus.open && !now.isBefore(closesAt);
+}
+
+/// Importe exacto en céntimos. El API envía los decimales como cadena
+/// (`"25.00"`): nunca se convierten a `double` para operar.
+class Money {
+  const Money(this.cents, {this.currency = 'EUR'});
+
+  static final _decimal = RegExp(r'^(-)?(\d+)(?:\.(\d+))?$');
+
+  /// Acepta `"25.00"`, `"25"`, `"25.5"` y, por tolerancia, números JSON
+  /// (se leen por su texto, sin aritmética en coma flotante). Con más
+  /// de dos decimales redondea al céntimo (mitad hacia arriba). Devuelve
+  /// `null` si el valor falta o no es un decimal.
+  static Money? tryParse(Object? value, {String currency = 'EUR'}) {
+    final text = switch (value) {
+      String() => value.trim(),
+      num() => '$value',
+      _ => null,
+    };
+    if (text == null) return null;
+    final match = _decimal.firstMatch(text);
+    if (match == null) return null;
+    final negative = match.group(1) != null;
+    final units = int.parse(match.group(2)!);
+    final fraction = match.group(3) ?? '';
+    var cents = int.parse(fraction.padRight(2, '0').substring(0, 2));
+    if (fraction.length > 2 && fraction.codeUnitAt(2) >= 0x35) cents += 1;
+    final total = units * 100 + cents;
+    return Money(negative ? -total : total, currency: currency);
+  }
+
+  final int cents;
+  final String currency;
+
+  /// Forma del API: `"25.00"`.
+  String toWire() {
+    final sign = cents < 0 ? '-' : '';
+    final value = cents.abs();
+    return '$sign${value ~/ 100}.${(value % 100).toString().padLeft(2, '0')}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Money && other.cents == cents && other.currency == currency;
+
+  @override
+  int get hashCode => Object.hash(cents, currency);
+
+  @override
+  String toString() => '${toWire()} $currency';
+}
+
+enum EarningStatus {
+  owed,
+  paid,
+
+  /// Valor que esta versión de la app no conoce: no se presenta como deuda.
+  unknown;
+
+  static EarningStatus fromWire(Object? value) => switch (value) {
+        'owed' => owed,
+        'paid' => paid,
+        _ => unknown,
+      };
+}
+
+/// Una actividad remunerada con asistencia registrada.
+class EarningItem {
+  const EarningItem({
+    required this.invitationId,
+    required this.activityId,
+    required this.activityTitle,
+    required this.status,
+    this.activityStartsAt,
+    this.amount,
+    this.paidAt,
+  });
+
+  factory EarningItem.fromJson(Map<String, dynamic> json, String currency) {
+    final activity = json['activity'] as Map<String, dynamic>? ?? const {};
+    return EarningItem(
+      invitationId: json['invitation'] as String? ?? '',
+      activityId: activity['id'] as String? ?? '',
+      activityTitle: activity['title'] as String? ?? '',
+      activityStartsAt: _localDate(activity['starts_at']),
+      amount: Money.tryParse(json['amount'], currency: currency),
+      status: EarningStatus.fromWire(json['status']),
+      paidAt: _localDate(json['paid_at']),
+    );
+  }
+
+  final String invitationId;
+  final String activityId;
+  final String activityTitle;
+  final DateTime? activityStartsAt;
+  final Money? amount;
+  final EarningStatus status;
+  final DateTime? paidAt;
+}
+
+/// `GET /members/me/earnings`: lo que la banda debe al músico. Los totales
+/// son los del servidor; la app no los recalcula.
+class Earnings {
+  const Earnings({
+    required this.currency,
+    required this.owedTotal,
+    required this.paidTotal,
+    required this.items,
+  });
+
+  factory Earnings.fromJson(Map<String, dynamic> json) {
+    final currency = _text(json['currency']) ?? 'EUR';
+    return Earnings(
+      currency: currency,
+      owedTotal: Money.tryParse(json['owed_total'], currency: currency) ??
+          Money(0, currency: currency),
+      paidTotal: Money.tryParse(json['paid_total'], currency: currency) ??
+          Money(0, currency: currency),
+      items: (json['items'] as List<dynamic>? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map((item) => EarningItem.fromJson(item, currency))
+          .toList(growable: false),
+    );
+  }
+
+  final String currency;
+  final Money owedTotal;
+  final Money paidTotal;
+  final List<EarningItem> items;
+
+  bool get isEmpty => items.isEmpty;
 }

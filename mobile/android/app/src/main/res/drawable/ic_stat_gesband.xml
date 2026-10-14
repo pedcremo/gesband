@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono pequeño de las notificaciones: Android solo usa su silueta. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="64" android:viewportHeight="64">
+    <group android:translateX="-18" android:translateY="-20">
+        <path android:pathData="M59.9,42.1 A14,14 0 1,0 64,52" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000"/>
+        <path android:pathData="M62.7,39.3 A18,18 0 1,0 68,52" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000"/>
+        <path android:pathData="M65.6,36.4 A22,22 0 1,0 72,52" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000"/>
+        <path android:pathData="M68.4,33.6 A26,26 0 1,0 76,52" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000"/>
+        <path android:pathData="M71.2,30.8 A30,30 0 1,0 80,52" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000"/>
+        <path android:pathData="M58,52 L80,52" android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000"/>
+    </group>
+</vector>

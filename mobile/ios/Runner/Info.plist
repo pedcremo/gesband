@@ -54,6 +54,12 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<!-- Foto propia de la ficha (image_picker). La galería usa el selector
+	     del sistema; la clave se exige igualmente y la cámara la necesita. -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Gesband usa tus fotos solo para que elijas la foto de tu ficha de músico. La foto es privada: solo la ves tú y quien gestiona la banda.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Gesband usa la cámara solo para que hagas la foto de tu ficha de músico. La foto es privada: solo la ves tú y quien gestiona la banda.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

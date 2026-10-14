@@ -44,3 +44,12 @@ class PanelLoginTests(TestCase):
             response.context["form"].non_field_errors(),
             self.login("junta@example.invalid", password="wrong-password").context["form"].non_field_errors(),
         )
+
+
+class LoginPageDownloadLinkTests(TestCase):
+    """Los betatesters llegan a la pantalla de acceso: desde ahi encuentran el APK."""
+
+    def test_the_login_page_links_to_the_android_download(self):
+        response = self.client.get("/accounts/login/")
+
+        self.assertContains(response, 'href="/descargas/"')

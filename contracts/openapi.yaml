@@ -5,7 +5,9 @@ info:
   summary: Contrato del MVP para la gestión operativa de asociaciones musicales.
   description: |
     API privada y multi-asociación de Gesband. Los ejemplos son sintéticos.
-    Los campos económicos, la monetización y el complemento web público quedan fuera.
+    La remuneración por actividad y lo adeudado a cada músico se incluyen desde la
+    decisión 0011 (sin mover dinero). La monetización, las cuotas y el complemento web
+    público quedan fuera.
     Cada operación restringida declara permisos orientativos mediante `x-permissions`;
     el servidor siempre valida la cuenta, asociación y relaciones completas.
 servers:
@@ -24,6 +26,7 @@ tags:
   - name: Notifications
   - name: Devices
   - name: Polls
+  - name: Earnings
 security:
   - bearerAuth: []
 paths:
@@ -415,6 +418,78 @@ paths:
       responses:
         '204': {description: Foto eliminada.}
         '404': {$ref: '#/components/responses/NotFound'}
+  /members/me/photo/:
+    get:
+      tags: [Members]
+      operationId: downloadOwnMemberPhoto
+      summary: Descarga la foto privada de la ficha propia.
+      description: |
+        Es la URL que reciben en `photo_url` las respuestas de `/members/me/` y de
+        `PUT /members/me/photo/`. Lleva `?association_id=` para funcionar también sin
+        la cabecera. La descarga por `/members/{memberId}/photo` sigue siendo de quien
+        gestiona el censo.
+      x-permissions: [self]
+      parameters:
+        - {$ref: '#/components/parameters/OptionalAssociationId'}
+        - {name: association_id, in: query, schema: {$ref: '#/components/schemas/Uuid'}, description: Alternativa a la cabecera.}
+      responses:
+        '200':
+          description: Imagen normalizada de la ficha propia.
+          headers:
+            Cache-Control:
+              schema: {type: string, const: 'private, no-store'}
+          content:
+            image/webp: {schema: {type: string, format: binary}}
+        '400': {$ref: '#/components/responses/NoLinkedProfile'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {description: La ficha propia no tiene foto.}
+  /members/me/earnings/:
+    get:
+      tags: [Earnings]
+      operationId: getOwnEarnings
+      summary: Lo adeudado y pagado a la ficha propia por actividades remuneradas.
+      description: |
+        Decisión 0011. Devenga el importe una actividad remunerada no cancelada en la que
+        la asistencia real de la persona es `present`; la respuesta a la convocatoria
+        nunca cuenta. `owed` usa el importe actual de la actividad; `paid`, el importe
+        registrado al pagar, que no cambia aunque cambie el de la actividad. Un pago
+        vigente se lista como `paid` aunque la asistencia haya dejado de ser `present`
+        (la junta lo ve como incidencia). Orden: `activity.starts_at` descendente. Sin
+        paginar: lo acota el número de actividades remuneradas de una persona. Nunca
+        incluye importes de otras fichas. Solo admite GET.
+      x-permissions: [self]
+      parameters:
+        - {$ref: '#/components/parameters/AssociationId'}
+      responses:
+        '200':
+          description: Totales y desglose de la ficha propia.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MemberEarnings'}
+              examples:
+                withItems:
+                  summary: Una actuación adeudada y otra pagada.
+                  value:
+                    currency: EUR
+                    owed_total: '30.00'
+                    paid_total: '25.00'
+                    items:
+                      - invitation: 9b1d5c7e-0d1f-4a8e-9c61-2f7d1a3b4c5d
+                        activity: {id: 3f0c2a8e-6b7d-4e2f-9a1b-5c6d7e8f9a0b, title: Concierto de Santa Cecilia, starts_at: '2026-11-22T17:00:00Z'}
+                        amount: '30.00'
+                        status: owed
+                        paid_at: null
+                      - invitation: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+                        activity: {id: 7e8f9a0b-1c2d-4e3f-8a5b-6c7d8e9f0a1b, title: Concierto de primavera, starts_at: '2026-10-17T17:00:00Z'}
+                        amount: '25.00'
+                        status: paid
+                        paid_at: '2026-10-19T18:30:00Z'
+                empty:
+                  summary: Nada devengado.
+                  value: {currency: EUR, owed_total: '0.00', paid_total: '0.00', items: []}
+        '400': {$ref: '#/components/responses/NoLinkedProfile'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /member-imports:
     get:
       tags: [Imports]
@@ -1194,6 +1269,12 @@ components:
       in: header
       required: true
       schema: {type: string, example: '"v3"'}
+    OptionalAssociationId:
+      name: X-Association-ID
+      in: header
+      required: false
+      description: Asociación activa; puede indicarse en su lugar con `association_id` en la consulta.
+      schema: {$ref: '#/components/schemas/Uuid'}
     PageCursor:
       name: page[cursor]
       in: query
@@ -1238,6 +1319,15 @@ components:
     ValidationError:
       description: La entrada no cumple el contrato o las reglas del dominio.
       content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}, examples: {validation: {$ref: '#/components/examples/ValidationProblem'}}}}
+    NoLinkedProfile:
+      description: |
+        La cuenta no tiene ficha vinculada en la asociación. Mismo error que `/members/me/`;
+        la implementación actual responde con la lista de mensajes de DRF.
+      content:
+        application/json:
+          schema: {type: array, items: {type: string}}
+          examples:
+            noProfile: {value: ['No hay una ficha vinculada a esta cuenta.']}
     PayloadTooLarge:
       description: Fichero o petición supera el límite configurado.
       content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}
@@ -1565,6 +1655,8 @@ components:
         location: {$ref: '#/components/schemas/Location'}
         uniform: {type: string, maxLength: 500}
         is_mandatory: {type: boolean, default: false, description: "Si es verdadera, rechazar la convocatoria exige justificar la ausencia."}
+        is_paid: {type: boolean, default: false, description: Actividad remunerada con un importe único por músico presente (decisión 0011).}
+        fee_amount: {$ref: '#/components/schemas/NullableMoney'}
         response_deadline: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         programme: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/ProgrammeItemInput'}}
     ActivityUpdate:
@@ -1579,6 +1671,8 @@ components:
         location: {$ref: '#/components/schemas/Location'}
         uniform: {type: string, maxLength: 500}
         is_mandatory: {type: boolean, description: "Si es verdadera, rechazar la convocatoria exige justificar la ausencia."}
+        is_paid: {type: boolean, description: Al desmarcarla el servidor guarda `fee_amount` vacío.}
+        fee_amount: {$ref: '#/components/schemas/NullableMoney'}
         response_deadline: {anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]}
         programme: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/ProgrammeItemInput'}}
         require_new_response: {type: boolean, default: false, description: Solo válido en cambios relevantes.}
@@ -1586,10 +1680,12 @@ components:
       allOf:
         - {$ref: '#/components/schemas/ActivityInput'}
         - type: object
-          required: [id, status, invitation_revision, programme, created_at, updated_at]
+          required: [id, status, invitation_revision, programme, is_paid, fee_amount, created_at, updated_at]
           properties:
             id: {$ref: '#/components/schemas/Uuid'}
             status: {$ref: '#/components/schemas/ActivityStatus'}
+            is_paid: {type: boolean}
+            fee_amount: {$ref: '#/components/schemas/NullableMoney'}
             invitation_revision: {type: integer, minimum: 1}
             programme: {type: array, items: {$ref: '#/components/schemas/ProgrammeItem'}}
             my_invitation: {anyOf: [{$ref: '#/components/schemas/Invitation'}, {type: 'null'}]}
@@ -1879,6 +1975,41 @@ components:
             Quién ha votado y quién no. Solo para la junta y solo con la votación cerrada:
             mientras se vota, cruzarlo con el recuento provisional delataría votos.
           anyOf: [{type: array, items: {$ref: '#/components/schemas/PollRecipientStatus'}}, {type: 'null'}]
+    Money:
+      type: string
+      pattern: '^[0-9]+\.[0-9]{2}$'
+      description: Importe decimal en euros con dos decimales, como cadena.
+      examples: ['25.00']
+    NullableMoney:
+      description: |
+        Importe por músico en euros. Obligatorio y mayor que cero si `is_paid`; `null` si no.
+        Un importe nulo o no positivo con `is_paid` verdadero se rechaza con error en `fee_amount`.
+      anyOf: [{$ref: '#/components/schemas/Money'}, {type: 'null'}]
+    MemberEarningItem:
+      type: object
+      required: [invitation, activity, amount, status, paid_at]
+      properties:
+        invitation: {$ref: '#/components/schemas/Uuid'}
+        activity:
+          type: object
+          required: [id, title, starts_at]
+          properties:
+            id: {$ref: '#/components/schemas/Uuid'}
+            title: {type: string}
+            starts_at: {$ref: '#/components/schemas/UtcDateTime'}
+        amount: {$ref: '#/components/schemas/Money'}
+        status: {type: string, enum: [owed, paid]}
+        paid_at:
+          description: Momento del pago vigente; `null` si está adeudado.
+          anyOf: [{$ref: '#/components/schemas/UtcDateTime'}, {type: 'null'}]
+    MemberEarnings:
+      type: object
+      required: [currency, owed_total, paid_total, items]
+      properties:
+        currency: {type: string, const: EUR}
+        owed_total: {$ref: '#/components/schemas/Money'}
+        paid_total: {$ref: '#/components/schemas/Money'}
+        items: {type: array, items: {$ref: '#/components/schemas/MemberEarningItem'}}
     PollPage:
       type: object
       required: [results, page]

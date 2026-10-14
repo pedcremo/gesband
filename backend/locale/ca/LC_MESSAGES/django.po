@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gesband\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 08:00+0200\n"
+"POT-Creation-Date: 2026-10-14 22:21+0200\n"
 "PO-Revision-Date: 2026-09-21 10:00+0200\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -15,16 +15,21 @@ msgstr ""
 msgid "Cuentas"
 msgstr "Comptes"
 
-#: apps/accounts/forms.py:15
+#: apps/accounts/forms.py:16
 msgid "Correo electrónico o usuario"
 msgstr "Correu electrònic o usuari"
+
+# Decision 0009: fichas, accesos y roles desde el panel.
+#: apps/accounts/forms.py:33 templates/accounts/access_roles.html:44
+msgid "Rol"
+msgstr "Rol"
 
 #: apps/accounts/models.py:9 apps/accounts/models.py:33
 #: apps/members/models.py:95
 msgid "correo electrónico"
 msgstr "correu electrònic"
 
-#: apps/accounts/models.py:12 apps/associations/models.py:48
+#: apps/accounts/models.py:12 apps/associations/models.py:63
 #: apps/communications/models.py:21 apps/communications/models.py:79
 #: apps/communications/models.py:140 apps/members/models.py:87
 msgid "cuenta"
@@ -34,26 +39,28 @@ msgstr "compte"
 msgid "cuentas"
 msgstr "comptes"
 
-#: apps/accounts/models.py:20 apps/activities/models.py:23
-#: apps/activities/models.py:89 apps/associations/models.py:10
-#: apps/communications/models.py:13 apps/communications/models.py:74
-#: apps/communications/models.py:134 apps/members/models.py:77
-#: apps/members/models.py:150 apps/polls/models.py:28 apps/polls/models.py:69
-#: apps/transport/models.py:17
+#: apps/accounts/models.py:20 apps/activities/models.py:25
+#: apps/activities/models.py:130 apps/activities/models.py:214
+#: apps/associations/models.py:21 apps/communications/models.py:13
+#: apps/communications/models.py:74 apps/communications/models.py:134
+#: apps/members/models.py:77 apps/members/models.py:203
+#: apps/polls/models.py:28 apps/polls/models.py:69 apps/transport/models.py:17
 msgid "identificador"
 msgstr "identificador"
 
-#: apps/accounts/models.py:25 apps/activities/models.py:25
-#: apps/associations/models.py:33 apps/associations/models.py:42
-#: apps/communications/models.py:15 apps/members/models.py:22
-#: apps/members/models.py:39 apps/members/models.py:79
-#: apps/members/models.py:152 apps/polls/models.py:30
+#: apps/accounts/models.py:25 apps/accounts/models.py:91
+#: apps/activities/models.py:27 apps/associations/models.py:48
+#: apps/associations/models.py:57 apps/communications/models.py:15
+#: apps/members/models.py:22 apps/members/models.py:39
+#: apps/members/models.py:79 apps/members/models.py:205
+#: apps/polls/models.py:30
 msgid "asociación"
 msgstr "associació"
 
-#: apps/accounts/models.py:31 apps/activities/models.py:94
-#: apps/members/models.py:109 apps/members/models.py:118
-#: apps/polls/models.py:93 apps/transport/models.py:57
+#: apps/accounts/models.py:31 apps/activities/models.py:135
+#: apps/members/models.py:137 apps/members/models.py:146
+#: apps/members/models.py:183 apps/polls/models.py:93
+#: apps/transport/models.py:57
 msgid "miembro"
 msgstr "membre"
 
@@ -61,8 +68,8 @@ msgstr "membre"
 msgid "huella del token"
 msgstr "empremta del token"
 
-#: apps/accounts/models.py:39 apps/activities/models.py:43
-#: apps/polls/models.py:44
+#: apps/accounts/models.py:39 apps/activities/models.py:50
+#: apps/members/models.py:110 apps/polls/models.py:44
 msgid "creada por"
 msgstr "creada per"
 
@@ -70,12 +77,12 @@ msgstr "creada per"
 msgid "revocada por"
 msgstr "revocada per"
 
-#: apps/accounts/models.py:49 apps/activities/models.py:45
-#: apps/activities/models.py:102 apps/activities/models.py:129
-#: apps/associations/models.py:29 apps/associations/models.py:51
+#: apps/accounts/models.py:49 apps/activities/models.py:52
+#: apps/activities/models.py:143 apps/activities/models.py:170
+#: apps/associations/models.py:44 apps/associations/models.py:66
 #: apps/communications/models.py:44 apps/communications/models.py:150
 #: apps/communications/models.py:186 apps/members/models.py:99
-#: apps/members/models.py:170 apps/polls/models.py:46
+#: apps/members/models.py:223 apps/polls/models.py:46
 msgid "fecha de creación"
 msgstr "data de creació"
 
@@ -107,19 +114,141 @@ msgstr "invitació d'accés"
 msgid "invitaciones de acceso"
 msgstr "invitacions d'accés"
 
-#: apps/accounts/services.py:30
+#: apps/accounts/models.py:82
+msgid "Rol concedido"
+msgstr "Rol concedit"
+
+#: apps/accounts/models.py:83
+msgid "Rol retirado"
+msgstr "Rol retirat"
+
+#: apps/accounts/models.py:84
+msgid "Acceso desactivado"
+msgstr "Accés desactivat"
+
+#: apps/accounts/models.py:85
+msgid "Acceso reactivado"
+msgstr "Accés reactivat"
+
+#: apps/accounts/models.py:97 apps/associations/models.py:91
+msgid "acceso"
+msgstr "accés"
+
+#: apps/accounts/models.py:105
+msgid "realizado por"
+msgstr "realitzat per"
+
+#: apps/accounts/models.py:107
+msgid "acción"
+msgstr "acció"
+
+#: apps/accounts/models.py:108 apps/associations/models.py:93
+msgid "rol"
+msgstr "rol"
+
+#: apps/accounts/models.py:109
+msgid "fecha"
+msgstr "data"
+
+#: apps/accounts/models.py:113
+msgid "cambio de acceso"
+msgstr "canvi d'accés"
+
+#: apps/accounts/models.py:114
+msgid "cambios de acceso"
+msgstr "canvis d'accés"
+
+#: apps/accounts/panel_views.py:88 apps/accounts/services.py:211
+msgid "Ese acceso no pertenece a esta asociación."
+msgstr "Eixe accés no pertany a esta associació."
+
+#: apps/accounts/panel_views.py:96
+msgid "Elige un rol válido."
+msgstr "Tria un rol vàlid."
+
+#: apps/accounts/panel_views.py:99
+#, python-format
+msgid "Rol «%(role)s» concedido a %(account)s."
+msgstr "Rol «%(role)s» concedit a %(account)s."
+
+#: apps/accounts/panel_views.py:101
+#, python-format
+msgid "%(account)s ya tenía ese rol."
+msgstr "%(account)s ja tenia eixe rol."
+
+#: apps/accounts/panel_views.py:109
+#, python-format
+msgid "Quitar el rol «%(role)s» a %(account)s"
+msgstr "Llevar el rol «%(role)s» a %(account)s"
+
+#: apps/accounts/panel_views.py:110
+msgid ""
+"Perderá los permisos de ese rol en esta asociación. Podrás concedérselo de "
+"nuevo."
+msgstr ""
+"Perdrà els permisos d'eixe rol en esta associació. Podràs concedir-li'l de "
+"nou."
+
+#: apps/accounts/panel_views.py:112
+msgid "Quitar rol"
+msgstr "Llevar rol"
+
+#: apps/accounts/panel_views.py:115
+#, python-format
+msgid "Rol «%(role)s» retirado a %(account)s."
+msgstr "Rol «%(role)s» retirat a %(account)s."
+
+#: apps/accounts/panel_views.py:122
+#, python-format
+msgid "Desactivar el acceso de %(account)s"
+msgstr "Desactivar l'accés de %(account)s"
+
+#: apps/accounts/panel_views.py:124
+msgid ""
+"No podrá entrar en esta asociación ni en la app ni en el panel. Su cuenta, "
+"sus roles y su acceso a otras asociaciones se conservan, y podrás "
+"reactivarlo."
+msgstr ""
+"No podrà entrar en esta associació ni en l'aplicació ni en el panell. El seu"
+" compte, els seus rols i el seu accés a altres associacions es conserven, i "
+"podràs reactivar-lo."
+
+#: apps/accounts/panel_views.py:128
+msgid "Desactivar acceso"
+msgstr "Desactivar l'accés"
+
+#: apps/accounts/panel_views.py:131
+#, python-format
+msgid "Acceso de %(account)s desactivado."
+msgstr "Accés de %(account)s desactivat."
+
+#: apps/accounts/panel_views.py:134
+#, python-format
+msgid "Acceso de %(account)s reactivado."
+msgstr "Accés de %(account)s reactivat."
+
+#: apps/accounts/panel_views.py:136 apps/polls/views.py:196
+msgid "Acción no reconocida."
+msgstr "Acció no reconeguda."
+
+#: apps/accounts/panel_views.py:138 apps/associations/permissions.py:52
+#: apps/associations/permissions.py:122
+msgid "No tienes permisos para realizar esta acción."
+msgstr "No tens permisos per a realitzar esta acció."
+
+#: apps/accounts/services.py:31
 msgid "Solo se puede invitar a miembros activos."
 msgstr "Només es pot invitar membres actius."
 
-#: apps/accounts/services.py:32
+#: apps/accounts/services.py:33
 msgid "Este miembro ya tiene una cuenta vinculada."
 msgstr "Este membre ja té un compte vinculat."
 
-#: apps/accounts/services.py:34
+#: apps/accounts/services.py:35
 msgid "El miembro no tiene correo electrónico."
 msgstr "El membre no té correu electrònic."
 
-#: apps/accounts/services.py:38
+#: apps/accounts/services.py:39
 msgid ""
 "Ya existe una cuenta con este correo. Debe vincularse tras comprobar su "
 "identidad."
@@ -127,11 +256,11 @@ msgstr ""
 "Ja existix un compte amb este correu. S'ha de vincular després de comprovar-"
 "ne la identitat."
 
-#: apps/accounts/services.py:60 templates/accounts/activate_invitation.html:12
+#: apps/accounts/services.py:61 templates/accounts/activate_invitation.html:5
 msgid "Activa tu cuenta de Gesband"
 msgstr "Activa el teu compte de Gesband"
 
-#: apps/accounts/services.py:62
+#: apps/accounts/services.py:63
 #, python-format
 msgid ""
 "Has recibido una invitación para acceder a %(association)s como %(member)s.\n"
@@ -148,36 +277,88 @@ msgstr ""
 "\n"
 "Si no esperaves esta invitació, ignora el missatge."
 
-#: apps/accounts/services.py:110
+#: apps/accounts/services.py:111
 msgid "La invitación no es válida."
 msgstr "La invitació no és vàlida."
 
-#: apps/accounts/services.py:112
+#: apps/accounts/services.py:113
 msgid "La invitación ha caducado o ya no está disponible."
 msgstr "La invitació ha caducat o ja no està disponible."
 
-#: apps/accounts/services.py:117
+#: apps/accounts/services.py:118
 msgid "Ya existe una cuenta con este correo."
 msgstr "Ja existix un compte amb este correu."
 
-#: apps/accounts/services.py:149
+#: apps/accounts/services.py:151
 msgid "Una invitación aceptada no se puede revocar."
 msgstr "Una invitació acceptada no es pot revocar."
+
+#: apps/accounts/services.py:226
+msgid "Rol no válido."
+msgstr "Rol no vàlid."
+
+#: apps/accounts/services.py:228
+msgid "Este rol lo asigna el operador de la plataforma, no la asociación."
+msgstr "Este rol l'assigna l'operador de la plataforma, no l'associació."
+
+#: apps/accounts/services.py:239
+msgid "Solo una cuenta con rol de administración puede conceder ese rol."
+msgstr "Només un compte amb rol d'administració pot concedir eixe rol."
+
+#: apps/accounts/services.py:241
+msgid "El acceso está desactivado. Reactívalo antes de concederle roles."
+msgstr "L'accés està desactivat. Reactiva'l abans de concedir-li rols."
+
+#: apps/accounts/services.py:257
+msgid "Solo una cuenta con rol de administración puede quitar ese rol."
+msgstr "Només un compte amb rol d'administració pot llevar eixe rol."
+
+#: apps/accounts/services.py:261 apps/accounts/services.py:291
+msgid "La asociación se quedaría sin ninguna cuenta de administración activa."
+msgstr "L'associació es quedaria sense cap compte d'administració actiu."
+
+#: apps/accounts/services.py:282
+msgid ""
+"Solo una cuenta con rol de administración puede cambiar el acceso de otra "
+"que lo tenga."
+msgstr ""
+"Només un compte amb rol d'administració pot canviar l'accés d'un altre que "
+"el tinga."
+
+#: apps/accounts/services.py:286
+msgid "No puedes desactivar tu propio acceso."
+msgstr "No pots desactivar el teu propi accés."
 
 #: apps/activities/apps.py:8
 msgid "Actividades"
 msgstr "Activitats"
 
-#: apps/activities/forms.py:42 apps/activities/services.py:159
-#: templates/activities/detail.html:10
+#: apps/activities/forms.py:45 apps/activities/services.py:176
+#: templates/activities/detail.html:12
 msgid "Asistencia obligatoria"
 msgstr "Assistència obligatòria"
 
-#: apps/activities/forms.py:60 templates/activities/detail.html:15
+#: apps/activities/forms.py:46
+msgid "Remunerada"
+msgstr "Remunerada"
+
+#: apps/activities/forms.py:47
+msgid "Importe por músico (€)"
+msgstr "Import per músic (€)"
+
+#: apps/activities/forms.py:51
+msgid ""
+"Mismo importe para cada músico que conste como presente. Cambiarlo no altera"
+" los pagos ya registrados."
+msgstr ""
+"El mateix import per a cada músic que conste com a present. Canviar-lo no "
+"altera els pagaments ja registrats."
+
+#: apps/activities/forms.py:77 templates/activities/detail.html:23
 msgid "Repertorio"
 msgstr "Repertori"
 
-#: apps/activities/forms.py:63
+#: apps/activities/forms.py:80
 msgid ""
 "Opcional. Un título por línea; añade notas tras «|», p. ej. «Paquito el "
 "chocolatero | de pasacalle»."
@@ -185,224 +366,312 @@ msgstr ""
 "Opcional. Un títol per línia; afig notes després de «|», p. ex. «Paquito el "
 "chocolatero | de cercavila»."
 
-#: apps/activities/forms.py:77
+#: apps/activities/forms.py:94
 #, python-format
 msgid "La línea %(line)s tiene notas pero no título."
 msgstr "La línia %(line)s té notes però no títol."
 
-#: apps/activities/forms.py:81
+#: apps/activities/forms.py:98
 #, python-format
 msgid "El título de la línea %(line)s supera los %(limit)s caracteres."
 msgstr "El títol de la línia %(line)s supera els %(limit)s caràcters."
 
-#: apps/activities/models.py:14
+#: apps/activities/models.py:16
 msgid "Ensayo"
 msgstr "Assaig"
 
-#: apps/activities/models.py:15
+#: apps/activities/models.py:17
 msgid "Actuación"
 msgstr "Actuació"
 
-#: apps/activities/models.py:18 apps/polls/models.py:23
+#: apps/activities/models.py:20 apps/polls/models.py:23
 msgid "Borrador"
 msgstr "Esborrany"
 
-#: apps/activities/models.py:19
+#: apps/activities/models.py:21 templates/associations/branding.html:83
 msgid "Publicada"
 msgstr "Publicada"
 
-#: apps/activities/models.py:20
+#: apps/activities/models.py:22
 msgid "Cancelada"
 msgstr "Cancel·lada"
 
-#: apps/activities/models.py:21
+#: apps/activities/models.py:23
 msgid "Completada"
 msgstr "Completada"
 
-#: apps/activities/models.py:27 apps/members/models.py:96
+#: apps/activities/models.py:29 apps/members/models.py:96
 #: apps/transport/models.py:21
 msgid "tipo"
 msgstr "tipus"
 
-#: apps/activities/models.py:28 apps/activities/models.py:147
+#: apps/activities/models.py:30 apps/activities/models.py:188
 #: apps/communications/models.py:145 apps/communications/models.py:181
-#: apps/members/models.py:97 apps/members/models.py:166 apps/polls/models.py:34
+#: apps/members/models.py:97 apps/members/models.py:219
+#: apps/polls/models.py:34
 msgid "estado"
 msgstr "estat"
 
-#: apps/activities/models.py:29 apps/activities/models.py:73
+#: apps/activities/models.py:31 apps/activities/models.py:114
 #: apps/communications/models.py:39
 msgid "título"
 msgstr "títol"
 
-#: apps/activities/models.py:30 apps/polls/models.py:33
+#: apps/activities/models.py:32 apps/polls/models.py:33
 msgid "descripción"
 msgstr "descripció"
 
-#: apps/activities/models.py:31
+#: apps/activities/models.py:33
 msgid "lugar"
 msgstr "lloc"
 
-#: apps/activities/models.py:32
+#: apps/activities/models.py:34
 msgid "inicio"
 msgstr "inici"
 
-#: apps/activities/models.py:33
+#: apps/activities/models.py:35
 msgid "final"
 msgstr "final"
 
-#: apps/activities/models.py:34
+#: apps/activities/models.py:36
 msgid "hora de concentración"
 msgstr "hora de concentració"
 
-#: apps/activities/models.py:35
+#: apps/activities/models.py:37
 msgid "plazo de respuesta"
 msgstr "termini de resposta"
 
-#: apps/activities/models.py:36
+#: apps/activities/models.py:38
 msgid "uniforme"
 msgstr "uniforme"
 
-#: apps/activities/models.py:37
+#: apps/activities/models.py:39
 msgid "asistencia obligatoria"
 msgstr "assistència obligatòria"
 
-#: apps/activities/models.py:38
+#: apps/activities/models.py:41
+msgid "remunerada"
+msgstr "remunerada"
+
+#: apps/activities/models.py:43
+msgid "importe por músico"
+msgstr "import per músic"
+
+#: apps/activities/models.py:45
 msgid "versión"
 msgstr "versió"
 
-#: apps/activities/models.py:46 apps/activities/models.py:158
+#: apps/activities/models.py:53 apps/activities/models.py:199
 #: apps/members/models.py:100 apps/polls/models.py:47
 msgid "fecha de actualización"
 msgstr "data d'actualització"
 
-#: apps/activities/models.py:51 apps/activities/models.py:71
-#: apps/activities/models.py:91 apps/communications/models.py:29
+#: apps/activities/models.py:69 apps/activities/models.py:112
+#: apps/activities/models.py:132 apps/communications/models.py:29
 #: apps/transport/models.py:19
 msgid "actividad"
 msgstr "activitat"
 
-#: apps/activities/models.py:52
+#: apps/activities/models.py:70
 msgid "actividades"
 msgstr "activitats"
 
-#: apps/activities/models.py:57
+#: apps/activities/models.py:75
 msgid "El final no puede ser anterior al inicio."
 msgstr "El final no pot ser anterior a l'inici."
 
-#: apps/activities/models.py:59
+#: apps/activities/models.py:77
 msgid "La concentración no puede ser posterior al inicio."
 msgstr "La concentració no pot ser posterior a l'inici."
 
-#: apps/activities/models.py:61
+#: apps/activities/models.py:79
 msgid "El plazo debe terminar antes de la actividad."
 msgstr "El termini ha d'acabar abans de l'activitat."
 
-#: apps/activities/models.py:74
+#: apps/activities/models.py:106
+msgid "Indica un importe mayor que cero para una actividad remunerada."
+msgstr "Indica un import major que zero per a una activitat remunerada."
+
+#: apps/activities/models.py:115
 msgid "notas"
 msgstr "notes"
 
-#: apps/activities/models.py:75 apps/members/models.py:25
+#: apps/activities/models.py:116 apps/members/models.py:25
 #: apps/polls/models.py:72
 msgid "orden"
 msgstr "orde"
 
-#: apps/activities/models.py:79
+#: apps/activities/models.py:120
 msgid "elemento de repertorio"
 msgstr "element de repertori"
 
-#: apps/activities/models.py:80
+#: apps/activities/models.py:121
 msgid "elementos de repertorio"
 msgstr "elements de repertori"
 
-#: apps/activities/models.py:85 apps/communications/models.py:165
+#: apps/activities/models.py:126 apps/communications/models.py:165
 msgid "Pendiente"
 msgstr "Pendent"
 
-#: apps/activities/models.py:86 templates/members/access_invitations.html:38
+#: apps/activities/models.py:127 templates/members/access_invitations.html:38
 msgid "Aceptada"
 msgstr "Acceptada"
 
-#: apps/activities/models.py:87
+#: apps/activities/models.py:128
 msgid "Rechazada"
 msgstr "Rebutjada"
 
-#: apps/activities/models.py:97 apps/activities/models.py:121
+#: apps/activities/models.py:138 apps/activities/models.py:162
 msgid "respuesta"
 msgstr "resposta"
 
-#: apps/activities/models.py:99
+#: apps/activities/models.py:140
 msgid "nota de respuesta"
 msgstr "nota de resposta"
 
-#: apps/activities/models.py:100
+#: apps/activities/models.py:141
 msgid "fecha de respuesta"
 msgstr "data de resposta"
 
-#: apps/activities/models.py:101
+#: apps/activities/models.py:142
 msgid "versión de la actividad"
 msgstr "versió de l'activitat"
 
-#: apps/activities/models.py:106 apps/activities/models.py:119
-#: apps/activities/models.py:145
+#: apps/activities/models.py:147 apps/activities/models.py:160
+#: apps/activities/models.py:186 apps/activities/models.py:216
 msgid "convocatoria"
 msgstr "convocatòria"
 
-#: apps/activities/models.py:107
+#: apps/activities/models.py:148
 msgid "convocatorias"
 msgstr "convocatòries"
 
-#: apps/activities/models.py:111 apps/api.py:218 apps/transport/models.py:70
+#: apps/activities/models.py:152 apps/api.py:297 apps/transport/models.py:70
 msgid "El miembro pertenece a otra asociación."
 msgstr "El membre pertany a una altra associació."
 
-#: apps/activities/models.py:122 apps/activities/models.py:148
+#: apps/activities/models.py:163 apps/activities/models.py:189
 msgid "nota"
 msgstr "nota"
 
-#: apps/activities/models.py:127
+#: apps/activities/models.py:168
 msgid "modificada por"
 msgstr "modificada per"
 
-#: apps/activities/models.py:133
+#: apps/activities/models.py:174
 msgid "cambio de respuesta"
 msgstr "canvi de resposta"
 
-#: apps/activities/models.py:134
+#: apps/activities/models.py:175
 msgid "cambios de respuesta"
 msgstr "canvis de resposta"
 
-#: apps/activities/models.py:139
+#: apps/activities/models.py:180
 msgid "Sin registrar"
 msgstr "Sense registrar"
 
-#: apps/activities/models.py:140
+#: apps/activities/models.py:181
 msgid "Presente"
 msgstr "Present"
 
-#: apps/activities/models.py:141
+#: apps/activities/models.py:182
 msgid "Ausente"
 msgstr "Absent"
 
-#: apps/activities/models.py:142
+#: apps/activities/models.py:183
 msgid "Ausencia justificada"
 msgstr "Absència justificada"
 
-#: apps/activities/models.py:155
+#: apps/activities/models.py:196
 msgid "registrada por"
 msgstr "registrada per"
 
-#: apps/activities/models.py:157
+#: apps/activities/models.py:198
 msgid "fecha de registro"
 msgstr "data de registre"
 
-#: apps/activities/models.py:161
+#: apps/activities/models.py:202
 msgid "asistencia"
 msgstr "assistència"
 
-#: apps/activities/models.py:162
+#: apps/activities/models.py:203
 msgid "asistencias"
 msgstr "assistències"
+
+#: apps/activities/models.py:218
+msgid "importe pagado"
+msgstr "import pagat"
+
+#: apps/activities/models.py:219
+msgid "fecha de pago"
+msgstr "data de pagament"
+
+#: apps/activities/models.py:224
+msgid "registrado por"
+msgstr "registrat per"
+
+#: apps/activities/models.py:226 apps/polls/models.py:38
+msgid "fecha de anulación"
+msgstr "data d'anul·lació"
+
+#: apps/activities/models.py:233
+msgid "anulado por"
+msgstr "anul·lat per"
+
+#: apps/activities/models.py:253
+msgid "pago a músico"
+msgstr "pagament a músic"
+
+#: apps/activities/models.py:254
+msgid "pagos a músicos"
+msgstr "pagaments a músics"
+
+#: apps/activities/panel_views.py:42
+msgid "Pago registrado."
+msgstr "Pagament registrat."
+
+#: apps/activities/panel_views.py:44
+msgid "Ese pago ya estaba registrado."
+msgstr "Eixe pagament ja estava registrat."
+
+#: apps/activities/panel_views.py:61
+#, python-format
+msgid "Se han registrado %(count)s pagos."
+msgstr "S'han registrat %(count)s pagaments."
+
+#: apps/activities/panel_views.py:63
+msgid "No quedaba ningún presente pendiente de pago."
+msgstr "No quedava cap present pendent de pagament."
+
+#: apps/activities/panel_views.py:70
+msgid "Pago anulado. Queda en el historial."
+msgstr "Pagament anul·lat. Queda en l'historial."
+
+#: apps/activities/panel_views.py:72
+msgid "Ese pago ya estaba anulado."
+msgstr "Eixe pagament ja estava anul·lat."
+
+#: apps/activities/payments.py:51
+msgid ""
+"Solo la administración y la junta pueden gestionar los pagos a músicos."
+msgstr ""
+"Només l'administració i la junta poden gestionar els pagaments a músics."
+
+#: apps/activities/payments.py:120
+msgid "La convocatoria pertenece a otra asociación."
+msgstr "La convocatòria pertany a una altra associació."
+
+#: apps/activities/payments.py:143
+msgid ""
+"Solo se puede pagar a quien consta como presente en una actividad remunerada"
+" no cancelada."
+msgstr ""
+"Només es pot pagar a qui consta com a present en una activitat remunerada no"
+" cancel·lada."
+
+#: apps/activities/payments.py:166 apps/api.py:278
+msgid "La actividad pertenece a otra asociación."
+msgstr "L'activitat pertany a una altra associació."
 
 #: apps/activities/services.py:51
 msgid "Solo la persona convocada puede responder."
@@ -428,132 +697,133 @@ msgstr "Indica el motiu de l'absència en una activitat obligatòria."
 msgid "Estado de asistencia no válido."
 msgstr "Estat d'assistència no vàlid."
 
-#: apps/activities/services.py:152
+#: apps/activities/services.py:141
+msgid "Nueva convocatoria"
+msgstr "Nova convocatòria"
+
+#: apps/activities/services.py:169
 msgid "Título"
 msgstr "Títol"
 
-#: apps/activities/services.py:153
+#: apps/activities/services.py:170
 msgid "Inicio"
 msgstr "Inici"
 
-#: apps/activities/services.py:154
+#: apps/activities/services.py:171
 msgid "Final"
 msgstr "Final"
 
-#: apps/activities/services.py:155
+#: apps/activities/services.py:172
 msgid "Concentración"
 msgstr "Concentració"
 
-#: apps/activities/services.py:156
+#: apps/activities/services.py:173 templates/activities/detail.html:18
 msgid "Lugar"
 msgstr "Lloc"
 
-#: apps/activities/services.py:157
+#: apps/activities/services.py:174 templates/activities/detail.html:19
 msgid "Uniforme"
 msgstr "Uniforme"
 
-#: apps/activities/services.py:158
+#: apps/activities/services.py:175
 msgid "Plazo de respuesta"
 msgstr "Termini de resposta"
 
-#: apps/activities/services.py:167
+#: apps/activities/services.py:184
 msgid "sí"
 msgstr "sí"
 
-#: apps/activities/services.py:167
+#: apps/activities/services.py:184
 msgid "no"
 msgstr "no"
 
-#: apps/activities/services.py:169
+#: apps/activities/services.py:186
 msgid "sin indicar"
 msgstr "sense indicar"
 
-#: apps/activities/services.py:192
+#: apps/activities/services.py:209
 msgid "Anulada por un cambio de fecha o lugar."
 msgstr "Anul·lada per un canvi de data o lloc."
 
-#: apps/activities/services.py:219
+#: apps/activities/services.py:242
 msgid "Cambio importante: vuelve a confirmar"
 msgstr "Canvi important: torna a confirmar"
 
-#: apps/activities/services.py:224
+#: apps/activities/services.py:242
 msgid "Cambio en la convocatoria"
 msgstr "Canvi en la convocatòria"
 
-#: apps/activities/services.py:240
+#: apps/activities/services.py:258
 msgid "La actividad ya está cancelada."
 msgstr "L'activitat ja està cancel·lada."
 
-#: apps/activities/services.py:243
+#: apps/activities/services.py:261
 msgid "Indica el motivo de la cancelación."
 msgstr "Indica el motiu de la cancel·lació."
 
-#: apps/activities/services.py:245 apps/polls/services.py:315
+#: apps/activities/services.py:263 apps/polls/services.py:325
 msgid "El motivo no puede pasar de 500 caracteres."
 msgstr "El motiu no pot passar de 500 caràcters."
 
-#: apps/activities/services.py:254 apps/polls/services.py:323
+#: apps/activities/services.py:273 apps/polls/services.py:334
 #: templates/polls/detail.html:98
 msgid "Motivo"
 msgstr "Motiu"
 
-#: apps/activities/services.py:260
+#: apps/activities/services.py:279
 msgid "Actividad cancelada"
 msgstr "Activitat cancel·lada"
 
-#: apps/activities/services.py:269
+#: apps/activities/services.py:290
 msgid "Una actividad cancelada no se puede publicar."
 msgstr "Una activitat cancel·lada no es pot publicar."
 
-#: apps/activities/services.py:273 apps/api.py:553 config/panel.py:501
-msgid "Nueva convocatoria"
-msgstr "Nova convocatòria"
+#: apps/activities/templatetags/activity_payments.py:21
+#, python-format
+msgid "%(amount)s €"
+msgstr "%(amount)s €"
 
-#: apps/api.py:73 apps/members/models.py:61
+#: apps/api.py:90 apps/members/models.py:61
 msgid "La cuerda pertenece a otra asociación."
 msgstr "La corda pertany a una altra associació."
 
-#: apps/api.py:199
-msgid "La actividad pertenece a otra asociación."
-msgstr "L'activitat pertany a una altra associació."
-
-#: apps/api.py:201 apps/transport/models.py:43
+#: apps/api.py:280 apps/transport/models.py:43
 msgid "El conductor pertenece a otra asociación."
 msgstr "El conductor pertany a una altra associació."
 
-#: apps/api.py:216
+#: apps/api.py:295
 msgid "El transporte pertenece a otra asociación."
 msgstr "El transport pertany a una altra associació."
 
-#: apps/api.py:241
+#: apps/api.py:320
 msgid "Credenciales no válidas."
 msgstr "Credencials no vàlides."
 
-#: apps/api.py:255
+#: apps/api.py:334
 msgid "Token de renovación no válido."
 msgstr "Token de renovació no vàlid."
 
-#: apps/api.py:298
+#: apps/api.py:377
 msgid "Es obligatorio seleccionar la asociación."
 msgstr "Cal seleccionar l'associació."
 
-#: apps/api.py:349 apps/api.py:384
+#: apps/api.py:434 apps/api.py:547
 msgid "Adjunta una imagen."
 msgstr "Adjunta una imatge."
 
-#: apps/api.py:365
+#: apps/api.py:481
 msgid "No hay una ficha vinculada a esta cuenta."
 msgstr "No hi ha cap fitxa vinculada a este compte."
 
-#: apps/api.py:478 apps/transport/models.py:75
+#: apps/api.py:639 apps/transport/models.py:75
 msgid "El miembro ya tiene transporte para esta actividad."
 msgstr "El membre ja té transport per a esta activitat."
 
-#: apps/api.py:480 apps/transport/models.py:77
+#: apps/api.py:641 apps/transport/models.py:77
 msgid "No quedan plazas disponibles."
 msgstr "No queden places disponibles."
 
-#: apps/api.py:601 config/panel.py:199
+#: apps/api.py:766 config/panel.py:208
 msgid "Adjunta un CSV o XLSX."
 msgstr "Adjunta un CSV o XLSX."
 
@@ -561,163 +831,241 @@ msgstr "Adjunta un CSV o XLSX."
 msgid "Asociaciones"
 msgstr "Associacions"
 
-#: apps/associations/models.py:11 apps/members/models.py:24
+#: apps/associations/forms.py:9 templates/associations/branding.html:20
+msgid "Logo"
+msgstr "Logo"
+
+#: apps/associations/forms.py:11
+msgid ""
+"PNG, JPG o WebP de hasta 2 MB. Se recorta en un cuadrado con esquinas "
+"redondeadas."
+msgstr ""
+"PNG, JPG o WebP de fins a 2 MB. Es retalla en un quadrat amb cantons "
+"arredonits."
+
+#: apps/associations/forms.py:13
+msgid "Quitar el logo y usar las iniciales"
+msgstr "Llevar el logo i usar les inicials"
+
+#: apps/associations/forms.py:25
+msgid "Cualquier color: el panel y la app ajustan el texto para que se lea."
+msgstr "Qualsevol color: el panell i l'app ajusten el text perquè es llija."
+
+#: apps/associations/forms.py:26
+msgid "Cada persona puede cambiarlo en su dispositivo."
+msgstr "Cada persona pot canviar-ho en el seu dispositiu."
+
+#: apps/associations/models.py:12
+msgid "Escenario"
+msgstr "Escenari"
+
+#: apps/associations/models.py:13
+msgid "Partitura"
+msgstr "Partitura"
+
+#: apps/associations/models.py:14
+msgid "Festa"
+msgstr "Festa"
+
+#: apps/associations/models.py:17
+msgid "Según el dispositivo"
+msgstr "Segons el dispositiu"
+
+#: apps/associations/models.py:18
+msgid "Claro"
+msgstr "Clar"
+
+#: apps/associations/models.py:19
+msgid "Oscuro"
+msgstr "Fosc"
+
+#: apps/associations/models.py:22 apps/members/models.py:24
 #: apps/members/models.py:49 apps/members/models.py:90
 #: apps/transport/models.py:22
 msgid "nombre"
 msgstr "nom"
 
-#: apps/associations/models.py:12
+#: apps/associations/models.py:23
 msgid "identificador para URL"
 msgstr "identificador per a URL"
 
-#: apps/associations/models.py:13
+#: apps/associations/models.py:24
 msgid "logotipo"
 msgstr "logotip"
 
-#: apps/associations/models.py:15
+#: apps/associations/models.py:26
 msgid "color principal"
 msgstr "color principal"
 
-#: apps/associations/models.py:18
+#: apps/associations/models.py:29
 msgid "Usa un color hexadecimal, por ejemplo #1B4965."
 msgstr "Usa un color hexadecimal, per exemple #1B4965."
 
-#: apps/associations/models.py:21
+#: apps/associations/models.py:32
 msgid "color secundario"
 msgstr "color secundari"
 
-#: apps/associations/models.py:24
+#: apps/associations/models.py:35
 msgid "Usa un color hexadecimal, por ejemplo #CAE9FF."
 msgstr "Usa un color hexadecimal, per exemple #CAE9FF."
 
-#: apps/associations/models.py:26
+#: apps/associations/models.py:37
 msgid "lema"
 msgstr "lema"
 
-#: apps/associations/models.py:27
+#: apps/associations/models.py:39
+msgid "estilo visual"
+msgstr "estil visual"
+
+#: apps/associations/models.py:41
+msgid "modo de color"
+msgstr "mode de color"
+
+#: apps/associations/models.py:42
 msgid "zona horaria"
 msgstr "zona horària"
 
-#: apps/associations/models.py:28
+#: apps/associations/models.py:43
 msgid "activa"
 msgstr "activa"
 
-#: apps/associations/models.py:34
+#: apps/associations/models.py:49
 msgid "asociaciones"
 msgstr "associacions"
 
-#: apps/associations/models.py:50 apps/communications/models.py:93
+#: apps/associations/models.py:65 apps/communications/models.py:93
 msgid "activo"
 msgstr "actiu"
 
-#: apps/associations/models.py:55
+#: apps/associations/models.py:70
 msgid "acceso a asociación"
 msgstr "accés a associació"
 
-#: apps/associations/models.py:56
+#: apps/associations/models.py:71
 msgid "accesos a asociaciones"
 msgstr "accessos a associacions"
 
-#: apps/associations/models.py:64 templates/members/access_invitations.html:16
+#: apps/associations/models.py:79 templates/members/access_invitations.html:16
 msgid "Músico"
 msgstr "Músic"
 
-#: apps/associations/models.py:65
+#: apps/associations/models.py:80
 msgid "Junta"
 msgstr "Junta"
 
-#: apps/associations/models.py:66
+#: apps/associations/models.py:81
 msgid "Contratista/organización"
 msgstr "Contractista/organització"
 
-#: apps/associations/models.py:67
+#: apps/associations/models.py:82
 msgid "Dirección musical"
 msgstr "Direcció musical"
 
-#: apps/associations/models.py:68
+#: apps/associations/models.py:83
 msgid "Administración"
 msgstr "Administració"
 
-#: apps/associations/models.py:69
+#: apps/associations/models.py:84
 msgid "Administración de plataforma"
 msgstr "Administració de plataforma"
 
-#: apps/associations/models.py:70
+#: apps/associations/models.py:85
 msgid "Edición web"
 msgstr "Edició web"
 
-#: apps/associations/models.py:76
-msgid "acceso"
-msgstr "accés"
-
-#: apps/associations/models.py:78
-msgid "rol"
-msgstr "rol"
-
-#: apps/associations/models.py:82
+#: apps/associations/models.py:97
 msgid "rol de asociación"
 msgstr "rol d'associació"
 
-#: apps/associations/models.py:83
+#: apps/associations/models.py:98
 msgid "roles de asociación"
 msgstr "rols d'associació"
 
-#: apps/associations/permissions.py:22
+#: apps/associations/panel_views.py:40
+msgid "Imagen de la banda guardada."
+msgstr "Imatge de la banda guardada."
+
+#: apps/associations/permissions.py:37
 msgid "Autenticación requerida."
 msgstr "Cal autenticar-se."
 
-#: apps/associations/permissions.py:28 config/panel.py:345
+#: apps/associations/permissions.py:43 config/panel.py:354
 msgid "No tienes acceso a esta asociación."
 msgstr "No tens accés a esta associació."
 
-#: apps/associations/permissions.py:37
-msgid "No tienes permisos para realizar esta acción."
-msgstr "No tens permisos per a realitzar esta acció."
-
-#: apps/associations/permissions.py:96
+#: apps/associations/permissions.py:128
 msgid "Ver el censo"
 msgstr "Veure el cens"
 
-#: apps/associations/permissions.py:97
+#: apps/associations/permissions.py:129
 msgid "Gestionar el censo"
 msgstr "Gestionar el cens"
 
-#: apps/associations/permissions.py:98
+#: apps/associations/permissions.py:130
+msgid "Borrar definitivamente fichas sin historial"
+msgstr "Esborrar definitivament fitxes sense historial"
+
+#: apps/associations/permissions.py:131
 msgid "Importar miembros desde CSV o XLSX"
 msgstr "Importar membres des de CSV o XLSX"
 
-#: apps/associations/permissions.py:99
+#: apps/associations/permissions.py:132
 msgid "Ver actividades y responder a las convocatorias"
 msgstr "Veure activitats i respondre a les convocatòries"
 
-#: apps/associations/permissions.py:100
+#: apps/associations/permissions.py:133
 msgid "Crear y publicar actividades"
 msgstr "Crear i publicar activitats"
 
-#: apps/associations/permissions.py:101 templates/activities/detail.html:57
+#: apps/associations/permissions.py:134 templates/activities/detail.html:65
+#: templates/shared/dashboard.html:42
 msgid "Convocar músicos"
 msgstr "Convocar músics"
 
-#: apps/associations/permissions.py:102
+#: apps/associations/permissions.py:135
+#: templates/associations/branding.html:82
 msgid "Pasar lista"
 msgstr "Passar llista"
 
-#: apps/associations/permissions.py:103
+#: apps/associations/permissions.py:136
 msgid "Organizar el transporte"
 msgstr "Organitzar el transport"
 
-#: apps/associations/permissions.py:104
+#: apps/associations/permissions.py:137
 msgid "Ver y votar encuestas"
 msgstr "Veure i votar enquestes"
 
-#: apps/associations/permissions.py:105
+#: apps/associations/permissions.py:138
 msgid "Crear, abrir y publicar encuestas"
 msgstr "Crear, obrir i publicar enquestes"
 
-#: apps/associations/permissions.py:106
+#: apps/associations/permissions.py:139
+msgid "Invitar y activar o desactivar accesos"
+msgstr "Convidar i activar o desactivar accessos"
+
+#: apps/associations/permissions.py:140
+msgid "Asignar y quitar roles"
+msgstr "Assignar i llevar rols"
+
+#: apps/associations/permissions.py:141
+msgid "Cambiar la imagen de la banda: logo, colores, lema y estilo"
+msgstr "Canviar la imatge de la banda: logo, colors, lema i estil"
+
+#: apps/associations/permissions.py:142
 msgid "Configurar la asociación"
 msgstr "Configurar l'associació"
+
+#: apps/associations/services.py:27
+msgid "El logo supera 2 MB."
+msgstr "El logo supera 2 MB."
+
+#: apps/associations/services.py:34 apps/members/images.py:21
+msgid "La imagen tiene demasiados píxeles."
+msgstr "La imatge té massa píxels."
+
+#: apps/associations/services.py:40 apps/members/images.py:27
+msgid "El fichero no es una imagen válida."
+msgstr "El fitxer no és una imatge vàlida."
 
 #: apps/communications/apps.py:8
 msgid "Comunicaciones"
@@ -885,7 +1233,7 @@ msgstr "codi d'error del proveïdor"
 msgid "momento indicado por la app"
 msgstr "moment indicat per l'app"
 
-#: apps/communications/models.py:149 apps/members/models.py:171
+#: apps/communications/models.py:149 apps/members/models.py:224
 msgid "fecha de confirmación"
 msgstr "data de confirmació"
 
@@ -914,7 +1262,7 @@ msgstr "Correu"
 msgid "Enviada"
 msgstr "Enviada"
 
-#: apps/communications/models.py:167 apps/members/models.py:148
+#: apps/communications/models.py:167 apps/members/models.py:201
 msgid "Fallida"
 msgstr "Fallida"
 
@@ -956,7 +1304,8 @@ msgstr "Prova d'avisos de Gesband"
 
 #: apps/communications/services.py:159
 msgid "Si ves este aviso, las notificaciones funcionan en este dispositivo."
-msgstr "Si veus aquest avís, les notificacions funcionen en aquest dispositiu."
+msgstr ""
+"Si veus aquest avís, les notificacions funcionen en aquest dispositiu."
 
 #: apps/communications/services.py:187
 msgid "La prueba ha caducado; pide otra."
@@ -966,17 +1315,112 @@ msgstr "La prova ha caducat; demana'n una altra."
 msgid "Miembros"
 msgstr "Membres"
 
+#: apps/members/forms.py:17 apps/polls/forms.py:71
+#: templates/activities/detail.html:102
+#: templates/members/import_detail.html:74
+msgid "Instrumentos"
+msgstr "Instruments"
+
+#: apps/members/forms.py:23
+msgid "Instrumento principal"
+msgstr "Instrument principal"
+
+#: apps/members/forms.py:26
+msgid "Su cuerda es la del instrumento principal."
+msgstr "La seua corda és la de l'instrument principal."
+
+#: apps/members/forms.py:29
+msgid "Cargos"
+msgstr "Càrrecs"
+
+#: apps/members/forms.py:33
+msgid ""
+"Los cargos son informativos: no conceden permisos en Gesband. Los permisos "
+"se dan con roles."
+msgstr ""
+"Els càrrecs són informatius: no concedeixen permisos en Gesband. Els "
+"permisos es donen amb rols."
+
+#: apps/members/forms.py:51
+msgid ""
+"Número de socio u otro identificador estable de la asociación. Opcional."
+msgstr ""
+"Número de soci o un altre identificador estable de l'associació. Opcional."
+
+#: apps/members/forms.py:52
+msgid "Opcional. Pídelo solo si la asociación lo necesita."
+msgstr "Opcional. Demana'l només si l'associació el necessita."
+
+#: apps/members/forms.py:53
+msgid ""
+"Una ficha inactiva está de baja: no se convoca, pero conserva su historial."
+msgstr ""
+"Una fitxa inactiva està de baixa: no es convoca, però conserva el seu "
+"historial."
+
+#: apps/members/forms.py:89 templates/members/form.html:30
+msgid "Foto"
+msgstr "Foto"
+
+#: apps/members/forms.py:90
+msgid ""
+"JPEG, PNG o WebP, hasta 5 MB. Se eliminan los metadatos y solo la ven la "
+"persona y la junta."
+msgstr ""
+"JPEG, PNG o WebP, fins a 5 MB. S'eliminen les metadades i només la veuen la "
+"persona i la junta."
+
+#: apps/members/forms.py:99
+msgid "Identificador externo"
+msgstr "Identificador extern"
+
+#: apps/members/forms.py:100
+msgid "Nombre"
+msgstr "Nom"
+
+#: apps/members/forms.py:101
+msgid "Apellidos (juntos)"
+msgstr "Cognoms (junts)"
+
+#: apps/members/forms.py:102
+msgid "Primer apellido"
+msgstr "Primer cognom"
+
+#: apps/members/forms.py:103
+msgid "Segundo apellido"
+msgstr "Segon cognom"
+
+#: apps/members/forms.py:104 apps/members/models.py:92
+msgid "DNI/NIE"
+msgstr "DNI/NIE"
+
+#: apps/members/forms.py:105
+msgid "Dirección"
+msgstr "Adreça"
+
+#: apps/members/forms.py:106
+msgid "Teléfono"
+msgstr "Telèfon"
+
+#: apps/members/forms.py:107 templates/members/access_invitations.html:17
+msgid "Correo electrónico"
+msgstr "Correu electrònic"
+
+#: apps/members/forms.py:108
+msgid "Tipo de miembro"
+msgstr "Tipus de membre"
+
+#: apps/members/forms.py:109 templates/members/import_detail.html:74
+msgid "Cuerda"
+msgstr "Corda"
+
+#: apps/members/forms.py:110
+msgid "Instrumentos (separados por ; o /)"
+msgstr "Instruments (separats per ; o /)"
+
 #: apps/members/images.py:14
 msgid "La foto supera 5 MB."
 msgstr "La foto supera 5 MB."
-
-#: apps/members/images.py:21
-msgid "La imagen tiene demasiados píxeles."
-msgstr "La imatge té massa píxels."
-
-#: apps/members/images.py:27
-msgid "El fichero no es una imagen válida."
-msgstr "El fitxer no és una imatge vàlida."
 
 #: apps/members/models.py:30 apps/members/models.py:47
 msgid "cuerda"
@@ -986,7 +1430,7 @@ msgstr "corda"
 msgid "cuerdas"
 msgstr "cordes"
 
-#: apps/members/models.py:54 apps/members/models.py:124
+#: apps/members/models.py:54 apps/members/models.py:152
 msgid "instrumento"
 msgstr "instrument"
 
@@ -1006,7 +1450,7 @@ msgstr "Soci col·laborador/mecenes"
 msgid "Colaborador musical externo"
 msgstr "Col·laborador musical extern"
 
-#: apps/members/models.py:74
+#: apps/members/models.py:74 templates/accounts/access_roles.html:58
 msgid "Activo"
 msgstr "Actiu"
 
@@ -1022,10 +1466,6 @@ msgstr "identificador extern"
 msgid "apellidos"
 msgstr "cognoms"
 
-#: apps/members/models.py:92 config/panel.py:40
-msgid "DNI/NIE"
-msgstr "DNI/NIE"
-
 #: apps/members/models.py:93
 msgid "dirección"
 msgstr "adreça"
@@ -1038,173 +1478,381 @@ msgstr "telèfon"
 msgid "foto"
 msgstr "foto"
 
-#: apps/members/models.py:110
+#: apps/members/models.py:118
+msgid "actualizada por"
+msgstr "actualitzada per"
+
+#: apps/members/models.py:120
+msgid "fecha del cambio de estado"
+msgstr "data del canvi d'estat"
+
+#: apps/members/models.py:127
+msgid "estado cambiado por"
+msgstr "estat canviat per"
+
+#: apps/members/models.py:138
 msgid "miembros"
 msgstr "membres"
 
-#: apps/members/models.py:126
+#: apps/members/models.py:154
 msgid "principal"
 msgstr "principal"
 
-#: apps/members/models.py:133
+#: apps/members/models.py:161
 msgid "instrumento de miembro"
 msgstr "instrument de membre"
 
-#: apps/members/models.py:134
+#: apps/members/models.py:162
 msgid "instrumentos de miembros"
 msgstr "instruments de membres"
 
-#: apps/members/models.py:140
+#: apps/members/models.py:168 apps/members/services.py:471
+#: apps/members/services.py:474 apps/members/services.py:480
 msgid "El instrumento pertenece a otra asociación."
 msgstr "L'instrument pertany a una altra associació."
 
-#: apps/members/models.py:145
+#: apps/members/models.py:175
+msgid "Presidencia"
+msgstr "Presidència"
+
+#: apps/members/models.py:176
+msgid "Vicepresidencia"
+msgstr "Vicepresidència"
+
+#: apps/members/models.py:177
+msgid "Secretaría"
+msgstr "Secretaria"
+
+#: apps/members/models.py:178
+msgid "Tesorería"
+msgstr "Tresoreria"
+
+#: apps/members/models.py:179
+msgid "Contratista"
+msgstr "Contractista"
+
+#: apps/members/models.py:180
+msgid "Vocalía"
+msgstr "Vocalia"
+
+#: apps/members/models.py:185
+msgid "cargo"
+msgstr "càrrec"
+
+#: apps/members/models.py:189
+msgid "cargo de miembro"
+msgstr "càrrec de membre"
+
+#: apps/members/models.py:190
+msgid "cargos de miembros"
+msgstr "càrrecs de membres"
+
+#: apps/members/models.py:198
 msgid "Subido"
 msgstr "Pujat"
 
-#: apps/members/models.py:146
+#: apps/members/models.py:199
 msgid "Previsualización"
 msgstr "Previsualització"
 
-#: apps/members/models.py:147
+#: apps/members/models.py:200
 msgid "Confirmada"
 msgstr "Confirmada"
 
-#: apps/members/models.py:158
+#: apps/members/models.py:211
 msgid "creado por"
 msgstr "creat per"
 
-#: apps/members/models.py:160
+#: apps/members/models.py:213
 msgid "nombre de archivo"
 msgstr "nom de fitxer"
 
-#: apps/members/models.py:161
+#: apps/members/models.py:214
 msgid "huella del contenido"
 msgstr "empremta del contingut"
 
-#: apps/members/models.py:163
+#: apps/members/models.py:216
 msgid "fichero original temporal"
 msgstr "fitxer original temporal"
 
-#: apps/members/models.py:165
+#: apps/members/models.py:218
 msgid "columnas de origen"
 msgstr "columnes d'origen"
 
-#: apps/members/models.py:167
+#: apps/members/models.py:220
 msgid "asignación de columnas"
 msgstr "assignació de columnes"
 
-#: apps/members/models.py:168
+#: apps/members/models.py:221
 msgid "previsualización"
 msgstr "previsualització"
 
-#: apps/members/models.py:169
+#: apps/members/models.py:222
 msgid "resultado"
 msgstr "resultat"
 
-#: apps/members/models.py:176
+#: apps/members/models.py:229
 msgid "lote de importación"
 msgstr "lot d'importació"
 
-#: apps/members/models.py:177
+#: apps/members/models.py:230
 msgid "lotes de importación"
 msgstr "lots d'importació"
 
-#: apps/members/services.py:69
+#: apps/members/services.py:85
 msgid "El fichero supera 5 MB."
 msgstr "El fitxer supera 5 MB."
 
-#: apps/members/services.py:75
+#: apps/members/services.py:91
 msgid "El CSV debe estar codificado en UTF-8."
 msgstr "El CSV ha d'estar codificat en UTF-8."
 
-#: apps/members/services.py:88
+#: apps/members/services.py:104
 msgid "El fichero XLSX no es válido."
 msgstr "El fitxer XLSX no és vàlid."
 
-#: apps/members/services.py:90
+#: apps/members/services.py:106
 msgid "Solo se admiten ficheros CSV o XLSX."
 msgstr "Només s'admeten fitxers CSV o XLSX."
 
-#: apps/members/services.py:92
+#: apps/members/services.py:108
 msgid "Todas las columnas deben tener un nombre."
 msgstr "Totes les columnes han de tindre un nom."
 
-#: apps/members/services.py:94
+#: apps/members/services.py:110
 msgid "Los nombres de columna no pueden repetirse."
 msgstr "Els noms de columna no poden repetir-se."
 
-#: apps/members/services.py:96
+#: apps/members/services.py:112
 msgid "El fichero no contiene filas de datos."
 msgstr "El fitxer no conté files de dades."
 
-#: apps/members/services.py:98
+#: apps/members/services.py:114
 #, python-format
 msgid "El fichero supera el límite de %(limit)s filas."
 msgstr "El fitxer supera el límit de %(limit)s files."
 
-#: apps/members/services.py:108
+#: apps/members/services.py:129
 #, python-format
 msgid "Campos de destino no permitidos: %(fields)s."
 msgstr "Camps de destinació no permesos: %(fields)s."
 
-#: apps/members/services.py:113
+#: apps/members/services.py:134
 #, python-format
 msgid "Columnas de origen desconocidas: %(fields)s."
 msgstr "Columnes d'origen desconegudes: %(fields)s."
 
-#: apps/members/services.py:117
+#: apps/members/services.py:138
 msgid "Cada campo de destino solo puede asignarse una vez."
 msgstr "Cada camp de destinació només pot assignar-se una vegada."
 
-#: apps/members/services.py:119
+#: apps/members/services.py:140
 msgid "Asigna una columna al campo Nombre."
 msgstr "Assigna una columna al camp Nom."
 
-#: apps/members/services.py:123
+#: apps/members/services.py:144
 msgid "Asigna Apellidos (juntos) o Primer apellido."
 msgstr "Assigna Cognoms (junts) o Primer cognom."
 
-#: apps/members/services.py:125
+#: apps/members/services.py:146
 msgid "Usa Apellidos (juntos) o los apellidos separados, pero no ambos."
 msgstr "Usa Cognoms (junts) o els cognoms separats, però no tots dos."
 
-#: apps/members/services.py:127
+#: apps/members/services.py:148
 msgid "El Segundo apellido requiere asignar también el Primer apellido."
 msgstr "El Segon cognom requerix assignar també el Primer cognom."
 
-#: apps/members/services.py:134
+#: apps/members/services.py:155
 msgid "Falta el nombre."
 msgstr "Falta el nom."
 
-#: apps/members/services.py:140
+#: apps/members/services.py:161
 msgid "Falta el primer apellido."
 msgstr "Falta el primer cognom."
 
-#: apps/members/services.py:142
+#: apps/members/services.py:163
 msgid "Faltan los apellidos."
 msgstr "Falten els cognoms."
 
-#: apps/members/services.py:144
+#: apps/members/services.py:165
 msgid "Tipo de miembro no válido."
 msgstr "Tipus de membre no vàlid."
 
-#: apps/members/services.py:148
+#: apps/members/services.py:169
 msgid "Identificador externo duplicado en el fichero."
 msgstr "Identificador extern duplicat en el fitxer."
 
-#: apps/members/services.py:161
+#: apps/members/services.py:209
+#, python-format
+msgid "%(kind)s «%(name)s» no puede empezar por =, +, - o @."
+msgstr "%(kind)s «%(name)s» no pot començar per =, +, - o @."
+
+#: apps/members/services.py:213
+#, python-format
+msgid "%(kind)s «%(name)s» supera %(limit)s caracteres."
+msgstr "%(kind)s «%(name)s» supera %(limit)s caràcters."
+
+#: apps/members/services.py:229
+msgid "La cuerda"
+msgstr "La corda"
+
+#: apps/members/services.py:240
+msgid "El instrumento"
+msgstr "L'instrument"
+
+#: apps/members/services.py:244
+#, python-format
+msgid ""
+"La cuerda «%(section)s» se ignora: la cuerda de una ficha es la de su "
+"instrumento."
+msgstr ""
+"La corda «%(section)s» s'ignora: la corda d'una fitxa és la del seu "
+"instrument."
+
+#: apps/members/services.py:303
+#, python-format
+msgid ""
+"El instrumento «%(instrument)s» ya está en la cuerda «%(current)s» del "
+"catálogo, no en «%(section)s». Corrige el fichero o el catálogo."
+msgstr ""
+"L'instrument «%(instrument)s» ja està en la corda «%(current)s» del catàleg,"
+" no en «%(section)s». Corregeix el fitxer o el catàleg."
+
+#: apps/members/services.py:310
+#, python-format
+msgid ""
+"El instrumento «%(instrument)s» no tiene cuerda en el catálogo; no se le "
+"asigna «%(section)s»."
+msgstr ""
+"L'instrument «%(instrument)s» no té corda en el catàleg; no se li assigna "
+"«%(section)s»."
+
+#: apps/members/services.py:317
+#, python-format
+msgid ""
+"El instrumento «%(instrument)s» aparece en el fichero con las cuerdas "
+"«%(first)s» y «%(section)s»."
+msgstr ""
+"L'instrument «%(instrument)s» apareix en el fitxer amb les cordes "
+"«%(first)s» i «%(section)s»."
+
+#: apps/members/services.py:382
 msgid "Genera la previsualización antes de confirmar."
 msgstr "Genera la previsualització abans de confirmar."
 
-#: apps/members/services.py:163
+#: apps/members/services.py:391
 msgid "No hay filas válidas que confirmar. Corrige el mapeo o el fichero."
 msgstr ""
 "No hi ha files vàlides per confirmar. Corregix l'assignació o el fitxer."
 
+#: apps/members/services.py:490
+msgid "Cargo no válido."
+msgstr "Càrrec no vàlid."
+
+#: apps/members/services.py:501
+msgid "Ya hay otra ficha con este identificador externo en la asociación."
+msgstr ""
+"Ja hi ha una altra fitxa amb este identificador extern en l'associació."
+
+#: apps/members/services.py:589
+msgid "Estado no válido."
+msgstr "Estat no vàlid."
+
+#: apps/members/services.py:625
+msgid "Tiene convocatorias o asistencia registradas."
+msgstr "Té convocatòries o assistència registrades."
+
+#: apps/members/services.py:627
+msgid "Ha sido destinataria de encuestas."
+msgstr "Ha sigut destinatària d'enquestes."
+
+#: apps/members/services.py:629
+msgid "Tiene transporte asignado."
+msgstr "Té transport assignat."
+
+#: apps/members/services.py:631
+msgid "Tiene una cuenta de acceso vinculada."
+msgstr "Té un compte d'accés vinculat."
+
+#: apps/members/services.py:645
+msgid ""
+"No se puede borrar esta ficha sin perder su historial. Dala de baja en su "
+"lugar."
+msgstr ""
+"No es pot esborrar esta fitxa sense perdre el seu historial. Dona-la de "
+"baixa en el seu lloc."
+
+#: apps/members/views.py:92
+msgid "Ficha creada."
+msgstr "Fitxa creada."
+
+#: apps/members/views.py:119
+msgid "Ficha actualizada."
+msgstr "Fitxa actualitzada."
+
+#: apps/members/views.py:149
+msgid "Esta ficha no tiene foto."
+msgstr "Esta fitxa no té foto."
+
+#: apps/members/views.py:155
+msgid "Foto eliminada."
+msgstr "Foto eliminada."
+
+#: apps/members/views.py:164
+msgid "Foto guardada."
+msgstr "Foto guardada."
+
+#: apps/members/views.py:183
+#, python-format
+msgid "Dar de baja a %(member)s"
+msgstr "Donar de baixa %(member)s"
+
+#: apps/members/views.py:185
+msgid ""
+"La ficha quedará inactiva: no se la podrá convocar ni invitar, pero se "
+"conservan sus convocatorias, respuestas y asistencia. Podrás reactivarla "
+"cuando quieras."
+msgstr ""
+"La fitxa quedarà inactiva: no es podrà convocar ni convidar, però es "
+"conserven les seues convocatòries, respostes i assistència. Podràs "
+"reactivar-la quan vulgues."
+
+#: apps/members/views.py:190 templates/members/form.html:68
+msgid "Dar de baja"
+msgstr "Donar de baixa"
+
+#: apps/members/views.py:201
+msgid "Ficha reactivada."
+msgstr "Fitxa reactivada."
+
+#: apps/members/views.py:203
+msgid "Ficha dada de baja. Su historial se conserva."
+msgstr "Fitxa donada de baixa. El seu historial es conserva."
+
+#: apps/members/views.py:221
+msgid "Ficha borrada definitivamente."
+msgstr "Fitxa esborrada definitivament."
+
+#: apps/members/views.py:228
+#, python-format
+msgid "Borrar definitivamente a %(member)s"
+msgstr "Esborrar definitivament %(member)s"
+
+#: apps/members/views.py:230
+msgid ""
+"El borrado no se puede deshacer. Solo se permite si la ficha no tiene "
+"historial ni cuenta vinculada."
+msgstr ""
+"L'esborrament no es pot desfer. Només es permet si la fitxa no té historial "
+"ni compte vinculat."
+
+#: apps/members/views.py:235 templates/members/form.html:76
+msgid "Borrar definitivamente"
+msgstr "Esborrar definitivament"
+
 #: apps/polls/apps.py:8 templates/polls/detail.html:5
 #: templates/polls/list.html:3 templates/polls/list.html:5
-#: templates/polls/new.html:5 templates/shared/base.html:36
+#: templates/polls/new.html:5 templates/shared/base.html:29
 msgid "Encuestas"
 msgstr "Enquestes"
 
@@ -1232,15 +1880,11 @@ msgstr "Una per línia. En calen almenys dues."
 msgid "Todos los músicos activos"
 msgstr "Tots els músics actius"
 
-#: apps/polls/forms.py:68 templates/activities/detail.html:86
+#: apps/polls/forms.py:68 templates/activities/detail.html:94
 msgid "Cuerdas"
 msgstr "Cordes"
 
-#: apps/polls/forms.py:71 templates/activities/detail.html:94
-msgid "Instrumentos"
-msgstr "Instruments"
-
-#: apps/polls/forms.py:74 templates/activities/detail.html:101
+#: apps/polls/forms.py:74 templates/activities/detail.html:109
 msgid "Personas"
 msgstr "Persones"
 
@@ -1271,10 +1915,6 @@ msgstr "data d'obertura"
 #: apps/polls/models.py:37
 msgid "fecha de publicación"
 msgstr "data de publicació"
-
-#: apps/polls/models.py:38
-msgid "fecha de anulación"
-msgstr "data d'anul·lació"
 
 #: apps/polls/models.py:39
 msgid "motivo de la anulación"
@@ -1328,7 +1968,7 @@ msgstr "Cada opció pot tindre com a màxim 200 caràcters."
 msgid "Hay opciones repetidas."
 msgstr "Hi ha opcions repetides."
 
-#: apps/polls/services.py:45 apps/polls/services.py:238
+#: apps/polls/services.py:45 apps/polls/services.py:245
 msgid "Una encuesta necesita al menos dos opciones."
 msgstr "Una enquesta necessita almenys dues opcions."
 
@@ -1356,74 +1996,74 @@ msgstr "Només es pot corregir una enquesta en esborrany."
 msgid "Solo se borra un borrador; una encuesta abierta se anula."
 msgstr "Només s'esborra un esborrany; una enquesta oberta s'anul·la."
 
-#: apps/polls/services.py:226
+#: apps/polls/services.py:233
 msgid "Se puede votar hasta"
 msgstr "Es pot votar fins a"
 
-#: apps/polls/services.py:236
+#: apps/polls/services.py:243
 msgid "El cierre de la votación tiene que ser posterior a ahora."
 msgstr "El tancament de la votació ha de ser posterior a ara."
 
-#: apps/polls/services.py:240
+#: apps/polls/services.py:247
 msgid "Elige a quién se consulta antes de abrir la encuesta."
 msgstr "Tria a qui es consulta abans d'obrir l'enquesta."
 
-#: apps/polls/services.py:245 templates/polls/list.html:7
+#: apps/polls/services.py:252 templates/polls/list.html:7
 #: templates/polls/new.html:3 templates/polls/new.html:6
 msgid "Nueva encuesta"
 msgstr "Nova enquesta"
 
-#: apps/polls/services.py:260
+#: apps/polls/services.py:267
 msgid "La votación no está abierta."
 msgstr "La votació no està oberta."
 
-#: apps/polls/services.py:264
+#: apps/polls/services.py:271
 msgid "No estás entre las personas consultadas."
 msgstr "No estàs entre les persones consultades."
 
-#: apps/polls/services.py:266
+#: apps/polls/services.py:273
 msgid ""
 "Ya has votado en esta encuesta. El voto es anónimo y no se puede cambiar."
 msgstr "Ja has votat en esta enquesta. El vot és anònim i no es pot canviar."
 
-#: apps/polls/services.py:270
+#: apps/polls/services.py:277
 msgid "Opción no válida."
 msgstr "Opció no vàlida."
 
-#: apps/polls/services.py:282
+#: apps/polls/services.py:289
 msgid "El resultado ya está publicado."
 msgstr "El resultat ja està publicat."
 
-#: apps/polls/services.py:284
+#: apps/polls/services.py:291
 msgid "Solo se publica el resultado cuando ha terminado el plazo de votación."
 msgstr "Només es publica el resultat quan ha acabat el termini de votació."
 
-#: apps/polls/services.py:290
+#: apps/polls/services.py:299
 #, python-format
 msgid "Votos emitidos: %(cast)s de %(recipients)s"
 msgstr "Vots emesos: %(cast)s de %(recipients)s"
 
-#: apps/polls/services.py:295
+#: apps/polls/services.py:303
 msgid "Resultado de la encuesta"
 msgstr "Resultat de l'enquesta"
 
-#: apps/polls/services.py:308
+#: apps/polls/services.py:318
 msgid "La encuesta ya está anulada."
 msgstr "L'enquesta ja està anul·lada."
 
-#: apps/polls/services.py:310
+#: apps/polls/services.py:320
 msgid "Un resultado publicado no se puede anular."
 msgstr "Un resultat publicat no es pot anul·lar."
 
-#: apps/polls/services.py:313
+#: apps/polls/services.py:323
 msgid "Indica el motivo de la anulación."
 msgstr "Indica el motiu de l'anul·lació."
 
-#: apps/polls/services.py:325
+#: apps/polls/services.py:335
 msgid "Encuesta anulada"
 msgstr "Enquesta anul·lada"
 
-#: apps/polls/views.py:73 config/panel.py:70
+#: apps/polls/views.py:73 config/panel.py:61
 msgid "No tienes permisos para acceder a esta parte del panel de la junta."
 msgstr "No tens permisos per a accedir a esta part del panell de la junta."
 
@@ -1451,7 +2091,8 @@ msgstr "Votació oberta. S'ha avisat %(notified)s persones consultades."
 
 #: apps/polls/views.py:184
 #, python-format
-msgid "Resultado publicado. Se ha avisado a %(notified)s personas consultadas."
+msgid ""
+"Resultado publicado. Se ha avisado a %(notified)s personas consultadas."
 msgstr "Resultat publicat. S'ha avisat %(notified)s persones consultades."
 
 #: apps/polls/views.py:190
@@ -1462,10 +2103,6 @@ msgstr "Enquesta anul·lada. S'ha avisat %(notified)s persones consultades."
 #: apps/polls/views.py:194
 msgid "Borrador borrado."
 msgstr "Esborrany esborrat."
-
-#: apps/polls/views.py:196
-msgid "Acción no reconocida."
-msgstr "Acció no reconeguda."
 
 #: apps/transport/apps.py:8
 msgid "Transporte"
@@ -1519,57 +2156,21 @@ msgstr "assignació de transport"
 msgid "asignaciones de transporte"
 msgstr "assignacions de transport"
 
-#: config/panel.py:35
-msgid "Identificador externo"
-msgstr "Identificador extern"
-
-#: config/panel.py:36
-msgid "Nombre"
-msgstr "Nom"
-
-#: config/panel.py:37
-msgid "Apellidos (juntos)"
-msgstr "Cognoms (junts)"
-
-#: config/panel.py:38
-msgid "Primer apellido"
-msgstr "Primer cognom"
-
-#: config/panel.py:39
-msgid "Segundo apellido"
-msgstr "Segon cognom"
-
-#: config/panel.py:41
-msgid "Dirección"
-msgstr "Adreça"
-
-#: config/panel.py:42
-msgid "Teléfono"
-msgstr "Telèfon"
-
-#: config/panel.py:43 templates/members/access_invitations.html:17
-msgid "Correo electrónico"
-msgstr "Correu electrònic"
-
-#: config/panel.py:44
-msgid "Tipo de miembro"
-msgstr "Tipus de membre"
-
-#: config/panel.py:137
+#: config/panel.py:146
 msgid "Invitación revocada."
 msgstr "Invitació revocada."
 
-#: config/panel.py:165
+#: config/panel.py:174
 #, python-format
 msgid "Se han enviado %(count)s invitaciones."
 msgstr "S'han enviat %(count)s invitacions."
 
-#: config/panel.py:169
+#: config/panel.py:178
 #, python-format
 msgid "%(count)s invitaciones no pudieron enviarse; puedes reenviarlas."
 msgstr "%(count)s invitacions no s'han pogut enviar; pots reenviar-les."
 
-#: config/panel.py:174
+#: config/panel.py:183
 #, python-format
 msgid ""
 "No se enviaron %(count)s selecciones porque ya tienen cuenta o no son "
@@ -1578,23 +2179,23 @@ msgstr ""
 "No s'han enviat %(count)s seleccions perquè ja tenen compte o no són "
 "elegibles."
 
-#: config/panel.py:212
+#: config/panel.py:221
 msgid "Este fichero ya se había cargado; se muestra el lote existente."
 msgstr "Este fitxer ja s'havia carregat; es mostra el lot existent."
 
-#: config/panel.py:248
+#: config/panel.py:257
 msgid "El fichero temporal ya no está disponible."
 msgstr "El fitxer temporal ja no està disponible."
 
-#: config/panel.py:254
+#: config/panel.py:263
 msgid "El fichero temporal no coincide con la carga original."
 msgstr "El fitxer temporal no coincideix amb la càrrega original."
 
-#: config/panel.py:263
+#: config/panel.py:272
 msgid "Previsualización generada; el censo todavía no se ha modificado."
 msgstr "Previsualització generada; el cens encara no s'ha modificat."
 
-#: config/panel.py:275
+#: config/panel.py:284
 #, python-format
 msgid ""
 "Importación confirmada: %(created)s altas, %(updated)s actualizaciones y "
@@ -1603,7 +2204,7 @@ msgstr ""
 "Importació confirmada: %(created)s altes, %(updated)s actualitzacions i "
 "%(rejected)s rebutjos."
 
-#: config/panel.py:319
+#: config/panel.py:328
 msgid ""
 "Actividad creada en borrador. Revísala, convoca y publícala cuando esté "
 "lista."
@@ -1611,60 +2212,61 @@ msgstr ""
 "Activitat creada en esborrany. Revisa-la, convoca i publica-la quan estiga "
 "llesta."
 
-#: config/panel.py:373
+#: config/panel.py:386
 #, python-format
 msgid "Actividad publicada. Se ha avisado a %(notified)s personas convocadas."
 msgstr "Activitat publicada. S'ha avisat %(notified)s persones convocades."
 
-#: config/panel.py:384
+#: config/panel.py:397
 #, python-format
 msgid "Actividad cancelada. Se ha avisado a %(notified)s personas convocadas."
 msgstr "Activitat cancel·lada. S'ha avisat %(notified)s persones convocades."
 
-#: config/panel.py:403
+#: config/panel.py:416
 msgid "Elige al menos una cuerda, un instrumento o una persona."
 msgstr "Tria almenys una corda, un instrument o una persona."
 
-#: config/panel.py:411
+#: config/panel.py:424
 msgid "Asistencia actualizada."
 msgstr "Assistència actualitzada."
 
-#: config/panel.py:498
+#: config/panel.py:519
 msgid ""
 "Ninguna de las personas elegidas es un músico activo; no se ha convocado a "
 "nadie."
-msgstr "Cap de les persones triades és un músic actiu; no s'ha convocat ningú."
+msgstr ""
+"Cap de les persones triades és un músic actiu; no s'ha convocat ningú."
 
-#: config/panel.py:505
+#: config/panel.py:526
 #, python-format
 msgid ""
-"Convocatoria preparada para %(eligible)s músicos activos: %(created)s nuevas "
-"y %(existing)s ya existentes."
+"Convocatoria preparada para %(eligible)s músicos activos: %(created)s nuevas"
+" y %(existing)s ya existentes."
 msgstr ""
-"Convocatòria preparada per a %(eligible)s músics actius: %(created)s noves i "
-"%(existing)s ja existents."
+"Convocatòria preparada per a %(eligible)s músics actius: %(created)s noves i"
+" %(existing)s ja existents."
 
-#: config/panel.py:516
+#: config/panel.py:537
 msgid "Actividad actualizada. No había nada que avisar."
 msgstr "Activitat actualitzada. No hi havia res a avisar."
 
-#: config/panel.py:522
+#: config/panel.py:543
 #, python-format
 msgid ""
-"Actividad actualizada. Se ha avisado a %(notified)s personas y se han anulado"
-" %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar de "
-"nuevo."
+"Actividad actualizada. Se ha avisado a %(notified)s personas y se han "
+"anulado %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar "
+"de nuevo."
 msgstr ""
 "Activitat actualitzada. S'ha avisat %(notified)s persones i s'han anul·lat "
 "%(reset)s respostes: el canvi de data o lloc obliga a confirmar de nou."
 
-#: config/panel.py:531
+#: config/panel.py:552
 #, python-format
 msgid ""
 "Actividad actualizada. Se ha avisado a %(notified)s personas convocadas."
 msgstr "Activitat actualitzada. S'ha avisat %(notified)s persones convocades."
 
-#: config/panel.py:537
+#: config/panel.py:558
 msgid ""
 "El plazo de respuesta ya ha terminado, así que nadie puede volver a "
 "confirmar. Amplíalo para recoger las respuestas."
@@ -1684,44 +2286,140 @@ msgstr "No tens permisos per a accedir a esta pàgina."
 msgid "Consulta en «Mi acceso» qué roles tienes y qué puedes hacer."
 msgstr "Consulta en «El meu accés» quins rols tens i què pots fer."
 
-#: templates/accounts/activate_invitation.html:7
+#: templates/accounts/access_roles.html:3
+#: templates/accounts/access_roles.html:6 templates/members/list.html:14
+#: templates/shared/base.html:34
+msgid "Accesos y roles"
+msgstr "Accessos i rols"
+
+#: templates/accounts/access_roles.html:5
+#: templates/members/access_invitations.html:5 templates/members/form.html:5
+msgid "Volver al censo"
+msgstr "Tornar al cens"
+
+#: templates/accounts/access_roles.html:7
+msgid ""
+"Los roles dan los permisos en esta asociación; los cargos de la ficha no. "
+"Solo administración concede o quita el rol de administración, y siempre debe"
+" quedar al menos una cuenta de administración activa. Para dar acceso a "
+"alguien nuevo, invítalo desde «Gestionar accesos»."
+msgstr ""
+"Els rols donen els permisos en esta associació; els càrrecs de la fitxa no. "
+"Només administració concedeix o lleva el rol d'administració, i sempre ha de"
+" quedar almenys un compte d'administració actiu. Per a donar accés a algú "
+"nou, convida'l des de «Gestionar accessos»."
+
+#: templates/accounts/access_roles.html:11
+#: templates/accounts/access_roles.html:78
+msgid "Cuenta"
+msgstr "Compte"
+
+#: templates/accounts/access_roles.html:12
+msgid "Ficha"
+msgstr "Fitxa"
+
+#: templates/accounts/access_roles.html:13 templates/panel/my_access.html:20
+msgid "Roles"
+msgstr "Rols"
+
+#: templates/accounts/access_roles.html:14
+msgid "Acceso"
+msgstr "Accés"
+
+#: templates/accounts/access_roles.html:21
+msgid "Sin ficha"
+msgstr "Sense fitxa"
+
+#: templates/accounts/access_roles.html:31
+msgid "Quitar"
+msgstr "Llevar"
+
+#: templates/accounts/access_roles.html:34
+msgid "Lo asigna el operador de la plataforma"
+msgstr "L'assigna l'operador de la plataforma"
+
+#: templates/accounts/access_roles.html:37
+msgid "Sin roles"
+msgstr "Sense rols"
+
+#: templates/accounts/access_roles.html:48
+msgid "Conceder rol"
+msgstr "Concedir rol"
+
+#: templates/accounts/access_roles.html:60
+msgid "Desactivar"
+msgstr "Desactivar"
+
+#: templates/accounts/access_roles.html:63
+msgid "Desactivado"
+msgstr "Desactivat"
+
+#: templates/accounts/access_roles.html:64 templates/members/form.html:71
+msgid "Reactivar"
+msgstr "Reactivar"
+
+#: templates/accounts/access_roles.html:70
+msgid "Nadie tiene acceso todavía a esta asociación."
+msgstr "Encara no té ningú accés a esta associació."
+
+#: templates/accounts/access_roles.html:75
+msgid "Últimos cambios"
+msgstr "Últims canvis"
+
+#: templates/accounts/access_roles.html:78
+msgid "Fecha"
+msgstr "Data"
+
+#: templates/accounts/access_roles.html:78
+msgid "Cambio"
+msgstr "Canvi"
+
+#: templates/accounts/access_roles.html:78
+msgid "Realizado por"
+msgstr "Realitzat per"
+
+#: templates/accounts/access_roles.html:91
+msgid "Todavía no hay cambios registrados."
+msgstr "Encara no hi ha canvis registrats."
+
+#: templates/accounts/activate_invitation.html:3
 msgid "Activa tu cuenta"
 msgstr "Activa el teu compte"
 
-#: templates/accounts/activate_invitation.html:13
+#: templates/accounts/activate_invitation.html:6
 #, python-format
 msgid "Vas a activar el acceso de %(member)s a %(association)s."
 msgstr "Activaràs l'accés de %(member)s a %(association)s."
 
-#: templates/accounts/activate_invitation.html:17
+#: templates/accounts/activate_invitation.html:10
 msgid "Contraseña"
 msgstr "Contrasenya"
 
-#: templates/accounts/activate_invitation.html:19
+#: templates/accounts/activate_invitation.html:12
 msgid "Repite la contraseña"
 msgstr "Repetix la contrasenya"
 
-#: templates/accounts/activate_invitation.html:21
+#: templates/accounts/activate_invitation.html:14
 msgid "Crear cuenta"
 msgstr "Crear el compte"
 
-#: templates/accounts/activation_complete.html:4
+#: templates/accounts/activation_complete.html:3
 msgid "Cuenta activada"
 msgstr "Compte activat"
 
-#: templates/accounts/activation_complete.html:4
+#: templates/accounts/activation_complete.html:3
 msgid ""
-"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la contraseña"
-" que acabas de crear."
+"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la "
+"contraseña que acabas de crear."
 msgstr ""
 "Ja pots iniciar la sessió en l'aplicació mòbil amb el teu correu i la "
 "contrasenya que acabes de crear."
 
-#: templates/accounts/invitation_invalid.html:4
+#: templates/accounts/invitation_invalid.html:3
 msgid "Invitación no disponible"
 msgstr "Invitació no disponible"
 
-#: templates/accounts/invitation_invalid.html:4
+#: templates/accounts/invitation_invalid.html:3
 msgid ""
 "El enlace ha caducado, ya se utilizó o fue revocado. Solicita una nueva "
 "invitación a la asociación."
@@ -1730,7 +2428,7 @@ msgstr ""
 "invitació a l'associació."
 
 #: templates/activities/create.html:3 templates/activities/create.html:6
-#: templates/shared/dashboard.html:18
+#: templates/shared/dashboard.html:11
 msgid "Nueva actividad"
 msgstr "Nova activitat"
 
@@ -1752,41 +2450,46 @@ msgstr ""
 msgid "Crear en borrador"
 msgstr "Crear en esborrany"
 
-#: templates/activities/detail.html:26
+#: templates/activities/detail.html:13
+#, python-format
+msgid "Remunerada · %(amount)s por músico"
+msgstr "Remunerada · %(amount)s per músic"
+
+#: templates/activities/detail.html:34
 msgid "Publish activity"
 msgstr "Publica l'activitat"
 
-#: templates/activities/detail.html:31
+#: templates/activities/detail.html:39
 msgid "Cambiar la ficha"
 msgstr "Canviar la fitxa"
 
-#: templates/activities/detail.html:34
+#: templates/activities/detail.html:42
 msgid ""
 "La actividad está publicada: cada cambio se avisa a quien esté convocado. "
-"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas ya"
-" dadas y obliga a confirmar de nuevo."
+"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas "
+"ya dadas y obliga a confirmar de nuevo."
 msgstr ""
-"L'activitat està publicada: cada canvi s'avisa a qui estiga convocat. Canviar"
-" la data, l'hora de concentració o el lloc anul·la les respostes ja donades i"
-" obliga a confirmar de nou."
+"L'activitat està publicada: cada canvi s'avisa a qui estiga convocat. "
+"Canviar la data, l'hora de concentració o el lloc anul·la les respostes ja "
+"donades i obliga a confirmar de nou."
 
-#: templates/activities/detail.html:41
+#: templates/activities/detail.html:49
 msgid "Guardar y avisar"
 msgstr "Guardar i avisar"
 
-#: templates/activities/detail.html:45
+#: templates/activities/detail.html:53
 msgid "Cancelar la actividad"
 msgstr "Cancel·lar l'activitat"
 
-#: templates/activities/detail.html:49 templates/polls/_cancel.html:7
+#: templates/activities/detail.html:57 templates/polls/_cancel.html:7
 msgid "Motivo (se incluye en el aviso)"
 msgstr "Motiu (s'inclou en l'avís)"
 
-#: templates/activities/detail.html:53
+#: templates/activities/detail.html:61
 msgid "Cancelar y avisar"
 msgstr "Cancel·lar i avisar"
 
-#: templates/activities/detail.html:59
+#: templates/activities/detail.html:67
 #, python-format
 msgid ""
 "\n"
@@ -1805,79 +2508,200 @@ msgstr[1] ""
 "    Hi ha %(musician_count)s músics actius disponibles.\n"
 "  "
 
-#: templates/activities/detail.html:69 templates/activities/detail.html:110
+#: templates/activities/detail.html:77 templates/activities/detail.html:118
 msgid "Actividad obligatoria: una ausencia deberá justificarse"
 msgstr "Activitat obligatòria: caldrà justificar una absència"
 
-#: templates/activities/detail.html:73
+#: templates/activities/detail.html:81
 msgid "Convocar a todos los músicos activos"
 msgstr "Convocar tots els músics actius"
 
-#: templates/activities/detail.html:78
+#: templates/activities/detail.html:86
 msgid "Convocar a una selección"
 msgstr "Convocar una selecció"
 
-#: templates/activities/detail.html:80
+#: templates/activities/detail.html:88
 msgid ""
-"Marca cuerdas, instrumentos o personas: se convoca a quien cumpla cualquiera "
-"de las casillas. Solo cuentan los músicos activos; quien ya esté convocado no"
-" se duplica."
+"Marca cuerdas, instrumentos o personas: se convoca a quien cumpla cualquiera"
+" de las casillas. Solo cuentan los músicos activos; quien ya esté convocado "
+"no se duplica."
 msgstr ""
 "Marca cordes, instruments o persones: es convoca qui complisca qualsevol de "
 "les caselles. Només compten els músics actius; qui ja estiga convocat no es "
 "duplica."
 
-#: templates/activities/detail.html:105
+#: templates/activities/detail.html:113
 msgid "No hay músicos activos en el censo."
 msgstr "No hi ha músics actius en el cens."
 
-#: templates/activities/detail.html:113
+#: templates/activities/detail.html:121
 msgid "Convocar a la selección"
 msgstr "Convocar la selecció"
 
-#: templates/activities/detail.html:117
+#: templates/activities/detail.html:125
 msgid "Invitations"
 msgstr "Convocatòries"
 
-#: templates/activities/detail.html:121
+#: templates/activities/detail.html:128
+msgid ""
+"Solo devenga el importe quien consta como presente en la lista. La respuesta"
+" a la convocatoria no cuenta."
+msgstr ""
+"Només meritja l'import qui consta com a present en la llista. La resposta a "
+"la convocatòria no compta."
+
+#: templates/activities/detail.html:132
+#, python-format
+msgid ""
+"Hay %(incident_count)s pago registrado que ya no corresponde a una "
+"asistencia presente. Revísalo y anúlalo si procede."
+msgid_plural ""
+"Hay %(incident_count)s pagos registrados que ya no corresponden a una "
+"asistencia presente. Revísalos y anúlalos si procede."
+msgstr[0] ""
+"Hi ha %(incident_count)s pagament registrat que ja no correspon a una "
+"assistència present. Revisa'l i anul·la'l si cal."
+msgstr[1] ""
+"Hi ha %(incident_count)s pagaments registrats que ja no corresponen a una "
+"assistència present. Revisa'ls i anul·la'ls si cal."
+
+#: templates/activities/detail.html:141
+#, python-format
+msgid "Marcar pagado el presente pendiente (%(pending_count)s)"
+msgid_plural "Marcar pagados todos los presentes (%(pending_count)s)"
+msgstr[0] "Marcar pagat el present pendent (%(pending_count)s)"
+msgstr[1] "Marcar pagats tots els presents (%(pending_count)s)"
+
+#: templates/activities/detail.html:150 templates/activities/payments.html:25
 msgid "Musician"
 msgstr "Músic"
 
-#: templates/activities/detail.html:122
+#: templates/activities/detail.html:151
 msgid "Response"
 msgstr "Resposta"
 
-#: templates/activities/detail.html:123 templates/activities/detail.html:143
+#: templates/activities/detail.html:152 templates/activities/detail.html:177
 msgid "Attendance"
 msgstr "Assistència"
 
-#: templates/activities/detail.html:124
+#: templates/activities/detail.html:153
 msgid "Action"
 msgstr "Acció"
 
-#: templates/activities/detail.html:136
+#: templates/activities/detail.html:155
+msgid "Importe"
+msgstr "Import"
+
+#: templates/activities/detail.html:156
+msgid "Pago"
+msgstr "Pagament"
+
+#: templates/activities/detail.html:170
 msgid "Not recorded"
 msgstr "Sense registrar"
 
-#: templates/activities/detail.html:144
+#: templates/activities/detail.html:178
 msgid "Present"
 msgstr "Present"
 
-#: templates/activities/detail.html:145
+#: templates/activities/detail.html:179
 msgid "Absent"
 msgstr "Absent"
 
-#: templates/activities/detail.html:146
+#: templates/activities/detail.html:180
 msgid "Excused"
 msgstr "Absència justificada"
 
-#: templates/activities/detail.html:148
+#: templates/activities/detail.html:182
 msgid "Save"
 msgstr "Guarda"
 
-#: templates/activities/detail.html:153
+#: templates/activities/detail.html:189 templates/activities/payments.html:28
+#: templates/activities/payments.html:48
+msgid "Pagado"
+msgstr "Pagat"
+
+#: templates/activities/detail.html:191 templates/activities/payments.html:49
+msgid "Incidencia: ya no devenga"
+msgstr "Incidència: ja no meritja"
+
+#: templates/activities/detail.html:197
+msgid "Anular pago"
+msgstr "Anul·lar pagament"
+
+#: templates/activities/detail.html:201 templates/activities/payments.html:27
+#: templates/activities/payments.html:51
+msgid "Adeudado"
+msgstr "Degut"
+
+#: templates/activities/detail.html:207 templates/activities/payments.html:56
+msgid "Marcar pagado"
+msgstr "Marcar pagat"
+
+#: templates/activities/detail.html:211
+msgid "No devenga"
+msgstr "No meritja"
+
+#: templates/activities/detail.html:218
 msgid "There are no invited members."
 msgstr "No hi ha membres convocats."
+
+#: templates/activities/payments.html:3 templates/activities/payments.html:5
+#: templates/shared/base.html:31
+msgid "Pagos a músicos"
+msgstr "Pagaments a músics"
+
+#: templates/activities/payments.html:7
+msgid ""
+"Lo que se adeuda a cada músico por las actividades remuneradas a las que "
+"consta como presente. Registrar un pago no mueve dinero: deja constancia de "
+"que ya se ha pagado."
+msgstr ""
+"El que es deu a cada músic per les activitats remunerades a què consta com a"
+" present. Registrar un pagament no mou diners: deixa constància que ja s'ha "
+"pagat."
+
+#: templates/activities/payments.html:10
+msgid "Total adeudado"
+msgstr "Total degut"
+
+#: templates/activities/payments.html:11
+msgid "Total pagado"
+msgstr "Total pagat"
+
+#: templates/activities/payments.html:13
+msgid "Incidencias"
+msgstr "Incidències"
+
+#: templates/activities/payments.html:18 templates/activities/payments.html:35
+msgid "Incidencia"
+msgstr "Incidència"
+
+#: templates/activities/payments.html:19
+msgid ""
+"Hay pagos registrados de asistencias que ya no constan como presentes, o de "
+"actividades canceladas o que ya no son remuneradas. Revísalos en el detalle "
+"de la actividad."
+msgstr ""
+"Hi ha pagaments registrats d'assistències que ja no consten com a presents, "
+"o d'activitats cancel·lades o que ja no són remunerades. Revisa'ls en el "
+"detall de l'activitat."
+
+#: templates/activities/payments.html:26
+msgid "Actividades adeudadas"
+msgstr "Activitats degudes"
+
+#: templates/activities/payments.html:29
+msgid "Desglose"
+msgstr "Desglossament"
+
+#: templates/activities/payments.html:41
+msgid "Ver desglose"
+msgstr "Veure desglossament"
+
+#: templates/activities/payments.html:66
+msgid "No hay importes devengados ni pagos registrados."
+msgstr "No hi ha imports meritats ni pagaments registrats."
 
 #: templates/admin/base_site.html:5
 msgid "Django site admin"
@@ -1887,24 +2711,76 @@ msgstr "Administració de Gesband"
 msgid "Django administration"
 msgstr "Administració de Gesband"
 
-#: templates/admin/base_site.html:18 templates/registration/login.html:23
-#: templates/shared/base.html:41
+#: templates/admin/base_site.html:18 templates/registration/login.html:20
+#: templates/shared/base.html:45
 msgid "Language"
 msgstr "Idioma"
 
-#: templates/admin/base_site.html:24 templates/registration/login.html:29
-#: templates/shared/base.html:47
+#: templates/admin/base_site.html:24 templates/registration/login.html:26
+#: templates/shared/base.html:51
 msgid "Change"
 msgstr "Canvia"
+
+# Sistema visual del panel e imagen de la banda (decisión 0010)
+#: templates/associations/branding.html:3
+#: templates/associations/branding.html:8 templates/shared/base.html:37
+msgid "Imagen de la banda"
+msgstr "Imatge de la banda"
+
+#: templates/associations/branding.html:9
+msgid ""
+"Lo que elijas aquí viste el panel y la app de todos los músicos de la banda."
+msgstr ""
+"El que tries ací vist el panell i l'app de tots els músics de la banda."
+
+#: templates/associations/branding.html:41
+msgid "Colores"
+msgstr "Colors"
+
+#: templates/associations/branding.html:54
+msgid ""
+"Escenario: oscura y contundente. Partitura: clásica y editorial. Festa: "
+"cálida y popular."
+msgstr ""
+"Escenari: fosca i contundent. Partitura: clàssica i editorial. Festa: càlida"
+" i popular."
+
+#: templates/associations/branding.html:67
+msgid "Guardar"
+msgstr "Guardar"
+
+#: templates/associations/branding.html:71
+#: templates/associations/branding.html:72
+msgid "Vista previa"
+msgstr "Previsualització"
+
+#: templates/associations/branding.html:75
+msgid "Próxima actuación"
+msgstr "Pròxima actuació"
+
+#: templates/associations/branding.html:76
+msgid "Concierto de ejemplo"
+msgstr "Concert d'exemple"
+
+#: templates/associations/branding.html:77
+msgid "Así se verá el cartel de la próxima actividad."
+msgstr "Així es veurà el cartell de la pròxima activitat."
+
+#: templates/associations/branding.html:81
+msgid "Asistiré"
+msgstr "Hi aniré"
+
+#: templates/associations/branding.html:85
+msgid ""
+"La vista previa cambia al elegir; nada se guarda hasta pulsar «Guardar»."
+msgstr ""
+"La previsualització canvia en triar; no es guarda res fins que prems "
+"«Guardar»."
 
 #: templates/members/access_invitations.html:3
 #: templates/members/access_invitations.html:6
 msgid "Accesos de músicos"
 msgstr "Accessos dels músics"
-
-#: templates/members/access_invitations.html:5
-msgid "Volver al censo"
-msgstr "Tornar al cens"
 
 #: templates/members/access_invitations.html:7
 msgid ""
@@ -1968,6 +2844,115 @@ msgstr "Enviar o reenviar als seleccionats"
 msgid "Enviar o reenviar a todos los elegibles"
 msgstr "Enviar o reenviar a tots els elegibles"
 
+#: templates/members/confirm.html:8
+msgid "No se puede hacer por estos motivos; usa la baja en su lugar:"
+msgstr "No es pot fer per estos motius; usa la baixa en el seu lloc:"
+
+#: templates/members/confirm.html:12
+msgid "Volver"
+msgstr "Tornar"
+
+#: templates/members/confirm.html:21
+msgid "Cancelar"
+msgstr "Cancel·lar"
+
+#: templates/members/form.html:3 templates/members/form.html:13
+#: templates/members/list.html:8
+msgid "Nueva ficha"
+msgstr "Nova fitxa"
+
+#: templates/members/form.html:10
+msgid "Con cuenta de acceso vinculada"
+msgstr "Amb compte d'accés vinculat"
+
+#: templates/members/form.html:14
+msgid ""
+"Solo son obligatorios el nombre y los apellidos. Crear una ficha no envía "
+"ninguna invitación."
+msgstr ""
+"Només són obligatoris el nom i els cognoms. Crear una fitxa no envia cap "
+"invitació."
+
+#: templates/members/form.html:22
+msgid "La asociación todavía no tiene instrumentos dados de alta."
+msgstr "L'associació encara no té instruments donats d'alta."
+
+#: templates/members/form.html:25 templates/polls/detail.html:19
+msgid "Guardar cambios"
+msgstr "Guardar els canvis"
+
+#: templates/members/form.html:25
+msgid "Crear ficha"
+msgstr "Crear la fitxa"
+
+#: templates/members/form.html:32
+#, python-format
+msgid "Foto de %(member)s"
+msgstr "Foto de %(member)s"
+
+#: templates/members/form.html:37
+msgid "Eliminar foto"
+msgstr "Eliminar la foto"
+
+#: templates/members/form.html:40
+msgid "Sin foto."
+msgstr "Sense foto."
+
+#: templates/members/form.html:47
+msgid "Sustituir foto"
+msgstr "Substituir la foto"
+
+#: templates/members/form.html:47
+msgid "Subir foto"
+msgstr "Pujar una foto"
+
+#: templates/members/form.html:51
+msgid "Historial"
+msgstr "Historial"
+
+#: templates/members/form.html:53
+#, python-format
+msgid "%(counter)s convocatoria"
+msgid_plural "%(counter)s convocatorias"
+msgstr[0] "%(counter)s convocatòria"
+msgstr[1] "%(counter)s convocatòries"
+
+#: templates/members/form.html:54
+#, python-format
+msgid "%(counter)s encuesta"
+msgid_plural "%(counter)s encuestas"
+msgstr[0] "%(counter)s enquesta"
+msgstr[1] "%(counter)s enquestes"
+
+#: templates/members/form.html:55
+#, python-format
+msgid "%(counter)s asignación de transporte"
+msgid_plural "%(counter)s asignaciones de transporte"
+msgstr[0] "%(counter)s assignació de transport"
+msgstr[1] "%(counter)s assignacions de transport"
+
+#: templates/members/form.html:58
+#, python-format
+msgid "Último cambio de estado: %(date)s por %(who)s."
+msgstr "Últim canvi d'estat: %(date)s per %(who)s."
+
+#: templates/members/form.html:61
+msgid "Alta y baja"
+msgstr "Alta i baixa"
+
+#: templates/members/form.html:67
+msgid "La baja conserva el historial y se puede deshacer."
+msgstr "La baixa conserva l'historial i es pot desfer."
+
+#: templates/members/form.html:78
+msgid "Esta ficha no se puede borrar sin perder su historial. Usa la baja."
+msgstr ""
+"Esta fitxa no es pot esborrar sense perdre el seu historial. Usa la baixa."
+
+#: templates/members/form.html:81
+msgid "Borrar esta ficha…"
+msgstr "Esborrar esta fitxa…"
+
 #: templates/members/import_detail.html:3
 #: templates/members/import_detail.html:6
 msgid "Member import"
@@ -1977,7 +2962,7 @@ msgstr "Importació de membres"
 msgid "Back to imports"
 msgstr "Tornar a importacions"
 
-#: templates/members/import_detail.html:10
+#: templates/members/import_detail.html:12
 msgid ""
 "Choose which census field corresponds to each source column. Leave columns "
 "you do not need unassigned."
@@ -1985,85 +2970,145 @@ msgstr ""
 "Tria quin camp del cens correspon a cada columna d'origen. Deixa sense "
 "assignar les columnes que no necessites."
 
-#: templates/members/import_detail.html:16
+#: templates/members/import_detail.html:13
+msgid ""
+"Las columnas Cuerda e Instrumentos son opcionales. Una celda puede llevar "
+"varios instrumentos separados por ; o /; el primero será el principal."
+msgstr ""
+"Les columnes Corda i Instruments són opcionals. Una cel·la pot portar "
+"diversos instruments separats per ; o /; el primer serà el principal."
+
+#: templates/members/import_detail.html:19
 msgid "Source column"
 msgstr "Columna d'origen"
 
-#: templates/members/import_detail.html:16
+#: templates/members/import_detail.html:19
 msgid "Census field"
 msgstr "Camp del cens"
 
-#: templates/members/import_detail.html:23
+#: templates/members/import_detail.html:26
 msgid "Do not import"
 msgstr "No importar"
 
-#: templates/members/import_detail.html:31
+#: templates/members/import_detail.html:34
 msgid "Generate preview"
 msgstr "Generar previsualització"
 
-#: templates/members/import_detail.html:37
+#: templates/members/import_detail.html:40
 msgid ""
-"No member has been created or updated yet. Rows with errors will be rejected "
-"when you confirm."
+"No member has been created or updated yet. Rows with errors will be rejected"
+" when you confirm."
 msgstr ""
 "Encara no s'ha creat ni actualitzat cap membre. Les files amb errors es "
 "rebutjaran en confirmar."
 
-#: templates/members/import_detail.html:40
+#: templates/members/import_detail.html:43
 msgid "created"
 msgstr "altes"
 
-#: templates/members/import_detail.html:41
+#: templates/members/import_detail.html:44
 msgid "updated"
 msgstr "actualitzacions"
 
-#: templates/members/import_detail.html:42
+#: templates/members/import_detail.html:45
 msgid "rejected"
 msgstr "rebutjos"
 
-#: templates/members/import_detail.html:47
+#: templates/members/import_detail.html:50
+msgid "Catálogo de cuerdas e instrumentos"
+msgstr "Catàleg de cordes i instruments"
+
+#: templates/members/import_detail.html:53
+msgid ""
+"Al confirmar se añadirá al catálogo de la banda lo que todavía no existe. "
+"Revisa que los nombres sean correctos."
+msgstr ""
+"En confirmar s'afegirà al catàleg de la banda el que encara no existeix. "
+"Revisa que els noms siguen correctes."
+
+#: templates/members/import_detail.html:57
+#, python-format
+msgid "Se creará %(counter)s cuerda:"
+msgid_plural "Se crearán %(counter)s cuerdas:"
+msgstr[0] "Es crearà %(counter)s corda:"
+msgstr[1] "Es crearan %(counter)s cordes:"
+
+#: templates/members/import_detail.html:57
+#, python-format
+msgid "Se creó %(counter)s cuerda:"
+msgid_plural "Se crearon %(counter)s cuerdas:"
+msgstr[0] "Es va crear %(counter)s corda:"
+msgstr[1] "Es van crear %(counter)s cordes:"
+
+#: templates/members/import_detail.html:61
+#, python-format
+msgid "Se creará %(counter)s instrumento:"
+msgid_plural "Se crearán %(counter)s instrumentos:"
+msgstr[0] "Es crearà %(counter)s instrument:"
+msgstr[1] "Es crearan %(counter)s instruments:"
+
+#: templates/members/import_detail.html:61
+#, python-format
+msgid "Se creó %(counter)s instrumento:"
+msgid_plural "Se crearon %(counter)s instrumentos:"
+msgstr[0] "Es va crear %(counter)s instrument:"
+msgstr[1] "Es van crear %(counter)s instruments:"
+
+#: templates/members/import_detail.html:66
+msgid ""
+"Todas las cuerdas e instrumentos del fichero ya existen en el catálogo de la"
+" banda."
+msgstr ""
+"Totes les cordes i instruments del fitxer ja existeixen en el catàleg de la "
+"banda."
+
+#: templates/members/import_detail.html:68
+msgid "No se añadió ninguna cuerda ni instrumento al catálogo."
+msgstr "No es va afegir cap corda ni instrument al catàleg."
+
+#: templates/members/import_detail.html:74
 msgid "Row"
 msgstr "Fila"
 
-#: templates/members/import_detail.html:47
+#: templates/members/import_detail.html:74
 msgid "External ID"
 msgstr "Identificador extern"
 
-#: templates/members/import_detail.html:47 templates/members/list.html:15
+#: templates/members/import_detail.html:74 templates/members/list.html:21
 msgid "Name"
 msgstr "Nom"
 
-#: templates/members/import_detail.html:47
+#: templates/members/import_detail.html:74
 msgid "Result"
 msgstr "Resultat"
 
-#: templates/members/import_detail.html:58
+#: templates/members/import_detail.html:89
 msgid "Created"
 msgstr "Creat"
 
-#: templates/members/import_detail.html:59
+#: templates/members/import_detail.html:90
 msgid "Updated"
 msgstr "Actualitzat"
 
-#: templates/members/import_detail.html:60
+#: templates/members/import_detail.html:91
 msgid "Rejected"
 msgstr "Rebutjat"
 
-#: templates/members/import_detail.html:61
+#: templates/members/import_detail.html:92
 msgid "Ready"
 msgstr "Preparat"
 
-#: templates/members/import_detail.html:73
+#: templates/members/import_detail.html:107
 msgid "Confirm import"
 msgstr "Confirmar importació"
 
-#: templates/members/import_detail.html:76
+#: templates/members/import_detail.html:110
 msgid "No hay filas válidas para confirmar. Corrige el mapeo o el fichero."
 msgstr ""
 "No hi ha files vàlides per a confirmar. Corregix l'assignació o el fitxer."
 
 #: templates/members/import_start.html:3 templates/members/import_start.html:5
-#: templates/members/list.html:8
+#: templates/members/list.html:10
 msgid "Import members"
 msgstr "Importar membres"
 
@@ -2095,12 +3140,12 @@ msgstr "Importacions recents"
 msgid "File"
 msgstr "Fitxer"
 
-#: templates/members/import_start.html:25 templates/shared/dashboard.html:25
+#: templates/members/import_start.html:25 templates/shared/dashboard.html:60
 msgid "Date"
 msgstr "Data"
 
-#: templates/members/import_start.html:25 templates/members/list.html:18
-#: templates/shared/dashboard.html:27
+#: templates/members/import_start.html:25 templates/members/list.html:24
+#: templates/shared/dashboard.html:63
 msgid "Status"
 msgstr "Estat"
 
@@ -2108,33 +3153,37 @@ msgstr "Estat"
 msgid "There are no imports yet."
 msgstr "Encara no hi ha importacions."
 
-#: templates/members/list.html:3 templates/members/list.html:5
-#: templates/shared/base.html:35
+#: templates/members/list.html:3 templates/members/list.html:6
+#: templates/shared/base.html:28
 msgid "Members"
 msgstr "Membres"
 
-#: templates/members/list.html:9
+#: templates/members/list.html:13
 msgid "Gestionar accesos"
 msgstr "Gestionar accessos"
 
-#: templates/members/list.html:16
+#: templates/members/list.html:22
 msgid "Type"
 msgstr "Tipus"
 
-#: templates/members/list.html:17
+#: templates/members/list.html:23
 msgid "Instrument"
 msgstr "Instrument"
 
-#: templates/members/list.html:30
+#: templates/members/list.html:36
 msgid "No instrument"
 msgstr "Sense instrument"
 
-#: templates/members/list.html:36
+#: templates/members/list.html:42
 msgid "There are no members."
 msgstr "No hi ha membres."
 
+#: templates/members/list.html:42
+msgid "Crea la primera ficha con «Nueva ficha»."
+msgstr "Crea la primera fitxa amb «Nova fitxa»."
+
 #: templates/panel/my_access.html:3 templates/panel/my_access.html:5
-#: templates/shared/base.html:37
+#: templates/shared/base.html:39
 msgid "Mi acceso"
 msgstr "El meu accés"
 
@@ -2145,10 +3194,6 @@ msgstr "Associació"
 #: templates/panel/my_access.html:13
 msgid "Otras asociaciones"
 msgstr "Altres associacions"
-
-#: templates/panel/my_access.html:20
-msgid "Roles"
-msgstr "Rols"
 
 #: templates/panel/my_access.html:24
 msgid "No tienes ningún rol asignado en esta asociación."
@@ -2162,13 +3207,13 @@ msgstr ""
 
 #: templates/panel/my_access.html:29
 msgid ""
-"Los cargos de junta no conceden permisos por sí solos: los permisos dependen "
-"de estos roles. Si necesitas otro, pídeselo a la administración de la "
+"Los cargos de junta no conceden permisos por sí solos: los permisos dependen"
+" de estos roles. Si necesitas otro, pídeselo a la administración de la "
 "asociación."
 msgstr ""
-"Els càrrecs de la junta no concedixen permisos per si mateixos: els permisos "
-"depenen d'estos rols. Si en necessites un altre, demana'l a l'administració "
-"de l'associació."
+"Els càrrecs de la junta no concedixen permisos per si mateixos: els permisos"
+" depenen d'estos rols. Si en necessites un altre, demana'l a l'administració"
+" de l'associació."
 
 #: templates/panel/my_access.html:31
 msgid "Qué puedes hacer"
@@ -2192,8 +3237,8 @@ msgstr "Anar al panell de la junta"
 
 #: templates/panel/my_access.html:58
 msgid ""
-"El panel de la junta es para los roles de gestión. Para ver tus convocatorias"
-" y responder, usa la aplicación del músico."
+"El panel de la junta es para los roles de gestión. Para ver tus "
+"convocatorias y responder, usa la aplicación del músico."
 msgstr ""
 "El panell de la junta és per als rols de gestió. Per a veure les teues "
 "convocatòries i respondre, usa l'aplicació del músic."
@@ -2271,10 +3316,6 @@ msgstr "Termini vençut, pendent de publicar"
 msgid "Corregir el borrador"
 msgstr "Corregir l'esborrany"
 
-#: templates/polls/detail.html:19
-msgid "Guardar cambios"
-msgstr "Guardar els canvis"
-
 #: templates/polls/detail.html:23
 msgid "A quién se consulta"
 msgstr "A qui es consulta"
@@ -2289,8 +3330,8 @@ msgstr[1] "Hi ha %(count)s destinataris."
 #: templates/polls/detail.html:30
 msgid ""
 "La selección sustituye a la actual. Las personas marcadas son los "
-"destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus músicos"
-" activos."
+"destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus "
+"músicos activos."
 msgstr ""
 "La selecció substituïx l'actual. Les persones marcades són els destinataris "
 "d'ara; afig cordes o instruments per a sumar-hi els seus músics actius."
@@ -2305,13 +3346,13 @@ msgstr "Obrir la votació"
 
 #: templates/polls/detail.html:49
 msgid ""
-"Al abrirla ya no se puede corregir y se avisa a las personas consultadas. El "
-"voto es anónimo: nadie, tampoco la junta, puede saber qué ha votado cada "
+"Al abrirla ya no se puede corregir y se avisa a las personas consultadas. El"
+" voto es anónimo: nadie, tampoco la junta, puede saber qué ha votado cada "
 "persona. Por eso un voto emitido no se puede cambiar ni retirar."
 msgstr ""
-"En obrir-la ja no es pot corregir i s'avisa les persones consultades. El vot "
-"és anònim: ningú, tampoc la junta, pot saber què ha votat cada persona. Per "
-"això un vot emés no es pot canviar ni retirar."
+"En obrir-la ja no es pot corregir i s'avisa les persones consultades. El vot"
+" és anònim: ningú, tampoc la junta, pot saber què ha votat cada persona. Per"
+" això un vot emés no es pot canviar ni retirar."
 
 #: templates/polls/detail.html:54
 msgid "Abrir votación y avisar"
@@ -2332,8 +3373,8 @@ msgstr "Han votat %(voted)s de %(recipients)s persones consultades."
 
 #: templates/polls/detail.html:69
 msgid ""
-"Mientras se vota no se muestra quién ha votado: junto al recuento provisional"
-" delataría el voto de cada persona."
+"Mientras se vota no se muestra quién ha votado: junto al recuento "
+"provisional delataría el voto de cada persona."
 msgstr ""
 "Mentre es vota no es mostra qui ha votat: junt amb el recompte provisional "
 "delataria el vot de cada persona."
@@ -2352,11 +3393,11 @@ msgstr "Publicar el resultat"
 
 #: templates/polls/detail.html:79
 msgid ""
-"La publicación es definitiva: el recuento queda como resultado de la encuesta"
-" y se avisa a las personas consultadas."
+"La publicación es definitiva: el recuento queda como resultado de la "
+"encuesta y se avisa a las personas consultadas."
 msgstr ""
-"La publicació és definitiva: el recompte queda com a resultat de l'enquesta i"
-" s'avisa les persones consultades."
+"La publicació és definitiva: el recompte queda com a resultat de l'enquesta "
+"i s'avisa les persones consultades."
 
 #: templates/polls/detail.html:83
 msgid "Publicar resultado"
@@ -2409,535 +3450,77 @@ msgstr ""
 msgid "Guardar borrador"
 msgstr "Guardar l'esborrany"
 
-#: templates/registration/login.html:8 templates/registration/login.html:17
+#: templates/registration/login.html:3 templates/registration/login.html:5
+#: templates/registration/login.html:10
 msgid "Log in"
 msgstr "Inicia la sessió"
 
-#: templates/registration/login.html:13
+#: templates/registration/login.html:6
 msgid "Access for board members and musicians"
 msgstr "Accés per a la junta i els músics"
 
-#: templates/shared/base.html:33
+#: templates/registration/login.html:13
+msgid "Download the Android app (beta)"
+msgstr "Descarrega l'app per a Android (beta)"
+
+#: templates/shared/base.html:26
 msgid "Main navigation"
 msgstr "Navegació principal"
 
-#: templates/shared/base.html:34
+#: templates/shared/base.html:27
 msgid "Home"
 msgstr "Inici"
 
-#: templates/shared/base.html:52
+#: templates/shared/base.html:56
 msgid "Log out"
 msgstr "Tanca la sessió"
 
-#: templates/shared/dashboard.html:5
+#: templates/shared/dashboard.html:7
 #, python-format
-msgid "%(association_name)s dashboard"
-msgstr "Tauler de %(association_name)s"
-
-#: templates/shared/dashboard.html:9
-msgid "active member"
-msgid_plural "active members"
-msgstr[0] "membre actiu"
-msgstr[1] "membres actius"
-
-#: templates/shared/dashboard.html:13
-msgid "recent activity"
-msgid_plural "recent activities"
-msgstr[0] "activitat recent"
-msgstr[1] "activitats recents"
-
-#: templates/shared/dashboard.html:16
-msgid "Activities"
-msgstr "Activitats"
-
-#: templates/shared/dashboard.html:24
-msgid "Activity"
-msgstr "Activitat"
-
-#: templates/shared/dashboard.html:26
-msgid "Invited"
-msgstr "Persones convocades"
-
-#: templates/shared/dashboard.html:42
-msgid "There are no activities yet."
-msgstr "Encara no hi ha activitats."
-
-# Decision 0009: fichas, accesos y roles desde el panel.
-msgid "Rol"
-msgstr "Rol"
-
-msgid "Rol concedido"
-msgstr "Rol concedit"
-
-msgid "Rol retirado"
-msgstr "Rol retirat"
-
-msgid "Acceso desactivado"
-msgstr "Accés desactivat"
-
-msgid "Acceso reactivado"
-msgstr "Accés reactivat"
-
-msgid "realizado por"
-msgstr "realitzat per"
-
-msgid "acción"
-msgstr "acció"
-
-msgid "fecha"
-msgstr "data"
-
-msgid "cambio de acceso"
-msgstr "canvi d'accés"
-
-msgid "cambios de acceso"
-msgstr "canvis d'accés"
-
-msgid "Ese acceso no pertenece a esta asociación."
-msgstr "Eixe accés no pertany a esta associació."
-
-msgid "Elige un rol válido."
-msgstr "Tria un rol vàlid."
-
-#, python-format
-msgid "Rol «%(role)s» concedido a %(account)s."
-msgstr "Rol «%(role)s» concedit a %(account)s."
-
-#, python-format
-msgid "%(account)s ya tenía ese rol."
-msgstr "%(account)s ja tenia eixe rol."
-
-#, python-format
-msgid "Quitar el rol «%(role)s» a %(account)s"
-msgstr "Llevar el rol «%(role)s» a %(account)s"
-
-msgid "Perderá los permisos de ese rol en esta asociación. Podrás concedérselo de nuevo."
-msgstr "Perdrà els permisos d'eixe rol en esta associació. Podràs concedir-li'l de nou."
-
-msgid "Quitar rol"
-msgstr "Llevar rol"
-
-#, python-format
-msgid "Rol «%(role)s» retirado a %(account)s."
-msgstr "Rol «%(role)s» retirat a %(account)s."
-
-#, python-format
-msgid "Desactivar el acceso de %(account)s"
-msgstr "Desactivar l'accés de %(account)s"
-
-msgid "No podrá entrar en esta asociación ni en la app ni en el panel. Su cuenta, sus roles y su acceso a otras asociaciones se conservan, y podrás reactivarlo."
-msgstr "No podrà entrar en esta associació ni en l'aplicació ni en el panell. El seu compte, els seus rols i el seu accés a altres associacions es conserven, i podràs reactivar-lo."
-
-msgid "Desactivar acceso"
-msgstr "Desactivar l'accés"
-
-#, python-format
-msgid "Acceso de %(account)s desactivado."
-msgstr "Accés de %(account)s desactivat."
-
-#, python-format
-msgid "Acceso de %(account)s reactivado."
-msgstr "Accés de %(account)s reactivat."
-
-msgid "Rol no válido."
-msgstr "Rol no vàlid."
-
-msgid "Este rol lo asigna el operador de la plataforma, no la asociación."
-msgstr "Este rol l'assigna l'operador de la plataforma, no l'associació."
-
-msgid "Solo una cuenta con rol de administración puede conceder ese rol."
-msgstr "Només un compte amb rol d'administració pot concedir eixe rol."
-
-msgid "El acceso está desactivado. Reactívalo antes de concederle roles."
-msgstr "L'accés està desactivat. Reactiva'l abans de concedir-li rols."
-
-msgid "Solo una cuenta con rol de administración puede quitar ese rol."
-msgstr "Només un compte amb rol d'administració pot llevar eixe rol."
-
-msgid "La asociación se quedaría sin ninguna cuenta de administración activa."
-msgstr "L'associació es quedaria sense cap compte d'administració actiu."
-
-msgid "Solo una cuenta con rol de administración puede cambiar el acceso de otra que lo tenga."
-msgstr "Només un compte amb rol d'administració pot canviar l'accés d'un altre que el tinga."
-
-msgid "No puedes desactivar tu propio acceso."
-msgstr "No pots desactivar el teu propi accés."
-
-msgid "Borrar definitivamente fichas sin historial"
-msgstr "Esborrar definitivament fitxes sense historial"
-
-msgid "Invitar y activar o desactivar accesos"
-msgstr "Convidar i activar o desactivar accessos"
-
-msgid "Asignar y quitar roles"
-msgstr "Assignar i llevar rols"
-
-msgid "Instrumento principal"
-msgstr "Instrument principal"
-
-msgid "Su cuerda es la del instrumento principal."
-msgstr "La seua corda és la de l'instrument principal."
-
-msgid "Cargos"
-msgstr "Càrrecs"
-
-msgid "Los cargos son informativos: no conceden permisos en Gesband. Los permisos se dan con roles."
-msgstr "Els càrrecs són informatius: no concedeixen permisos en Gesband. Els permisos es donen amb rols."
-
-msgid "Número de socio u otro identificador estable de la asociación. Opcional."
-msgstr "Número de soci o un altre identificador estable de l'associació. Opcional."
-
-msgid "Opcional. Pídelo solo si la asociación lo necesita."
-msgstr "Opcional. Demana'l només si l'associació el necessita."
-
-msgid "Una ficha inactiva está de baja: no se convoca, pero conserva su historial."
-msgstr "Una fitxa inactiva està de baixa: no es convoca, però conserva el seu historial."
-
-msgid "Foto"
-msgstr "Foto"
-
-msgid "JPEG, PNG o WebP, hasta 5 MB. Se eliminan los metadatos y solo la ven la persona y la junta."
-msgstr "JPEG, PNG o WebP, fins a 5 MB. S'eliminen les metadades i només la veuen la persona i la junta."
-
-msgid "actualizada por"
-msgstr "actualitzada per"
-
-msgid "fecha del cambio de estado"
-msgstr "data del canvi d'estat"
-
-msgid "estado cambiado por"
-msgstr "estat canviat per"
-
-msgid "Presidencia"
-msgstr "Presidència"
-
-msgid "Vicepresidencia"
-msgstr "Vicepresidència"
-
-msgid "Secretaría"
-msgstr "Secretaria"
-
-msgid "Tesorería"
-msgstr "Tresoreria"
-
-msgid "Contratista"
-msgstr "Contractista"
-
-msgid "Vocalía"
-msgstr "Vocalia"
-
-msgid "cargo"
-msgstr "càrrec"
-
-msgid "cargo de miembro"
-msgstr "càrrec de membre"
-
-msgid "cargos de miembros"
-msgstr "càrrecs de membres"
-
-msgid "Cargo no válido."
-msgstr "Càrrec no vàlid."
-
-msgid "Ya hay otra ficha con este identificador externo en la asociación."
-msgstr "Ja hi ha una altra fitxa amb este identificador extern en l'associació."
-
-msgid "Estado no válido."
-msgstr "Estat no vàlid."
-
-msgid "Tiene convocatorias o asistencia registradas."
-msgstr "Té convocatòries o assistència registrades."
-
-msgid "Ha sido destinataria de encuestas."
-msgstr "Ha sigut destinatària d'enquestes."
-
-msgid "Tiene transporte asignado."
-msgstr "Té transport assignat."
-
-msgid "Tiene una cuenta de acceso vinculada."
-msgstr "Té un compte d'accés vinculat."
-
-msgid "No se puede borrar esta ficha sin perder su historial. Dala de baja en su lugar."
-msgstr "No es pot esborrar esta fitxa sense perdre el seu historial. Dona-la de baixa en el seu lloc."
-
-msgid "Ficha creada."
-msgstr "Fitxa creada."
-
-msgid "Ficha actualizada."
-msgstr "Fitxa actualitzada."
-
-msgid "Esta ficha no tiene foto."
-msgstr "Esta fitxa no té foto."
-
-msgid "Foto eliminada."
-msgstr "Foto eliminada."
-
-msgid "Foto guardada."
-msgstr "Foto guardada."
-
-#, python-format
-msgid "Dar de baja a %(member)s"
-msgstr "Donar de baixa %(member)s"
-
-msgid "La ficha quedará inactiva: no se la podrá convocar ni invitar, pero se conservan sus convocatorias, respuestas y asistencia. Podrás reactivarla cuando quieras."
-msgstr "La fitxa quedarà inactiva: no es podrà convocar ni convidar, però es conserven les seues convocatòries, respostes i assistència. Podràs reactivar-la quan vulgues."
-
-msgid "Dar de baja"
-msgstr "Donar de baixa"
-
-msgid "Ficha reactivada."
-msgstr "Fitxa reactivada."
-
-msgid "Ficha dada de baja. Su historial se conserva."
-msgstr "Fitxa donada de baixa. El seu historial es conserva."
-
-msgid "Ficha borrada definitivamente."
-msgstr "Fitxa esborrada definitivament."
-
-#, python-format
-msgid "Borrar definitivamente a %(member)s"
-msgstr "Esborrar definitivament %(member)s"
-
-msgid "El borrado no se puede deshacer. Solo se permite si la ficha no tiene historial ni cuenta vinculada."
-msgstr "L'esborrament no es pot desfer. Només es permet si la fitxa no té historial ni compte vinculat."
-
-msgid "Borrar definitivamente"
-msgstr "Esborrar definitivament"
-
-msgid "Accesos y roles"
-msgstr "Accessos i rols"
-
-msgid "Los roles dan los permisos en esta asociación; los cargos de la ficha no. Solo administración concede o quita el rol de administración, y siempre debe quedar al menos una cuenta de administración activa. Para dar acceso a alguien nuevo, invítalo desde «Gestionar accesos»."
-msgstr "Els rols donen els permisos en esta associació; els càrrecs de la fitxa no. Només administració concedeix o lleva el rol d'administració, i sempre ha de quedar almenys un compte d'administració actiu. Per a donar accés a algú nou, convida'l des de «Gestionar accessos»."
-
-msgid "Cuenta"
-msgstr "Compte"
-
-msgid "Ficha"
-msgstr "Fitxa"
-
-msgid "Acceso"
-msgstr "Accés"
-
-msgid "Sin ficha"
-msgstr "Sense fitxa"
-
-msgid "Quitar"
-msgstr "Llevar"
-
-msgid "Lo asigna el operador de la plataforma"
-msgstr "L'assigna l'operador de la plataforma"
-
-msgid "Sin roles"
-msgstr "Sense rols"
-
-msgid "Conceder rol"
-msgstr "Concedir rol"
-
-msgid "Desactivar"
-msgstr "Desactivar"
-
-msgid "Desactivado"
-msgstr "Desactivat"
-
-msgid "Reactivar"
-msgstr "Reactivar"
-
-msgid "Nadie tiene acceso todavía a esta asociación."
-msgstr "Encara no té ningú accés a esta associació."
-
-msgid "Últimos cambios"
-msgstr "Últims canvis"
-
-msgid "Fecha"
-msgstr "Data"
-
-msgid "Cambio"
-msgstr "Canvi"
-
-msgid "Realizado por"
-msgstr "Realitzat per"
-
-msgid "Todavía no hay cambios registrados."
-msgstr "Encara no hi ha canvis registrats."
-
-msgid "No se puede hacer por estos motivos; usa la baja en su lugar:"
-msgstr "No es pot fer per estos motius; usa la baixa en el seu lloc:"
-
-msgid "Volver"
-msgstr "Tornar"
-
-msgid "Cancelar"
-msgstr "Cancel·lar"
-
-msgid "Nueva ficha"
-msgstr "Nova fitxa"
-
-msgid "Con cuenta de acceso vinculada"
-msgstr "Amb compte d'accés vinculat"
-
-msgid "Solo son obligatorios el nombre y los apellidos. Crear una ficha no envía ninguna invitación."
-msgstr "Només són obligatoris el nom i els cognoms. Crear una fitxa no envia cap invitació."
-
-msgid "La asociación todavía no tiene instrumentos dados de alta."
-msgstr "L'associació encara no té instruments donats d'alta."
-
-msgid "Crear ficha"
-msgstr "Crear la fitxa"
-
-#, python-format
-msgid "Foto de %(member)s"
-msgstr "Foto de %(member)s"
-
-msgid "Eliminar foto"
-msgstr "Eliminar la foto"
-
-msgid "Sin foto."
-msgstr "Sense foto."
-
-msgid "Sustituir foto"
-msgstr "Substituir la foto"
-
-msgid "Subir foto"
-msgstr "Pujar una foto"
-
-msgid "Historial"
-msgstr "Historial"
-
-#, python-format
-msgid "%(counter)s convocatoria"
-msgid_plural "%(counter)s convocatorias"
-msgstr[0] "%(counter)s convocatòria"
-msgstr[1] "%(counter)s convocatòries"
-
-#, python-format
-msgid "%(counter)s encuesta"
-msgid_plural "%(counter)s encuestas"
-msgstr[0] "%(counter)s enquesta"
-msgstr[1] "%(counter)s enquestes"
-
-#, python-format
-msgid "%(counter)s asignación de transporte"
-msgid_plural "%(counter)s asignaciones de transporte"
-msgstr[0] "%(counter)s assignació de transport"
-msgstr[1] "%(counter)s assignacions de transport"
-
-#, python-format
-msgid "Último cambio de estado: %(date)s por %(who)s."
-msgstr "Últim canvi d'estat: %(date)s per %(who)s."
-
-msgid "Alta y baja"
-msgstr "Alta i baixa"
-
-msgid "La baja conserva el historial y se puede deshacer."
-msgstr "La baixa conserva l'historial i es pot desfer."
-
-msgid "Esta ficha no se puede borrar sin perder su historial. Usa la baja."
-msgstr "Esta fitxa no es pot esborrar sense perdre el seu historial. Usa la baixa."
-
-msgid "Borrar esta ficha…"
-msgstr "Esborrar esta fitxa…"
-
-msgid "Crea la primera ficha con «Nueva ficha»."
-msgstr "Crea la primera fitxa amb «Nova fitxa»."
-
-# Sistema visual del panel e imagen de la banda (decisión 0010)
-msgid "Imagen de la banda"
-msgstr "Imatge de la banda"
-
-msgid "Lo que viene"
-msgstr "El que ve"
-
-msgid "%(yes)s asistirán, %(no)s no podrán, %(pending)s sin responder"
-msgstr "%(yes)s hi aniran, %(no)s no podran, %(pending)s sense respondre"
-
-msgid "<strong>%(yes)s</strong> asistirán · <strong>%(no)s</strong> no · <strong>%(pending)s</strong> sin responder"
-msgstr "<strong>%(yes)s</strong> hi aniran · <strong>%(no)s</strong> no · <strong>%(pending)s</strong> sense respondre"
-
-msgid "%(answered)s de %(invited)s han respondido"
-msgstr "%(answered)s de %(invited)s han respost"
-
-msgid "Crea un ensayo o una actuación y convoca a la banda."
-msgstr "Crea un assaig o una actuació i convoca la banda."
-
-msgid "Lo que elijas aquí viste el panel y la app de todos los músicos de la banda."
-msgstr "El que tries ací vist el panell i l'app de tots els músics de la banda."
-
-msgid "Logo"
-msgstr "Logo"
-
-msgid "Colores"
-msgstr "Colors"
-
-msgid "Escenario: oscura y contundente. Partitura: clásica y editorial. Festa: cálida y popular."
-msgstr "Escenari: fosca i contundent. Partitura: clàssica i editorial. Festa: càlida i popular."
-
-msgid "Guardar"
-msgstr "Guardar"
-
-msgid "Vista previa"
-msgstr "Previsualització"
-
-msgid "Próxima actuación"
-msgstr "Pròxima actuació"
-
-msgid "Concierto de ejemplo"
-msgstr "Concert d'exemple"
-
-msgid "Así se verá el cartel de la próxima actividad."
-msgstr "Així es veurà el cartell de la pròxima activitat."
-
-msgid "Asistiré"
-msgstr "Hi aniré"
-
-msgid "La vista previa cambia al elegir; nada se guarda hasta pulsar «Guardar»."
-msgstr "La previsualització canvia en triar; no es guarda res fins que prems «Guardar»."
-
-msgid "PNG, JPG o WebP de hasta 2 MB. Se recorta en un cuadrado con esquinas redondeadas."
-msgstr "PNG, JPG o WebP de fins a 2 MB. Es retalla en un quadrat amb cantons arredonits."
-
-msgid "Quitar el logo y usar las iniciales"
-msgstr "Llevar el logo i usar les inicials"
-
-msgid "Cualquier color: el panel y la app ajustan el texto para que se lea."
-msgstr "Qualsevol color: el panell i l'app ajusten el text perquè es llija."
-
-msgid "Cada persona puede cambiarlo en su dispositivo."
-msgstr "Cada persona pot canviar-ho en el seu dispositiu."
-
-msgid "Escenario"
-msgstr "Escenari"
-
-msgid "Partitura"
-msgstr "Partitura"
-
-msgid "Festa"
-msgstr "Festa"
-
-msgid "Según el dispositivo"
-msgstr "Segons el dispositiu"
-
-msgid "Claro"
-msgstr "Clar"
-
-msgid "Oscuro"
-msgstr "Fosc"
-
-msgid "estilo visual"
-msgstr "estil visual"
-
-msgid "modo de color"
-msgstr "mode de color"
-
-msgid "El logo supera 2 MB."
-msgstr "El logo supera 2 MB."
-
-msgid "Imagen de la banda guardada."
-msgstr "Imatge de la banda guardada."
-
-msgid "Cambiar la imagen de la banda: logo, colores, lema y estilo"
-msgstr "Canviar la imatge de la banda: logo, colors, lema i estil"
-
 msgid "%(member_count)s active member"
 msgid_plural "%(member_count)s active members"
 msgstr[0] "%(member_count)s membre actiu"
 msgstr[1] "%(member_count)s membres actius"
+
+#: templates/shared/dashboard.html:8
+msgid "Lo que viene"
+msgstr "El que ve"
+
+#: templates/shared/dashboard.html:23
+#, python-format
+msgid "%(yes)s asistirán, %(no)s no podrán, %(pending)s sin responder"
+msgstr "%(yes)s hi aniran, %(no)s no podran, %(pending)s sense respondre"
+
+#: templates/shared/dashboard.html:26
+#, python-format
+msgid ""
+"<strong>%(yes)s</strong> asistirán · <strong>%(no)s</strong> no · "
+"<strong>%(pending)s</strong> sin responder"
+msgstr ""
+"<strong>%(yes)s</strong> hi aniran · <strong>%(no)s</strong> no · "
+"<strong>%(pending)s</strong> sense respondre"
+
+#: templates/shared/dashboard.html:40
+#, python-format
+msgid "%(answered)s de %(invited)s han respondido"
+msgstr "%(answered)s de %(invited)s han respost"
+
+#: templates/shared/dashboard.html:49
+msgid "There are no activities yet."
+msgstr "Encara no hi ha activitats."
+
+#: templates/shared/dashboard.html:50
+msgid "Crea un ensayo o una actuación y convoca a la banda."
+msgstr "Crea un assaig o una actuació i convoca la banda."
+
+#: templates/shared/dashboard.html:55
+msgid "Activities"
+msgstr "Activitats"
+
+#: templates/shared/dashboard.html:61
+msgid "Activity"
+msgstr "Activitat"
+
+#: templates/shared/dashboard.html:62
+msgid "Invited"
+msgstr "Persones convocades"

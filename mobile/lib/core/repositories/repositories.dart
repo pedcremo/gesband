@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -176,14 +177,31 @@ class AgendaCache {
 abstract interface class ProfileRepository {
   Future<MemberProfile> getMine(String associationId);
   Future<MemberProfile> updateContact({String? email, String? phone});
-  Future<MemberProfile> updatePhoto(String filePath);
-  Future<MemberProfile> deletePhoto();
+
+  /// Foto privada de la ficha, pedida con la sesión. `null` si no se puede
+  /// descargar.
+  Future<Uint8List?> loadPhoto(String url);
+
+  /// Sustituye la foto propia. El servidor valida tipo, tamaño y contenido.
+  Future<MemberProfile> updatePhoto(
+    String associationId,
+    Uint8List bytes, {
+    required String filename,
+  });
+  Future<MemberProfile> deletePhoto(String associationId);
+
+  /// Lo que la banda debe al músico por actividades remuneradas.
+  Future<Earnings> getEarnings(String associationId);
 }
 
 class ApiProfileRepository implements ProfileRepository {
   ApiProfileRepository(this._api);
 
   final ApiClient _api;
+
+  /// Ruta de los adeudos propios. El contrato del coordinador la escribe sin
+  /// barra final; el resto del API sí la lleva (`/members/me/photo/`).
+  static const earningsPath = '/members/me/earnings/';
 
   /// Ficha propia en la asociación activa: `GET /members/me/`. La lista
   /// `/members/` es el censo y solo la ve la junta.
@@ -202,20 +220,32 @@ class ApiProfileRepository implements ProfileRepository {
       );
 
   @override
-  Future<MemberProfile> updatePhoto(String filePath) async =>
+  Future<Uint8List?> loadPhoto(String url) => _api.getBytes(url);
+
+  @override
+  Future<MemberProfile> updatePhoto(
+    String associationId,
+    Uint8List bytes, {
+    required String filename,
+  }) async =>
       MemberProfile.fromJson(
-        await _api.uploadFile(
-          '/members/me/photo/',
+        await _api.putFile(
+          '/members/me/photo/?association_id=$associationId',
           field: 'photo',
-          filePath: filePath,
+          bytes: bytes,
+          filename: filename,
         ),
       );
 
   @override
-  Future<MemberProfile> deletePhoto() async {
-    await _api.delete('/members/me/photo/');
-    return getMine('');
+  Future<MemberProfile> deletePhoto(String associationId) async {
+    await _api.delete('/members/me/photo/?association_id=$associationId');
+    return getMine(associationId);
   }
+
+  @override
+  Future<Earnings> getEarnings(String associationId) async => Earnings.fromJson(
+      await _api.getObject('$earningsPath?association_id=$associationId'));
 }
 
 abstract interface class InboxRepository {

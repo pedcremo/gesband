@@ -71,7 +71,7 @@ def respond(invitation, account, response, note=""):
 def record_attendance(invitation, account, status, note=""):
     if status not in Attendance.Status.values:
         raise ValidationError(_("Estado de asistencia no válido."))
-    attendance, _ = Attendance.objects.select_for_update().get_or_create(invitation=invitation)
+    attendance, _created = Attendance.objects.select_for_update().get_or_create(invitation=invitation)
     attendance.status = status
     attendance.note = note
     attendance.recorded_by = account

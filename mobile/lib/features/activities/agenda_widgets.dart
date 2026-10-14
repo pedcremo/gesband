@@ -29,6 +29,17 @@ import '../../core/ui/formatting.dart';
       _ => (strings.pillReply, Tone.warning),
     };
 
+/// «Remunerada · 25,00 €», «Remunerada» si no hay importe, o `null` si la
+/// actividad no es remunerada.
+String? paidLabel(BuildContext context, ActivitySummary item) {
+  if (!item.isPaid) return null;
+  final strings = AppStrings.of(context);
+  final fee = item.feeAmount;
+  return fee == null
+      ? strings.paidActivity
+      : strings.paidWithAmount(MoneyLabels.of(context).format(fee));
+}
+
 /// La actividad espera una respuesta de la persona.
 bool awaitsReply(ActivitySummary item, DateTime now) =>
     item.canRespondAt(now) &&
@@ -75,6 +86,7 @@ class ActivityPoster extends StatelessWidget {
 
   Widget _escenario(BuildContext context, GesbandTokens t) {
     final strings = AppStrings.of(context);
+    final paid = paidLabel(context, item);
     final dates = DateLabels.of(context);
     final text = Theme.of(context).textTheme;
     final ink = t.onPrimary;
@@ -124,6 +136,10 @@ class ActivityPoster extends StatelessWidget {
                       valueStyle: text.titleMedium!
                           .copyWith(color: ink, fontWeight: FontWeight.w700),
                     ),
+                    if (paid != null) ...[
+                      const SizedBox(height: GesbandSpacing.md),
+                      _PaidLine(paid, color: ink),
+                    ],
                     if (canRespond) ...[
                       const SizedBox(height: GesbandSpacing.lg),
                       _ReplyButtons(
@@ -147,6 +163,7 @@ class ActivityPoster extends StatelessWidget {
 
   Widget _partitura(BuildContext context, GesbandTokens t) {
     final strings = AppStrings.of(context);
+    final paid = paidLabel(context, item);
     final dates = DateLabels.of(context);
     final text = Theme.of(context).textTheme;
     final details = _facts(strings, dates).map((f) => '${f.$1}: ${f.$2}');
@@ -178,6 +195,10 @@ class ActivityPoster extends StatelessWidget {
                             Text(line,
                                 style:
                                     text.bodyMedium!.copyWith(color: t.muted)),
+                          if (paid != null) ...[
+                            const SizedBox(height: GesbandSpacing.xs),
+                            _PaidLine(paid, color: t.primaryText),
+                          ],
                         ],
                       ),
                     ),
@@ -208,6 +229,7 @@ class ActivityPoster extends StatelessWidget {
 
   Widget _festa(BuildContext context, GesbandTokens t) {
     final strings = AppStrings.of(context);
+    final paid = paidLabel(context, item);
     final dates = DateLabels.of(context);
     final text = Theme.of(context).textTheme;
     final details = [
@@ -238,6 +260,10 @@ class ActivityPoster extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(details,
                         style: text.bodyMedium!.copyWith(color: t.muted)),
+                    if (paid != null) ...[
+                      const SizedBox(height: GesbandSpacing.xs),
+                      _PaidLine(paid, color: t.primaryText),
+                    ],
                     if (canRespond) ...[
                       const SizedBox(height: GesbandSpacing.sm),
                       _ReplyButtons(
@@ -378,6 +404,31 @@ class ActivityRow extends StatelessWidget {
             ),
           ),
       },
+    );
+  }
+}
+
+/// Línea «Remunerada · 25,00 €» del cartel.
+class _PaidLine extends StatelessWidget {
+  const _PaidLine(this.label, {required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Row(
+      key: const Key('poster-paid'),
+      children: [
+        Icon(Icons.euro_rounded, size: 18, color: color),
+        const SizedBox(width: GesbandSpacing.xs),
+        Flexible(
+          child: Text(label,
+              style: text.titleSmall!
+                  .copyWith(color: color, fontWeight: FontWeight.w700)),
+        ),
+      ],
     );
   }
 }
