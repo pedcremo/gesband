@@ -48,24 +48,19 @@
   {% if review.uses_catalog %}
     <section class="import-catalog" aria-labelledby="import-catalog-title">
       <h2 id="import-catalog-title">{% translate "Catálogo de cuerdas e instrumentos" %}</h2>
-      {% if review.new_sections or review.new_instruments %}
+      <p class="muted">{% translate "Las cuerdas son comunes a todas las bandas: Viento metal, Viento madera, Percusión, Cuerda frotada, Cuerda percutida y Cuerda pulsada. Una cuerda distinta invalida la fila." %}</p>
+      {% if review.new_instruments %}
         {% if batch.status == 'preview' %}
           <p>{% translate "Al confirmar se añadirá al catálogo de la banda lo que todavía no existe. Revisa que los nombres sean correctos." %}</p>
         {% endif %}
         <ul>
-          {% if review.new_sections %}
-            <li>{% if batch.status == 'preview' %}{% blocktranslate count counter=review.new_sections|length %}Se creará {{ counter }} cuerda:{% plural %}Se crearán {{ counter }} cuerdas:{% endblocktranslate %}{% else %}{% blocktranslate count counter=review.new_sections|length %}Se creó {{ counter }} cuerda:{% plural %}Se crearon {{ counter }} cuerdas:{% endblocktranslate %}{% endif %}
-              {{ review.new_sections|join:", " }}</li>
-          {% endif %}
-          {% if review.new_instruments %}
-            <li>{% if batch.status == 'preview' %}{% blocktranslate count counter=review.new_instruments|length %}Se creará {{ counter }} instrumento:{% plural %}Se crearán {{ counter }} instrumentos:{% endblocktranslate %}{% else %}{% blocktranslate count counter=review.new_instruments|length %}Se creó {{ counter }} instrumento:{% plural %}Se crearon {{ counter }} instrumentos:{% endblocktranslate %}{% endif %}
-              {{ review.new_instruments|join:", " }}</li>
-          {% endif %}
+          <li>{% if batch.status == 'preview' %}{% blocktranslate count counter=review.new_instruments|length %}Se creará {{ counter }} instrumento:{% plural %}Se crearán {{ counter }} instrumentos:{% endblocktranslate %}{% else %}{% blocktranslate count counter=review.new_instruments|length %}Se creó {{ counter }} instrumento:{% plural %}Se crearon {{ counter }} instrumentos:{% endblocktranslate %}{% endif %}
+            {{ review.new_instruments|join:", " }}</li>
         </ul>
       {% elif batch.status == 'preview' %}
-        <p>{% translate "Todas las cuerdas e instrumentos del fichero ya existen en el catálogo de la banda." %}</p>
+        <p>{% translate "Todos los instrumentos del fichero ya existen en el catálogo de la banda." %}</p>
       {% else %}
-        <p>{% translate "No se añadió ninguna cuerda ni instrumento al catálogo." %}</p>
+        <p>{% translate "No se añadió ningún instrumento al catálogo." %}</p>
       {% endif %}
     </section>
   {% endif %}

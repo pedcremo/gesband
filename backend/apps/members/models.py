@@ -2,6 +2,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 
 from apps.associations.models import Association
@@ -17,24 +18,34 @@ def private_member_import_path(instance, filename):
     return f"member-imports/{instance.association_id}/{uuid.uuid4()}.{suffix}"
 
 
-class Section(models.Model):
-    association = models.ForeignKey(
-        Association, on_delete=models.CASCADE, related_name="sections", verbose_name=_("asociación")
-    )
+class LocalizedNameMixin:
+    """Nombre en el idioma activo (es, ca, en) con el castellano de respaldo."""
+
+    @property
+    def label(self):
+        language = (get_language() or settings.LANGUAGE_CODE).split("-")[0]
+        return getattr(self, f"name_{language}", "") or self.name
+
+
+class Section(LocalizedNameMixin, models.Model):
+    """Cuerda común a todas las asociaciones (decisión 0012). Catálogo fijo."""
+
+    code = models.SlugField(_("código"), max_length=40, unique=True)
     name = models.CharField(_("nombre"), max_length=80)
+    name_ca = models.CharField(_("nombre en valenciano"), max_length=80, blank=True)
+    name_en = models.CharField(_("nombre en inglés"), max_length=80, blank=True)
     order = models.PositiveSmallIntegerField(_("orden"), default=0)
 
     class Meta:
         ordering = ["order", "name"]
-        constraints = [models.UniqueConstraint(fields=["association", "name"], name="unique_section_name")]
         verbose_name = _("cuerda")
         verbose_name_plural = _("cuerdas")
 
     def __str__(self):
-        return self.name
+        return self.label
 
 
-class Instrument(models.Model):
+class Instrument(LocalizedNameMixin, models.Model):
     association = models.ForeignKey(
         Association, on_delete=models.CASCADE, related_name="instruments", verbose_name=_("asociación")
     )
@@ -46,22 +57,26 @@ class Instrument(models.Model):
         blank=True,
         verbose_name=_("cuerda"),
     )
+    # Código del catálogo predefinido (`apps/members/catalog.py`); vacío en
+    # los instrumentos propios de la banda.
+    code = models.SlugField(_("código del catálogo"), max_length=40, blank=True)
     name = models.CharField(_("nombre"), max_length=80)
+    name_ca = models.CharField(_("nombre en valenciano"), max_length=80, blank=True)
+    name_en = models.CharField(_("nombre en inglés"), max_length=80, blank=True)
 
     class Meta:
         ordering = ["name"]
-        constraints = [models.UniqueConstraint(fields=["association", "name"], name="unique_instrument_name")]
+        constraints = [
+            models.UniqueConstraint(fields=["association", "name"], name="unique_instrument_name"),
+            models.UniqueConstraint(
+                fields=["association", "code"], condition=~models.Q(code=""), name="unique_instrument_code"
+            ),
+        ]
         verbose_name = _("instrumento")
         verbose_name_plural = _("instrumentos")
 
-    def clean(self):
-        from django.core.exceptions import ValidationError
-
-        if self.section_id and self.section.association_id != self.association_id:
-            raise ValidationError({"section": _("La cuerda pertenece a otra asociación.")})
-
     def __str__(self):
-        return self.name
+        return self.label
 
 
 class Member(models.Model):

@@ -38,8 +38,10 @@ En el detalle, «Convocar a una selección»:
 Solo se convoca a músicos activos, y nadie queda convocado dos veces. Después pulsa
 «Publicar actividad» para avisarles.
 
-Las cuerdas y los instrumentos que aparecen son los del censo de la banda. Si falta
-alguno, pídelo a la administración.
+Las cuerdas son las mismas en todas las bandas: Viento metal, Viento madera, Percusión,
+Cuerda frotada, Cuerda percutida y Cuerda pulsada. Solo aparecen las que tienen
+instrumentos en la banda. Los instrumentos son los del catálogo de la banda, que ya
+incluye los habituales. Si falta alguno, pídelo a la administración.
 
 ## Mantener las fichas de la plantilla
 

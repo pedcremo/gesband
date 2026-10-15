@@ -75,6 +75,16 @@ La API queda en `http://127.0.0.1:8000/api/v1/`, el panel en `http://127.0.0.1:8
 Las credenciales, lo que ve cada rol y los puntos abiertos del piloto están en
 [INSTRUCCIONES.md](INSTRUCCIONES.md).
 
+Las migraciones crean las cuerdas comunes y precargan en cada asociación los
+instrumentos predefinidos (decisión 0012). Las bandas creadas en Django Admin también
+los reciben. Para llevar a las existentes los que se añadan después a
+`backend/apps/members/catalog.py` (idempotente):
+
+```bash
+.venv/bin/python backend/manage.py seed_instrument_catalog            # todas
+.venv/bin/python backend/manage.py seed_instrument_catalog --association aumb
+```
+
 Para observar el producto desde cada situación hay un comando que crea una cuenta
 sintética por rol de la asociación, ninguna superusuaria, con su ficha de miembro
 vinculada y convocada a las actividades publicadas futuras:

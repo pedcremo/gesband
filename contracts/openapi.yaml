@@ -232,7 +232,8 @@ paths:
     get:
       tags: [Catalogues]
       operationId: listSections
-      summary: Lista cuerdas o secciones de la asociación activa.
+      summary: Lista las cuerdas comunes a todas las asociaciones (catálogo fijo, decisión 0012).
+      description: Solo lectura. `name` llega en el idioma de `Accept-Language` (es, ca, en).
       x-permissions: [members.view]
       parameters:
         - {$ref: '#/components/parameters/AssociationId'}
@@ -245,23 +246,6 @@ paths:
             application/json:
               schema: {$ref: '#/components/schemas/SectionPage'}
         '403': {$ref: '#/components/responses/Forbidden'}
-    post:
-      tags: [Catalogues]
-      operationId: createSection
-      summary: Crea una cuerda o sección local.
-      x-permissions: [members.manage]
-      parameters:
-        - {$ref: '#/components/parameters/AssociationId'}
-        - {$ref: '#/components/parameters/IdempotencyKey'}
-      requestBody:
-        required: true
-        content: {application/json: {schema: {$ref: '#/components/schemas/CatalogueItemInput'}}}
-      responses:
-        '201':
-          description: Sección creada.
-          content: {application/json: {schema: {$ref: '#/components/schemas/Section'}}}
-        '409': {$ref: '#/components/responses/Conflict'}
-        '422': {$ref: '#/components/responses/ValidationError'}
   /members:
     get:
       tags: [Members]
@@ -1475,13 +1459,18 @@ components:
         - {$ref: '#/components/schemas/CatalogueItemInput'}
         - type: object
           required: [id]
-          properties: {id: {$ref: '#/components/schemas/Uuid'}}
+          properties:
+            id: {$ref: '#/components/schemas/Uuid'}
+            code: {type: string, description: Código del catálogo predefinido; vacío en instrumentos propios de la banda.}
+            section: {type: [integer, 'null'], description: Cuerda común (ver `/sections`).}
     Section:
-      allOf:
-        - {$ref: '#/components/schemas/CatalogueItemInput'}
-        - type: object
-          required: [id]
-          properties: {id: {$ref: '#/components/schemas/Uuid'}}
+      type: object
+      required: [id, code, name, order]
+      properties:
+        id: {type: integer}
+        code: {type: string, enum: [brass, woodwind, percussion, bowed_strings, struck_strings, plucked_strings]}
+        name: {type: string, description: Nombre en el idioma de la petición.}
+        order: {type: integer, minimum: 0}
     InstrumentPage:
       type: object
       required: [results, page]

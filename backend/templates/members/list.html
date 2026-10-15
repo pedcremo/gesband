@@ -31,7 +31,7 @@
         <td>{{ member.get_kind_display }}</td>
         <td>
           {% for item in member.member_instruments.all %}
-            {{ item.instrument.name }}{% if not forloop.last %}, {% endif %}
+            {{ item.instrument.label }}{% if not forloop.last %}, {% endif %}
           {% empty %}
             <span class="muted">{% translate "No instrument" %}</span>
           {% endfor %}

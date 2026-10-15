@@ -165,7 +165,7 @@ class PanelPollsTests(TestCase):
         self.assertEqual(poll.question, "¿Dónde hacemos el viaje?")
 
     def test_choose_recipients_by_section_instrument_and_person(self):
-        wind = Section.objects.create(association=self.association, name="Metales")
+        wind = Section.objects.get(code="brass")
         trumpet = Instrument.objects.create(association=self.association, name="Trompeta", section=wind)
         flute = Instrument.objects.create(association=self.association, name="Flauta")
         carla = self.member("Carla", "Cano")
@@ -185,7 +185,10 @@ class PanelPollsTests(TestCase):
         self.assertContains(response, "Hay 4 destinatarios.")
 
     def test_foreign_or_malformed_ids_in_the_selection_are_ignored(self):
-        foreign_section = Section.objects.create(association=self.other_association, name="Fora")
+        # Las cuerdas son comunes: elegir una solo suma músicos de la propia banda.
+        foreign_section = Section.objects.get(code="plucked_strings")
+        guitar = Instrument.objects.create(association=self.other_association, name="Guitarra", section=foreign_section)
+        MemberInstrument.objects.create(member=self.outsider, instrument=guitar, is_primary=True)
         poll = self.make_poll()
         response = self.post(
             poll,

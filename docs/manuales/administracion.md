@@ -49,7 +49,12 @@ correo o teléfono: dos hermanos pueden compartir correo.
    veces, se muestra el lote existente.
 5. Pulsa «Confirmar importación». El informe queda en «Importaciones recientes».
 
-Las cuerdas, los instrumentos y la foto no se importan.
+Las columnas «Cuerda» e «Instrumentos» son opcionales. La cuerda debe ser una de las
+comunes a todas las bandas: Viento metal, Viento madera, Percusión, Cuerda frotada,
+Cuerda percutida o Cuerda pulsada. Se acepta en castellano, valenciano o inglés y con
+nombres habituales como «Metal», «Madera» o «Fusta». Con otra cuerda, la fila se rechaza.
+La banda parte de un catálogo con los instrumentos más habituales. Los que falten se
+añaden al confirmar, y la previsualización los anuncia antes. La foto no se importa.
 
 ## 2. Invitar a los músicos
 
@@ -109,6 +114,7 @@ administración.
 
 ## Todavía no se puede
 
-- Dar de alta cuerdas o instrumentos desde el panel.
+- Dar de alta instrumentos propios desde el panel; por ahora se añaden con la
+  importación. Las cuerdas son comunes y fijas.
 - Borrar una cuenta: solo se desactiva su acceso a la asociación.
 - Restablecer la contraseña de un músico.

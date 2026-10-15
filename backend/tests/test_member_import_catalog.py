@@ -1,8 +1,10 @@
 """Importación del censo con cuerdas e instrumentos.
 
-La previsualización solo lee el catálogo de la asociación del lote y anuncia
-qué cuerdas e instrumentos se crearán; se crean al confirmar, en la misma
-transacción que las fichas. El catálogo de otra asociación nunca se reutiliza.
+Las cuerdas son comunes y fijas (decisión 0012): el fichero las nombra en
+castellano, valenciano, inglés o con un alias, y una desconocida invalida la
+fila. La previsualización solo lee los instrumentos de la asociación del lote y
+anuncia cuáles se crearán; se crean al confirmar, en la misma transacción que
+las fichas. Los instrumentos de otra asociación nunca se reutilizan.
 Todos los datos son sintéticos.
 """
 
@@ -60,11 +62,11 @@ class ImportCatalogFixture(TestCase):
         self.settings_override.enable()
         self.association = Association.objects.create(name="Banda Sintética", slug="banda-sintetica")
         self.other_association = Association.objects.create(name="Otra Banda", slug="otra-banda")
-        self.wood = Section.objects.create(association=self.association, name="Madera", order=1)
+        self.wood = Section.objects.get(code="woodwind")
         self.clarinet = Instrument.objects.create(association=self.association, name="Clarinete", section=self.wood)
         self.loose_flute = Instrument.objects.create(association=self.association, name="Flauta")
-        # Catálogo ajeno con nombres que coinciden: nunca debe reutilizarse.
-        self.foreign_brass = Section.objects.create(association=self.other_association, name="Metal")
+        # Instrumento ajeno con un nombre que coincide: nunca debe reutilizarse.
+        self.foreign_brass = Section.objects.get(code="brass")
         self.foreign_tuba = Instrument.objects.create(
             association=self.other_association, name="Tuba", section=self.foreign_brass
         )
@@ -140,7 +142,7 @@ class ParseCatalogCellsTests(ImportCatalogFixture):
 
     def test_parse_with_association_reports_catalog_conflicts(self):
         rows = self.preview("M-1,Pau,Climent,Metal,Clarinete\n", association=self.association)
-        self.assertIn("ya está en la cuerda «Madera»", rows[0]["errors"][0])
+        self.assertIn("ya está en la cuerda «Viento madera»", rows[0]["errors"][0])
 
 
 class PlanCatalogTests(ImportCatalogFixture):
@@ -149,72 +151,99 @@ class PlanCatalogTests(ImportCatalogFixture):
 
     def test_existing_entries_are_matched_without_case_accents_or_spaces(self):
         plan = self.plan("M-1,Pau,Climent,MADERA,  clarinete \nM-2,Ana,Mas,,FLAUTA\n")
-        self.assertEqual(plan.new_sections, {})
         self.assertEqual(plan.new_instruments, {})
         self.assertEqual(plan.row_errors, {})
 
-    def test_new_sections_and_instruments_are_listed_once(self):
+    def test_sections_are_recognised_in_every_language_and_by_alias(self):
+        for label in ("Viento madera", "vent fusta", "WOODWIND", "Madera", "Fusta"):
+            plan = self.plan(f"M-1,Pau,Climent,{label},Clarinete\n")
+            self.assertEqual(plan.row_errors, {}, label)
+
+    def test_unknown_section_is_a_row_error_and_creates_nothing(self):
+        plan = self.plan("M-1,Pau,Climent,Vent,Bombarda\nM-2,Ana,Mas,Metal,Trompeta\n")
+        self.assertIn("La cuerda «Vent» no existe", plan.row_errors[2][0])
+        self.assertIn("Viento metal, Viento madera, Percusión", plan.row_errors[2][0])
+        self.assertNotIn(3, plan.row_errors)
+        self.assertEqual(plan.new_instrument_labels(), ["Trompeta (Viento metal)"])
+
+    def test_new_instruments_are_listed_once_with_their_predefined_name_and_section(self):
         plan = self.plan(
             "M-1,Pau,Climent,Metal,Trompeta\n"
             "M-2,Ana,Mas,metal,trompeta; Tuba\n"
             "M-3,Neus,Gil,,Fagot\n"
-            "M-4,Joan,Ribes,Madera,fagot\n"
+            "M-4,Joan,Ribes,Madera,fagot; Saxo alto\n"
+            "M-5,Pep,Mira,,Bassoon\n"
         )
-        self.assertEqual(list(plan.new_sections.values()), ["Metal"])
-        self.assertEqual(plan.new_instrument_labels(), ["Trompeta (Metal)", "Tuba (Metal)", "Fagot (Madera)"])
+        self.assertEqual(plan.row_errors, {})
+        self.assertEqual(
+            plan.new_instrument_labels(),
+            ["Trompeta (Viento metal)", "Tuba (Viento metal)", "Fagot (Viento madera)", "Saxofón alto (Viento madera)"],
+        )
+
+    def test_instrument_unknown_to_the_catalog_takes_the_section_of_the_file(self):
+        plan = self.plan("M-1,Pau,Climent,,Bombarda\nM-2,Ana,Mas,Fusta,bombarda\n")
+        self.assertEqual(plan.row_errors, {})
+        self.assertEqual(plan.new_instrument_labels(), ["Bombarda (Viento madera)"])
 
     def test_instrument_under_another_section_is_a_row_error_not_a_reassignment(self):
         plan = self.plan("M-1,Pau,Climent,Metal,Clarinete; Bombo\n")
         self.assertIn("Clarinete", plan.row_errors[2][0])
-        self.assertIn("«Madera»", plan.row_errors[2][0])
+        self.assertIn("«Viento madera»", plan.row_errors[2][0])
         # La fila rechazada no aporta nada al catálogo.
-        self.assertEqual(plan.new_sections, {})
+        self.assertEqual(plan.new_instruments, {})
+
+    def test_predefined_instrument_under_another_section_is_a_row_error(self):
+        plan = self.plan("M-1,Pau,Climent,Percusión,Tuba\n")
+        self.assertIn("«Tuba» ya está en la cuerda «Viento metal»", plan.row_errors[2][0])
         self.assertEqual(plan.new_instruments, {})
 
     def test_file_putting_one_new_instrument_in_two_sections_rejects_the_later_row(self):
-        plan = self.plan("M-1,Pau,Climent,Metal,Tuba\nM-2,Ana,Mas,Percusión,Tuba\n")
+        plan = self.plan("M-1,Pau,Climent,Madera,Bombarda\nM-2,Ana,Mas,Percusión,Bombarda\n")
         self.assertNotIn(2, plan.row_errors)
-        self.assertIn("«Metal» y «Percusión»", plan.row_errors[3][0])
-        self.assertEqual(list(plan.new_sections.values()), ["Metal"])
+        self.assertIn("«Viento madera» y «Percusión»", plan.row_errors[3][0])
+        self.assertEqual(plan.new_instrument_labels(), ["Bombarda (Viento madera)"])
 
     def test_instrument_without_section_in_catalog_is_kept_with_a_warning(self):
         plan = self.plan("M-1,Pau,Climent,Madera,Flauta\n")
         self.assertEqual(plan.row_errors, {})
         self.assertIn("no tiene cuerda en el catálogo", plan.row_warnings[2][0])
 
-    def test_catalog_of_another_association_is_never_reused(self):
+    def test_instruments_of_another_association_are_never_reused(self):
         plan = self.plan("M-1,Pau,Climent,Metal,Tuba\n")
-        self.assertEqual(list(plan.new_sections.values()), ["Metal"])
-        self.assertEqual(plan.new_instrument_labels(), ["Tuba (Metal)"])
+        self.assertEqual(plan.new_instrument_labels(), ["Tuba (Viento metal)"])
         other_plan = self.plan("M-1,Pau,Climent,Metal,Tuba\n", association=self.other_association)
-        self.assertEqual(other_plan.new_sections, {})
         self.assertEqual(other_plan.new_instruments, {})
 
 
 class ConfirmCatalogTests(ImportCatalogFixture):
-    def test_confirm_creates_catalog_and_links_instruments_with_first_as_primary(self):
+    def test_confirm_creates_instruments_and_links_them_with_first_as_primary(self):
         batch = self.batch("M-1,Pau,Climent,Metal,Trompeta / Fliscorno\nM-2,Ana,Mas,madera,CLARINETE\nM-3,Neus,Gil,,\n")
-        self.assertFalse(Section.objects.filter(association=self.association, name="Metal").exists())
+        sections_before = list(Section.objects.values_list("code", flat=True))
 
         result = services.confirm_import(batch)
 
         self.assertEqual(result["created"], 3)
-        self.assertEqual(result["sections_created"], ["Metal"])
-        self.assertEqual(result["instruments_created"], ["Trompeta (Metal)", "Fliscorno (Metal)"])
-        brass = Section.objects.get(association=self.association, name="Metal")
-        self.assertGreater(brass.order, self.wood.order)
+        self.assertNotIn("sections_created", result)
+        self.assertEqual(result["instruments_created"], ["Trompeta (Viento metal)", "Fliscorno (Viento metal)"])
+        self.assertEqual(list(Section.objects.values_list("code", flat=True)), sections_before)
         trumpet = Instrument.objects.get(association=self.association, name="Trompeta")
-        self.assertEqual(trumpet.section, brass)
+        self.assertEqual(trumpet.section, Section.objects.get(code="brass"))
+        self.assertEqual((trumpet.code, trumpet.name_ca, trumpet.name_en), ("trumpet", "Trompeta", "Trumpet"))
         pau = Member.objects.get(association=self.association, external_id="M-1")
         links = {link.instrument.name: link.is_primary for link in pau.member_instruments.select_related("instrument")}
         self.assertEqual(links, {"Trompeta": True, "Fliscorno": False})
         ana = Member.objects.get(association=self.association, external_id="M-2")
         self.assertEqual([link.instrument for link in ana.member_instruments.all()], [self.clarinet])
         self.assertFalse(Member.objects.get(external_id="M-3").member_instruments.exists())
-        # Sin duplicar el clarinete existente ni tocar el catálogo ajeno.
+        # Sin duplicar el clarinete existente ni tocar los instrumentos ajenos.
         self.assertEqual(Instrument.objects.filter(association=self.association, name__iexact="clarinete").count(), 1)
-        self.assertEqual(Section.objects.filter(association=self.other_association).count(), 1)
         self.assertEqual(Instrument.objects.filter(association=self.other_association).count(), 1)
+
+    def test_aliases_in_one_file_create_a_single_predefined_instrument(self):
+        result = services.confirm_import(self.batch("M-1,Pau,Climent,,Saxo alto\nM-2,Ana,Mas,,Alto saxophone\n"))
+        self.assertEqual(result["instruments_created"], ["Saxofón alto (Viento madera)"])
+        sax = Instrument.objects.get(association=self.association, code="alto_saxophone")
+        self.assertEqual(MemberInstrument.objects.filter(instrument=sax).count(), 2)
 
     def test_conflicting_row_is_rejected_at_confirm_even_if_preview_missed_it(self):
         batch = self.batch("M-1,Pau,Climent,Metal,Clarinete\nM-2,Ana,Mas,Metal,Trompeta\n")
@@ -225,19 +254,19 @@ class ConfirmCatalogTests(ImportCatalogFixture):
         self.assertEqual((result["created"], result["rejected"]), (1, 1))
         batch.refresh_from_db()
         self.assertEqual(batch.preview[0]["action"], "rejected")
-        self.assertIn("ya está en la cuerda «Madera»", batch.preview[0]["errors"][0])
+        self.assertIn("ya está en la cuerda «Viento madera»", batch.preview[0]["errors"][0])
         self.clarinet.refresh_from_db()
         self.assertEqual(self.clarinet.section, self.wood)
         self.assertFalse(Member.objects.filter(external_id="M-1").exists())
 
     def test_catalog_entry_created_between_preview_and_confirm_is_reused(self):
         batch = self.batch("M-1,Pau,Climent,Percusión,Caja\n")
-        percussion = Section.objects.create(association=self.association, name="Percusion")
-        drum = Instrument.objects.create(association=self.association, name="caja", section=percussion)
+        drum = Instrument.objects.create(
+            association=self.association, name="caja", section=Section.objects.get(code="percussion")
+        )
 
         result = services.confirm_import(batch)
 
-        self.assertEqual(result["sections_created"], [])
         self.assertEqual(result["instruments_created"], [])
         self.assertEqual(Member.objects.get(external_id="M-1").member_instruments.get().instrument, drum)
 
@@ -331,28 +360,33 @@ class PanelImportCatalogTests(ImportCatalogFixture):
         batch = self.generate_preview(client, batch)
         self.assertEqual(batch.status, ImportBatch.Status.PREVIEW)
         self.assertFalse(Member.objects.exists())
-        self.assertEqual(Section.objects.filter(association=self.association).count(), 1)
         self.assertEqual(Instrument.objects.filter(association=self.association).count(), 2)
 
         page = client.get(self.detail_url(batch))
-        self.assertContains(page, "Se crearán 2 cuerdas:")
-        self.assertContains(page, "Metal, Percusión")
+        self.assertNotContains(page, "cuerdas:")
         self.assertContains(page, "Se crearán 3 instrumentos:")
-        self.assertContains(page, "Trompeta (Metal), Fliscorno (Metal), Caja (Percusión)")
+        self.assertContains(page, "Trompeta (Viento metal), Fliscorno (Viento metal), Caja (Percusión)")
         self.assertContains(page, "<th>Cuerda</th>", html=False)
         self.assertContains(page, "Trompeta, Fliscorno")
-        self.assertContains(page, "ya está en la cuerda «Madera» del catálogo")
+        self.assertContains(page, "ya está en la cuerda «Viento madera» del catálogo")
         self.assertContains(page, ">Confirmar importación</button>")
 
         batch = self.confirm(client, batch)
         self.assertEqual(batch.status, ImportBatch.Status.CONFIRMED)
         self.assertEqual((batch.result["created"], batch.result["rejected"]), (3, 1))
         self.assertEqual(
-            set(Section.objects.filter(association=self.association).values_list("name", flat=True)),
-            {"Madera", "Metal", "Percusión"},
+            set(
+                Instrument.objects.filter(association=self.association).values_list("name", "section__code")
+            ),
+            {
+                ("Clarinete", "woodwind"),
+                ("Flauta", None),
+                ("Trompeta", "brass"),
+                ("Fliscorno", "brass"),
+                ("Caja", "percussion"),
+            },
         )
         page = client.get(self.detail_url(batch))
-        self.assertContains(page, "Se crearon 2 cuerdas:")
         self.assertContains(page, "Se crearon 3 instrumentos:")
 
     def test_preview_with_only_existing_catalog_says_so(self):
@@ -360,7 +394,7 @@ class PanelImportCatalogTests(ImportCatalogFixture):
         client.force_login(self.admin)
         batch = self.generate_preview(client, self.upload(client, (CATALOG_HEADER + "M-1,Pau,Climent,Madera,Clarinete\n").encode()))
         page = client.get(self.detail_url(batch))
-        self.assertContains(page, "Todas las cuerdas e instrumentos del fichero ya existen")
+        self.assertContains(page, "Todos los instrumentos del fichero ya existen")
 
     def test_import_without_catalog_columns_keeps_the_previous_table(self):
         client = Client()
@@ -391,7 +425,7 @@ class PanelImportCatalogTests(ImportCatalogFixture):
         self.confirm(client, batch)
         tuba = Instrument.objects.get(association=self.association, name="Tuba")
         self.assertNotEqual(tuba.pk, self.foreign_tuba.pk)
-        self.assertEqual(tuba.section.association, self.association)
+        self.assertEqual(tuba.association, self.association)
         self.assertEqual(Instrument.objects.filter(association=self.other_association).count(), 1)
 
     def test_board_member_without_admin_role_cannot_import(self):
@@ -418,7 +452,7 @@ class PanelImportCatalogTests(ImportCatalogFixture):
         self.assertFalse(Member.objects.filter(association=empty_band).exists())
         self.assertFalse(Instrument.objects.filter(association=empty_band).exists())
         page = client.get(self.detail_url(batch))
-        self.assertContains(page, "Se crearán 3 cuerdas:")
+        self.assertNotContains(page, "cuerdas:")
         self.assertContains(page, "Se crearán 21 instrumentos:")
 
         batch = self.confirm(client, batch)
@@ -431,17 +465,18 @@ class PanelImportCatalogTests(ImportCatalogFixture):
         self.assertTrue(all(member.national_id == "" for member in members))
         self.assertTrue(all(member.phone.startswith("+34 600 000 0") for member in members))
         catalog = {
-            section.name: sorted(section.instruments.values_list("name", flat=True))
-            for section in Section.objects.filter(association=empty_band)
+            section.name: sorted(section.instruments.filter(association=empty_band).values_list("name", flat=True))
+            for section in Section.objects.filter(instruments__association=empty_band).distinct()
         }
+        # Los «Saxo alto» del fichero se reconocen como el instrumento predefinido.
         self.assertEqual(
             catalog,
             {
-                "Madera": sorted(
+                "Viento madera": sorted(
                     ["Flauta", "Flautín", "Oboe", "Fagot", "Clarinete", "Requinto", "Clarinete bajo",
-                     "Saxo alto", "Saxo tenor", "Saxo barítono"]
+                     "Saxofón alto", "Saxofón tenor", "Saxofón barítono"]
                 ),
-                "Metal": sorted(["Trompeta", "Fliscorno", "Trompa", "Trombón", "Bombardino", "Tuba"]),
+                "Viento metal": sorted(["Trompeta", "Fliscorno", "Trompa", "Trombón", "Bombardino", "Tuba"]),
                 "Percusión": sorted(["Caja", "Bombo", "Platos", "Timbales", "Láminas"]),
             },
         )
@@ -474,11 +509,11 @@ class ApiImportCatalogTests(ImportCatalogFixture):
 
         response = client.post(f"/api/v1/imports/{response.data['id']}/confirm")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["sections_created"], ["Metal"])
-        self.assertEqual(response.data["instruments_created"], ["Trompeta (Metal)"])
+        self.assertNotIn("sections_created", response.data)
+        self.assertEqual(response.data["instruments_created"], ["Trompeta (Viento metal)"])
 
     def test_the_api_preview_reports_catalog_conflicts_before_confirming(self):
-        Instrument.objects.create(association=self.association, name="Trompa", section=Section.objects.create(association=self.association, name="Metal"))
+        Instrument.objects.create(association=self.association, name="Trompa", section=Section.objects.get(code="brass"))
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Token {Token.objects.create(user=self.admin).key}")
         response = client.post(

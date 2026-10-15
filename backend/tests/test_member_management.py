@@ -40,7 +40,7 @@ class CensusFixture(TestCase):
         self.settings_override.enable()
         self.association = Association.objects.create(name="Banda Sintética", slug="banda-sintetica")
         self.other_association = Association.objects.create(name="Otra Banda", slug="otra-banda")
-        self.section = Section.objects.create(association=self.association, name="Metales")
+        self.section = Section.objects.get(code="brass")
         self.trumpet = Instrument.objects.create(association=self.association, name="Trompeta", section=self.section)
         self.flute = Instrument.objects.create(association=self.association, name="Flauta")
         self.foreign_instrument = Instrument.objects.create(association=self.other_association, name="Tuba")

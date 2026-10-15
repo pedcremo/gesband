@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gesband\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 22:21+0200\n"
+"POT-Creation-Date: 2026-10-15 10:50+0200\n"
 "PO-Revision-Date: 2026-09-21 10:00+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +25,13 @@ msgid "Rol"
 msgstr "Role"
 
 #: apps/accounts/models.py:9 apps/accounts/models.py:33
-#: apps/members/models.py:95
+#: apps/members/models.py:110
 msgid "correo electrónico"
 msgstr "email"
 
 #: apps/accounts/models.py:12 apps/associations/models.py:63
 #: apps/communications/models.py:21 apps/communications/models.py:79
-#: apps/communications/models.py:140 apps/members/models.py:87
+#: apps/communications/models.py:140 apps/members/models.py:102
 msgid "cuenta"
 msgstr "account"
 
@@ -43,23 +43,22 @@ msgstr "accounts"
 #: apps/activities/models.py:130 apps/activities/models.py:214
 #: apps/associations/models.py:21 apps/communications/models.py:13
 #: apps/communications/models.py:74 apps/communications/models.py:134
-#: apps/members/models.py:77 apps/members/models.py:203
-#: apps/polls/models.py:28 apps/polls/models.py:69 apps/transport/models.py:17
+#: apps/members/models.py:92 apps/members/models.py:218 apps/polls/models.py:28
+#: apps/polls/models.py:69 apps/transport/models.py:17
 msgid "identificador"
 msgstr "identifier"
 
 #: apps/accounts/models.py:25 apps/accounts/models.py:91
 #: apps/activities/models.py:27 apps/associations/models.py:48
 #: apps/associations/models.py:57 apps/communications/models.py:15
-#: apps/members/models.py:22 apps/members/models.py:39
-#: apps/members/models.py:79 apps/members/models.py:205
-#: apps/polls/models.py:30
+#: apps/members/models.py:50 apps/members/models.py:94
+#: apps/members/models.py:220 apps/polls/models.py:30
 msgid "asociación"
 msgstr "association"
 
 #: apps/accounts/models.py:31 apps/activities/models.py:135
-#: apps/members/models.py:137 apps/members/models.py:146
-#: apps/members/models.py:183 apps/polls/models.py:93
+#: apps/members/models.py:152 apps/members/models.py:161
+#: apps/members/models.py:198 apps/polls/models.py:93
 #: apps/transport/models.py:57
 msgid "miembro"
 msgstr "member"
@@ -69,7 +68,7 @@ msgid "huella del token"
 msgstr "token fingerprint"
 
 #: apps/accounts/models.py:39 apps/activities/models.py:50
-#: apps/members/models.py:110 apps/polls/models.py:44
+#: apps/members/models.py:125 apps/polls/models.py:44
 msgid "creada por"
 msgstr "created by"
 
@@ -81,8 +80,8 @@ msgstr "revoked by"
 #: apps/activities/models.py:143 apps/activities/models.py:170
 #: apps/associations/models.py:44 apps/associations/models.py:66
 #: apps/communications/models.py:44 apps/communications/models.py:150
-#: apps/communications/models.py:186 apps/members/models.py:99
-#: apps/members/models.py:223 apps/polls/models.py:46
+#: apps/communications/models.py:186 apps/members/models.py:114
+#: apps/members/models.py:238 apps/polls/models.py:46
 msgid "fecha de creación"
 msgstr "creation date"
 
@@ -186,8 +185,8 @@ msgid ""
 "Perderá los permisos de ese rol en esta asociación. Podrás concedérselo de "
 "nuevo."
 msgstr ""
-"They will lose that role's permissions in this association. You can grant it"
-" again later."
+"They will lose that role's permissions in this association. You can grant it "
+"again later."
 
 #: apps/accounts/panel_views.py:112
 msgid "Quitar rol"
@@ -253,8 +252,8 @@ msgid ""
 "Ya existe una cuenta con este correo. Debe vincularse tras comprobar su "
 "identidad."
 msgstr ""
-"An account with this email already exists. It must be linked after verifying"
-" the person's identity."
+"An account with this email already exists. It must be linked after verifying "
+"the person's identity."
 
 #: apps/accounts/services.py:61 templates/accounts/activate_invitation.html:5
 msgid "Activa tu cuenta de Gesband"
@@ -321,11 +320,11 @@ msgstr ""
 
 #: apps/accounts/services.py:282
 msgid ""
-"Solo una cuenta con rol de administración puede cambiar el acceso de otra "
-"que lo tenga."
+"Solo una cuenta con rol de administración puede cambiar el acceso de otra que"
+" lo tenga."
 msgstr ""
-"Only an account with the administration role can change the access of "
-"another account that has it."
+"Only an account with the administration role can change the access of another"
+" account that has it."
 
 #: apps/accounts/services.py:286
 msgid "No puedes desactivar tu propio acceso."
@@ -350,8 +349,8 @@ msgstr "Fee per musician (€)"
 
 #: apps/activities/forms.py:51
 msgid ""
-"Mismo importe para cada músico que conste como presente. Cambiarlo no altera"
-" los pagos ya registrados."
+"Mismo importe para cada músico que conste como presente. Cambiarlo no altera "
+"los pagos ya registrados."
 msgstr ""
 "The same fee for every musician recorded as present. Changing it does not "
 "alter payments already recorded."
@@ -402,14 +401,14 @@ msgstr "Cancelled"
 msgid "Completada"
 msgstr "Completed"
 
-#: apps/activities/models.py:29 apps/members/models.py:96
+#: apps/activities/models.py:29 apps/members/models.py:111
 #: apps/transport/models.py:21
 msgid "tipo"
 msgstr "type"
 
 #: apps/activities/models.py:30 apps/activities/models.py:188
 #: apps/communications/models.py:145 apps/communications/models.py:181
-#: apps/members/models.py:97 apps/members/models.py:219
+#: apps/members/models.py:112 apps/members/models.py:234
 #: apps/polls/models.py:34
 msgid "estado"
 msgstr "status"
@@ -464,7 +463,7 @@ msgid "versión"
 msgstr "version"
 
 #: apps/activities/models.py:53 apps/activities/models.py:199
-#: apps/members/models.py:100 apps/polls/models.py:47
+#: apps/members/models.py:115 apps/polls/models.py:47
 msgid "fecha de actualización"
 msgstr "update date"
 
@@ -498,7 +497,7 @@ msgstr "Enter a fee greater than zero for a paid activity."
 msgid "notas"
 msgstr "notes"
 
-#: apps/activities/models.py:116 apps/members/models.py:25
+#: apps/activities/models.py:116 apps/members/models.py:37
 #: apps/polls/models.py:72
 msgid "orden"
 msgstr "order"
@@ -548,7 +547,7 @@ msgstr "invitation"
 msgid "convocatorias"
 msgstr "invitations"
 
-#: apps/activities/models.py:152 apps/api.py:297 apps/transport/models.py:70
+#: apps/activities/models.py:152 apps/api.py:301 apps/transport/models.py:70
 msgid "El miembro pertenece a otra asociación."
 msgstr "The member belongs to another association."
 
@@ -654,8 +653,7 @@ msgid "Ese pago ya estaba anulado."
 msgstr "That payment was already voided."
 
 #: apps/activities/payments.py:51
-msgid ""
-"Solo la administración y la junta pueden gestionar los pagos a músicos."
+msgid "Solo la administración y la junta pueden gestionar los pagos a músicos."
 msgstr "Only administrators and the board can manage musician payments."
 
 #: apps/activities/payments.py:120
@@ -664,13 +662,13 @@ msgstr "The invitation belongs to another association."
 
 #: apps/activities/payments.py:143
 msgid ""
-"Solo se puede pagar a quien consta como presente en una actividad remunerada"
-" no cancelada."
+"Solo se puede pagar a quien consta como presente en una actividad remunerada "
+"no cancelada."
 msgstr ""
 "Only musicians recorded as present at a paid, non-cancelled activity can be "
 "paid."
 
-#: apps/activities/payments.py:166 apps/api.py:278
+#: apps/activities/payments.py:166 apps/api.py:282
 msgid "La actividad pertenece a otra asociación."
 msgstr "The activity belongs to another association."
 
@@ -784,47 +782,43 @@ msgstr "A cancelled activity cannot be published."
 msgid "%(amount)s €"
 msgstr "€%(amount)s"
 
-#: apps/api.py:90 apps/members/models.py:61
-msgid "La cuerda pertenece a otra asociación."
-msgstr "The section belongs to another association."
-
-#: apps/api.py:280 apps/transport/models.py:43
+#: apps/api.py:284 apps/transport/models.py:43
 msgid "El conductor pertenece a otra asociación."
 msgstr "The driver belongs to another association."
 
-#: apps/api.py:295
+#: apps/api.py:299
 msgid "El transporte pertenece a otra asociación."
 msgstr "The transport belongs to another association."
 
-#: apps/api.py:320
+#: apps/api.py:324
 msgid "Credenciales no válidas."
 msgstr "Invalid credentials."
 
-#: apps/api.py:334
+#: apps/api.py:338
 msgid "Token de renovación no válido."
 msgstr "Invalid refresh token."
 
-#: apps/api.py:377
+#: apps/api.py:381
 msgid "Es obligatorio seleccionar la asociación."
 msgstr "You must select the association."
 
-#: apps/api.py:434 apps/api.py:547
+#: apps/api.py:438 apps/api.py:551
 msgid "Adjunta una imagen."
 msgstr "Attach an image."
 
-#: apps/api.py:481
+#: apps/api.py:485
 msgid "No hay una ficha vinculada a esta cuenta."
 msgstr "There is no member record linked to this account."
 
-#: apps/api.py:639 apps/transport/models.py:75
+#: apps/api.py:642 apps/transport/models.py:75
 msgid "El miembro ya tiene transporte para esta actividad."
 msgstr "The member already has transport for this activity."
 
-#: apps/api.py:641 apps/transport/models.py:77
+#: apps/api.py:644 apps/transport/models.py:77
 msgid "No quedan plazas disponibles."
 msgstr "There are no seats available."
 
-#: apps/api.py:766 config/panel.py:208
+#: apps/api.py:769 config/panel.py:208
 msgid "Adjunta un CSV o XLSX."
 msgstr "Attach a CSV or XLSX file."
 
@@ -880,8 +874,8 @@ msgstr "Light"
 msgid "Oscuro"
 msgstr "Dark"
 
-#: apps/associations/models.py:22 apps/members/models.py:24
-#: apps/members/models.py:49 apps/members/models.py:90
+#: apps/associations/models.py:22 apps/members/models.py:34
+#: apps/members/models.py:63 apps/members/models.py:105
 #: apps/transport/models.py:22
 msgid "nombre"
 msgstr "name"
@@ -1023,8 +1017,7 @@ msgstr "Create and publish activities"
 msgid "Convocar músicos"
 msgstr "Invite musicians"
 
-#: apps/associations/permissions.py:135
-#: templates/associations/branding.html:82
+#: apps/associations/permissions.py:135 templates/associations/branding.html:82
 msgid "Pasar lista"
 msgstr "Take attendance"
 
@@ -1234,7 +1227,7 @@ msgstr "provider error code"
 msgid "momento indicado por la app"
 msgstr "time reported by the app"
 
-#: apps/communications/models.py:149 apps/members/models.py:224
+#: apps/communications/models.py:149 apps/members/models.py:239
 msgid "fecha de confirmación"
 msgstr "confirmation date"
 
@@ -1263,7 +1256,7 @@ msgstr "Email"
 msgid "Enviada"
 msgstr "Sent"
 
-#: apps/communications/models.py:167 apps/members/models.py:201
+#: apps/communications/models.py:167 apps/members/models.py:216
 msgid "Fallida"
 msgstr "Failed"
 
@@ -1316,8 +1309,7 @@ msgid "Miembros"
 msgstr "Members"
 
 #: apps/members/forms.py:17 apps/polls/forms.py:71
-#: templates/activities/detail.html:102
-#: templates/members/import_detail.html:74
+#: templates/activities/detail.html:102 templates/members/import_detail.html:69
 msgid "Instrumentos"
 msgstr "Instruments"
 
@@ -1335,11 +1327,11 @@ msgstr "Positions"
 
 #: apps/members/forms.py:33
 msgid ""
-"Los cargos son informativos: no conceden permisos en Gesband. Los permisos "
-"se dan con roles."
+"Los cargos son informativos: no conceden permisos en Gesband. Los permisos se"
+" dan con roles."
 msgstr ""
-"Positions are informative: they grant no permissions in Gesband. Permissions"
-" are given through roles."
+"Positions are informative: they grant no permissions in Gesband. Permissions "
+"are given through roles."
 
 #: apps/members/forms.py:51
 msgid ""
@@ -1388,7 +1380,7 @@ msgstr "First surname"
 msgid "Segundo apellido"
 msgstr "Second surname"
 
-#: apps/members/forms.py:104 apps/members/models.py:92
+#: apps/members/forms.py:104 apps/members/models.py:107
 msgid "DNI/NIE"
 msgstr "ID number (DNI/NIE)"
 
@@ -1408,7 +1400,7 @@ msgstr "Email"
 msgid "Tipo de miembro"
 msgstr "Member type"
 
-#: apps/members/forms.py:109 templates/members/import_detail.html:74
+#: apps/members/forms.py:109 templates/members/import_detail.html:69
 msgid "Cuerda"
 msgstr "Section"
 
@@ -1420,285 +1412,301 @@ msgstr "Instruments (separated by ; or /)"
 msgid "La foto supera 5 MB."
 msgstr "The photo exceeds 5 MB."
 
-#: apps/members/models.py:30 apps/members/models.py:47
+#: apps/members/models.py:33
+msgid "código"
+msgstr "code"
+
+#: apps/members/models.py:35 apps/members/models.py:64
+msgid "nombre en valenciano"
+msgstr "name in Valencian"
+
+#: apps/members/models.py:36 apps/members/models.py:65
+msgid "nombre en inglés"
+msgstr "name in English"
+
+#: apps/members/models.py:41 apps/members/models.py:58
 msgid "cuerda"
 msgstr "section"
 
-#: apps/members/models.py:31
+#: apps/members/models.py:42
 msgid "cuerdas"
 msgstr "sections"
 
-#: apps/members/models.py:54 apps/members/models.py:152
+#: apps/members/models.py:62
+msgid "código del catálogo"
+msgstr "catalogue code"
+
+#: apps/members/models.py:75 apps/members/models.py:167
 msgid "instrumento"
 msgstr "instrument"
 
-#: apps/members/models.py:55
+#: apps/members/models.py:76
 msgid "instrumentos"
 msgstr "instruments"
 
-#: apps/members/models.py:69
+#: apps/members/models.py:84
 msgid "Músico socio"
 msgstr "Member musician"
 
-#: apps/members/models.py:70
+#: apps/members/models.py:85
 msgid "Socio colaborador/mecenas"
 msgstr "Supporting member/patron"
 
-#: apps/members/models.py:71
+#: apps/members/models.py:86
 msgid "Colaborador musical externo"
 msgstr "External guest musician"
 
-#: apps/members/models.py:74 templates/accounts/access_roles.html:58
+#: apps/members/models.py:89 templates/accounts/access_roles.html:58
 msgid "Activo"
 msgstr "Active"
 
-#: apps/members/models.py:75
+#: apps/members/models.py:90
 msgid "Inactivo"
 msgstr "Inactive"
 
-#: apps/members/models.py:89
+#: apps/members/models.py:104
 msgid "identificador externo"
 msgstr "external identifier"
 
-#: apps/members/models.py:91
+#: apps/members/models.py:106
 msgid "apellidos"
 msgstr "surnames"
 
-#: apps/members/models.py:93
+#: apps/members/models.py:108
 msgid "dirección"
 msgstr "address"
 
-#: apps/members/models.py:94
+#: apps/members/models.py:109
 msgid "teléfono"
 msgstr "phone"
 
-#: apps/members/models.py:98
+#: apps/members/models.py:113
 msgid "foto"
 msgstr "photo"
 
-#: apps/members/models.py:118
+#: apps/members/models.py:133
 msgid "actualizada por"
 msgstr "updated by"
 
-#: apps/members/models.py:120
+#: apps/members/models.py:135
 msgid "fecha del cambio de estado"
 msgstr "status change date"
 
-#: apps/members/models.py:127
+#: apps/members/models.py:142
 msgid "estado cambiado por"
 msgstr "status changed by"
 
-#: apps/members/models.py:138
+#: apps/members/models.py:153
 msgid "miembros"
 msgstr "members"
 
-#: apps/members/models.py:154
+#: apps/members/models.py:169
 msgid "principal"
 msgstr "main"
 
-#: apps/members/models.py:161
+#: apps/members/models.py:176
 msgid "instrumento de miembro"
 msgstr "member instrument"
 
-#: apps/members/models.py:162
+#: apps/members/models.py:177
 msgid "instrumentos de miembros"
 msgstr "member instruments"
 
-#: apps/members/models.py:168 apps/members/services.py:471
-#: apps/members/services.py:474 apps/members/services.py:480
+#: apps/members/models.py:183 apps/members/services.py:503
+#: apps/members/services.py:506 apps/members/services.py:512
 msgid "El instrumento pertenece a otra asociación."
 msgstr "The instrument belongs to another association."
 
-#: apps/members/models.py:175
+#: apps/members/models.py:190
 msgid "Presidencia"
 msgstr "Presidency"
 
-#: apps/members/models.py:176
+#: apps/members/models.py:191
 msgid "Vicepresidencia"
 msgstr "Vice-presidency"
 
-#: apps/members/models.py:177
+#: apps/members/models.py:192
 msgid "Secretaría"
 msgstr "Secretary"
 
-#: apps/members/models.py:178
+#: apps/members/models.py:193
 msgid "Tesorería"
 msgstr "Treasury"
 
-#: apps/members/models.py:179
+#: apps/members/models.py:194
 msgid "Contratista"
 msgstr "Contractor"
 
-#: apps/members/models.py:180
+#: apps/members/models.py:195
 msgid "Vocalía"
 msgstr "Board member"
 
-#: apps/members/models.py:185
+#: apps/members/models.py:200
 msgid "cargo"
 msgstr "position"
 
-#: apps/members/models.py:189
+#: apps/members/models.py:204
 msgid "cargo de miembro"
 msgstr "member position"
 
-#: apps/members/models.py:190
+#: apps/members/models.py:205
 msgid "cargos de miembros"
 msgstr "member positions"
 
-#: apps/members/models.py:198
+#: apps/members/models.py:213
 msgid "Subido"
 msgstr "Uploaded"
 
-#: apps/members/models.py:199
+#: apps/members/models.py:214
 msgid "Previsualización"
 msgstr "Preview"
 
-#: apps/members/models.py:200
+#: apps/members/models.py:215
 msgid "Confirmada"
 msgstr "Confirmed"
 
-#: apps/members/models.py:211
+#: apps/members/models.py:226
 msgid "creado por"
 msgstr "created by"
 
-#: apps/members/models.py:213
+#: apps/members/models.py:228
 msgid "nombre de archivo"
 msgstr "file name"
 
-#: apps/members/models.py:214
+#: apps/members/models.py:229
 msgid "huella del contenido"
 msgstr "content fingerprint"
 
-#: apps/members/models.py:216
+#: apps/members/models.py:231
 msgid "fichero original temporal"
 msgstr "temporary original file"
 
-#: apps/members/models.py:218
+#: apps/members/models.py:233
 msgid "columnas de origen"
 msgstr "source columns"
 
-#: apps/members/models.py:220
+#: apps/members/models.py:235
 msgid "asignación de columnas"
 msgstr "column mapping"
 
-#: apps/members/models.py:221
+#: apps/members/models.py:236
 msgid "previsualización"
 msgstr "preview"
 
-#: apps/members/models.py:222
+#: apps/members/models.py:237
 msgid "resultado"
 msgstr "result"
 
-#: apps/members/models.py:229
+#: apps/members/models.py:244
 msgid "lote de importación"
 msgstr "import batch"
 
-#: apps/members/models.py:230
+#: apps/members/models.py:245
 msgid "lotes de importación"
 msgstr "import batches"
 
-#: apps/members/services.py:85
+#: apps/members/services.py:88
 msgid "El fichero supera 5 MB."
 msgstr "The file exceeds 5 MB."
 
-#: apps/members/services.py:91
+#: apps/members/services.py:94
 msgid "El CSV debe estar codificado en UTF-8."
 msgstr "The CSV must be UTF-8 encoded."
 
-#: apps/members/services.py:104
+#: apps/members/services.py:107
 msgid "El fichero XLSX no es válido."
 msgstr "The XLSX file is not valid."
 
-#: apps/members/services.py:106
+#: apps/members/services.py:109
 msgid "Solo se admiten ficheros CSV o XLSX."
 msgstr "Only CSV or XLSX files are accepted."
 
-#: apps/members/services.py:108
+#: apps/members/services.py:111
 msgid "Todas las columnas deben tener un nombre."
 msgstr "Every column must have a name."
 
-#: apps/members/services.py:110
+#: apps/members/services.py:113
 msgid "Los nombres de columna no pueden repetirse."
 msgstr "Column names cannot be repeated."
 
-#: apps/members/services.py:112
+#: apps/members/services.py:115
 msgid "El fichero no contiene filas de datos."
 msgstr "The file contains no data rows."
 
-#: apps/members/services.py:114
+#: apps/members/services.py:117
 #, python-format
 msgid "El fichero supera el límite de %(limit)s filas."
 msgstr "The file exceeds the limit of %(limit)s rows."
 
-#: apps/members/services.py:129
+#: apps/members/services.py:132
 #, python-format
 msgid "Campos de destino no permitidos: %(fields)s."
 msgstr "Destination fields not allowed: %(fields)s."
 
-#: apps/members/services.py:134
+#: apps/members/services.py:137
 #, python-format
 msgid "Columnas de origen desconocidas: %(fields)s."
 msgstr "Unknown source columns: %(fields)s."
 
-#: apps/members/services.py:138
+#: apps/members/services.py:141
 msgid "Cada campo de destino solo puede asignarse una vez."
 msgstr "Each destination field can only be mapped once."
 
-#: apps/members/services.py:140
+#: apps/members/services.py:143
 msgid "Asigna una columna al campo Nombre."
 msgstr "Map a column to the Name field."
 
-#: apps/members/services.py:144
+#: apps/members/services.py:147
 msgid "Asigna Apellidos (juntos) o Primer apellido."
 msgstr "Map Surnames (combined) or First surname."
 
-#: apps/members/services.py:146
+#: apps/members/services.py:149
 msgid "Usa Apellidos (juntos) o los apellidos separados, pero no ambos."
 msgstr "Use Surnames (combined) or the separate surnames, but not both."
 
-#: apps/members/services.py:148
+#: apps/members/services.py:151
 msgid "El Segundo apellido requiere asignar también el Primer apellido."
 msgstr "Second surname also requires mapping First surname."
 
-#: apps/members/services.py:155
+#: apps/members/services.py:158
 msgid "Falta el nombre."
 msgstr "First name is missing."
 
-#: apps/members/services.py:161
+#: apps/members/services.py:164
 msgid "Falta el primer apellido."
 msgstr "The first surname is missing."
 
-#: apps/members/services.py:163
+#: apps/members/services.py:166
 msgid "Faltan los apellidos."
 msgstr "Last name is missing."
 
-#: apps/members/services.py:165
+#: apps/members/services.py:168
 msgid "Tipo de miembro no válido."
 msgstr "Invalid member type."
 
-#: apps/members/services.py:169
+#: apps/members/services.py:172
 msgid "Identificador externo duplicado en el fichero."
 msgstr "Duplicate external identifier in the file."
 
-#: apps/members/services.py:209
+#: apps/members/services.py:204
 #, python-format
 msgid "%(kind)s «%(name)s» no puede empezar por =, +, - o @."
 msgstr "%(kind)s “%(name)s” cannot start with =, +, - or @."
 
-#: apps/members/services.py:213
+#: apps/members/services.py:208
 #, python-format
 msgid "%(kind)s «%(name)s» supera %(limit)s caracteres."
 msgstr "%(kind)s “%(name)s” exceeds %(limit)s characters."
 
-#: apps/members/services.py:229
+#: apps/members/services.py:224
 msgid "La cuerda"
 msgstr "The section"
 
-#: apps/members/services.py:240
+#: apps/members/services.py:235
 msgid "El instrumento"
 msgstr "The instrument"
 
-#: apps/members/services.py:244
+#: apps/members/services.py:239
 #, python-format
 msgid ""
 "La cuerda «%(section)s» se ignora: la cuerda de una ficha es la de su "
@@ -1707,7 +1715,7 @@ msgstr ""
 "Section “%(section)s” is ignored: a member's section is that of their "
 "instrument."
 
-#: apps/members/services.py:303
+#: apps/members/services.py:295
 #, python-format
 msgid ""
 "El instrumento «%(instrument)s» ya está en la cuerda «%(current)s» del "
@@ -1716,62 +1724,67 @@ msgstr ""
 "Instrument “%(instrument)s” is already in section “%(current)s” of the "
 "catalogue, not “%(section)s”. Fix the file or the catalogue."
 
-#: apps/members/services.py:310
+#: apps/members/services.py:320
+#, python-format
+msgid "La cuerda «%(section)s» no existe. Usa una de estas: %(sections)s."
+msgstr "Section “%(section)s” does not exist. Use one of: %(sections)s."
+
+#: apps/members/services.py:335
 #, python-format
 msgid ""
 "El instrumento «%(instrument)s» no tiene cuerda en el catálogo; no se le "
 "asigna «%(section)s»."
 msgstr ""
-"Instrument “%(instrument)s” has no section in the catalogue; “%(section)s” "
-"is not assigned to it."
+"Instrument “%(instrument)s” has no section in the catalogue; “%(section)s” is"
+" not assigned to it."
 
-#: apps/members/services.py:317
+#: apps/members/services.py:348
 #, python-format
 msgid ""
 "El instrumento «%(instrument)s» aparece en el fichero con las cuerdas "
 "«%(first)s» y «%(section)s»."
 msgstr ""
-"Instrument “%(instrument)s” appears in the file with sections “%(first)s” "
-"and “%(section)s”."
+"Instrument “%(instrument)s” appears in the file with sections “%(first)s” and"
+" “%(section)s”."
 
-#: apps/members/services.py:382
+#: apps/members/services.py:415
 msgid "Genera la previsualización antes de confirmar."
 msgstr "Generate the preview before confirming."
 
-#: apps/members/services.py:391
+#: apps/members/services.py:424
 msgid "No hay filas válidas que confirmar. Corrige el mapeo o el fichero."
 msgstr "There are no valid rows to confirm. Fix the mapping or the file."
 
-#: apps/members/services.py:490
+#: apps/members/services.py:522
 msgid "Cargo no válido."
 msgstr "Invalid position."
 
-#: apps/members/services.py:501
+#: apps/members/services.py:533
 msgid "Ya hay otra ficha con este identificador externo en la asociación."
 msgstr ""
 "Another record in the association already has this external identifier."
 
-#: apps/members/services.py:589
+#: apps/members/services.py:621
 msgid "Estado no válido."
 msgstr "Invalid status."
 
-#: apps/members/services.py:625
+#: apps/members/services.py:657
 msgid "Tiene convocatorias o asistencia registradas."
 msgstr "It has call-ups or recorded attendance."
 
-#: apps/members/services.py:627
+#: apps/members/services.py:659
 msgid "Ha sido destinataria de encuestas."
 msgstr "It has received polls."
 
-#: apps/members/services.py:629
+#: apps/members/services.py:661
 msgid "Tiene transporte asignado."
 msgstr "It has transport assigned."
 
-#: apps/members/services.py:631
+#: apps/members/services.py:663
 msgid "Tiene una cuenta de acceso vinculada."
 msgstr "It has a linked access account."
 
-#: apps/members/services.py:645
+#: apps/members/services.py:677
 msgid ""
 "No se puede borrar esta ficha sin perder su historial. Dala de baja en su "
 "lugar."
@@ -2091,8 +2104,7 @@ msgstr "Voting open. %(notified)s people asked were notified."
 
 #: apps/polls/views.py:184
 #, python-format
-msgid ""
-"Resultado publicado. Se ha avisado a %(notified)s personas consultadas."
+msgid "Resultado publicado. Se ha avisado a %(notified)s personas consultadas."
 msgstr "Results published. %(notified)s people asked were notified."
 
 #: apps/polls/views.py:190
@@ -2176,8 +2188,8 @@ msgid ""
 "No se enviaron %(count)s selecciones porque ya tienen cuenta o no son "
 "elegibles."
 msgstr ""
-"%(count)s selected members were skipped because they already have an account"
-" or are not eligible."
+"%(count)s selected members were skipped because they already have an account "
+"or are not eligible."
 
 #: config/panel.py:221
 msgid "Este fichero ya se había cargado; se muestra el lote existente."
@@ -2209,8 +2221,8 @@ msgid ""
 "Actividad creada en borrador. Revísala, convoca y publícala cuando esté "
 "lista."
 msgstr ""
-"Activity created as a draft. Review it, invite musicians and publish it when"
-" it is ready."
+"Activity created as a draft. Review it, invite musicians and publish it when "
+"it is ready."
 
 #: config/panel.py:386
 #, python-format
@@ -2240,8 +2252,8 @@ msgstr ""
 #: config/panel.py:526
 #, python-format
 msgid ""
-"Convocatoria preparada para %(eligible)s músicos activos: %(created)s nuevas"
-" y %(existing)s ya existentes."
+"Convocatoria preparada para %(eligible)s músicos activos: %(created)s nuevas "
+"y %(existing)s ya existentes."
 msgstr ""
 "Invitations prepared for %(eligible)s active musicians: %(created)s new and "
 "%(existing)s already existing."
@@ -2253,9 +2265,9 @@ msgstr "Activity updated. There was nothing to announce."
 #: config/panel.py:543
 #, python-format
 msgid ""
-"Actividad actualizada. Se ha avisado a %(notified)s personas y se han "
-"anulado %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar "
-"de nuevo."
+"Actividad actualizada. Se ha avisado a %(notified)s personas y se han anulado"
+" %(reset)s respuestas: el cambio de fecha o lugar obliga a confirmar de "
+"nuevo."
 msgstr ""
 "Activity updated. %(notified)s people were notified and %(reset)s answers "
 "were cancelled: the change of date or place requires confirming again."
@@ -2271,8 +2283,8 @@ msgid ""
 "El plazo de respuesta ya ha terminado, así que nadie puede volver a "
 "confirmar. Amplíalo para recoger las respuestas."
 msgstr ""
-"The response deadline has already passed, so nobody can confirm again. "
-"Extend it to collect the answers."
+"The response deadline has already passed, so nobody can confirm again. Extend"
+" it to collect the answers."
 
 #: templates/403.html:3 templates/403.html:5
 msgid "Sin permiso"
@@ -2300,14 +2312,14 @@ msgstr "Back to the census"
 #: templates/accounts/access_roles.html:7
 msgid ""
 "Los roles dan los permisos en esta asociación; los cargos de la ficha no. "
-"Solo administración concede o quita el rol de administración, y siempre debe"
-" quedar al menos una cuenta de administración activa. Para dar acceso a "
+"Solo administración concede o quita el rol de administración, y siempre debe "
+"quedar al menos una cuenta de administración activa. Para dar acceso a "
 "alguien nuevo, invítalo desde «Gestionar accesos»."
 msgstr ""
 "Roles grant permissions in this association; record positions do not. Only "
 "administration grants or removes the administration role, and at least one "
-"active administration account must always remain. To give someone new "
-"access, invite them from “Manage access”."
+"active administration account must always remain. To give someone new access,"
+" invite them from “Manage access”."
 
 #: templates/accounts/access_roles.html:11
 #: templates/accounts/access_roles.html:78
@@ -2409,8 +2421,8 @@ msgstr "Account activated"
 
 #: templates/accounts/activation_complete.html:3
 msgid ""
-"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la "
-"contraseña que acabas de crear."
+"Ya puedes iniciar sesión en la aplicación móvil con tu correo y la contraseña"
+" que acabas de crear."
 msgstr ""
 "You can now log in to the mobile app with your email and the password you "
 "have just created."
@@ -2443,8 +2455,8 @@ msgid ""
 "instrumentos o a personas concretas."
 msgstr ""
 "The activity is saved as a draft: nobody is notified until you publish it. "
-"Afterwards you can invite the whole band, some sections, some instruments or"
-" specific people."
+"Afterwards you can invite the whole band, some sections, some instruments or "
+"specific people."
 
 #: templates/activities/create.html:15
 msgid "Crear en borrador"
@@ -2466,12 +2478,12 @@ msgstr "Edit the details"
 #: templates/activities/detail.html:42
 msgid ""
 "La actividad está publicada: cada cambio se avisa a quien esté convocado. "
-"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas "
-"ya dadas y obliga a confirmar de nuevo."
+"Cambiar la fecha, la hora de concentración o el lugar anula las respuestas ya"
+" dadas y obliga a confirmar de nuevo."
 msgstr ""
 "The activity is published: every change is announced to the people invited. "
-"Changing the date, the meeting time or the place cancels the answers already"
-" given and requires confirming again."
+"Changing the date, the meeting time or the place cancels the answers already "
+"given and requires confirming again."
 
 #: templates/activities/detail.html:49
 msgid "Guardar y avisar"
@@ -2522,9 +2534,9 @@ msgstr "Invite a selection"
 
 #: templates/activities/detail.html:88
 msgid ""
-"Marca cuerdas, instrumentos o personas: se convoca a quien cumpla cualquiera"
-" de las casillas. Solo cuentan los músicos activos; quien ya esté convocado "
-"no se duplica."
+"Marca cuerdas, instrumentos o personas: se convoca a quien cumpla cualquiera "
+"de las casillas. Solo cuentan los músicos activos; quien ya esté convocado no"
+" se duplica."
 msgstr ""
 "Tick sections, instruments or people: anyone matching any of the boxes is "
 "invited. Only active musicians count; anyone already invited is not "
@@ -2544,26 +2556,26 @@ msgstr "Invitations"
 
 #: templates/activities/detail.html:128
 msgid ""
-"Solo devenga el importe quien consta como presente en la lista. La respuesta"
-" a la convocatoria no cuenta."
+"Solo devenga el importe quien consta como presente en la lista. La respuesta "
+"a la convocatoria no cuenta."
 msgstr ""
-"Only musicians recorded as present earn the fee. The reply to the invitation"
-" does not count."
+"Only musicians recorded as present earn the fee. The reply to the invitation "
+"does not count."
 
 #: templates/activities/detail.html:132
 #, python-format
 msgid ""
-"Hay %(incident_count)s pago registrado que ya no corresponde a una "
-"asistencia presente. Revísalo y anúlalo si procede."
+"Hay %(incident_count)s pago registrado que ya no corresponde a una asistencia"
+" presente. Revísalo y anúlalo si procede."
 msgid_plural ""
 "Hay %(incident_count)s pagos registrados que ya no corresponden a una "
 "asistencia presente. Revísalos y anúlalos si procede."
 msgstr[0] ""
-"There is %(incident_count)s recorded payment that no longer matches a "
-"present attendance. Review it and void it if needed."
+"There is %(incident_count)s recorded payment that no longer matches a present"
+" attendance. Review it and void it if needed."
 msgstr[1] ""
-"There are %(incident_count)s recorded payments that no longer match a "
-"present attendance. Review them and void them if needed."
+"There are %(incident_count)s recorded payments that no longer match a present"
+" attendance. Review them and void them if needed."
 
 #: templates/activities/detail.html:141
 #, python-format
@@ -2657,8 +2669,8 @@ msgid ""
 "consta como presente. Registrar un pago no mueve dinero: deja constancia de "
 "que ya se ha pagado."
 msgstr ""
-"What each musician is owed for the paid activities where they are recorded "
-"as present. Recording a payment moves no money: it records that it has been "
+"What each musician is owed for the paid activities where they are recorded as"
+" present. Recording a payment moves no money: it records that it has been "
 "paid."
 
 #: templates/activities/payments.html:10
@@ -2683,8 +2695,8 @@ msgid ""
 "actividades canceladas o que ya no son remuneradas. Revísalos en el detalle "
 "de la actividad."
 msgstr ""
-"Some recorded payments belong to attendances no longer marked present, or to"
-" activities that were cancelled or are no longer paid. Review them in the "
+"Some recorded payments belong to attendances no longer marked present, or to "
+"activities that were cancelled or are no longer paid. Review them in the "
 "activity detail."
 
 #: templates/activities/payments.html:26
@@ -2996,11 +3008,11 @@ msgstr "Generate preview"
 
 #: templates/members/import_detail.html:40
 msgid ""
-"No member has been created or updated yet. Rows with errors will be rejected"
-" when you confirm."
+"No member has been created or updated yet. Rows with errors will be rejected "
+"when you confirm."
 msgstr ""
-"No member has been created or updated yet. Rows with errors will be rejected"
-" when you confirm."
+"No member has been created or updated yet. Rows with errors will be rejected "
+"when you confirm."
 
 #: templates/members/import_detail.html:43
 msgid "created"
@@ -3018,91 +3030,84 @@ msgstr "rejected"
 msgid "Catálogo de cuerdas e instrumentos"
 msgstr "Sections and instruments catalogue"
 
-#: templates/members/import_detail.html:53
+#: templates/members/import_detail.html:51
+msgid ""
+"Las cuerdas son comunes a todas las bandas: Viento metal, Viento madera, "
+"Percusión, Cuerda frotada, Cuerda percutida y Cuerda pulsada. Una cuerda "
+"distinta invalida la fila."
+msgstr ""
+"Sections are common to every band: Brass, Woodwind, Percussion, Bowed "
+"strings, Struck strings and Plucked strings. Any other section invalidates "
+"the row."
+
+#: templates/members/import_detail.html:54
 msgid ""
 "Al confirmar se añadirá al catálogo de la banda lo que todavía no existe. "
 "Revisa que los nombres sean correctos."
 msgstr ""
-"On confirming, anything missing will be added to the band's catalogue. Check"
-" that the names are correct."
+"On confirming, anything missing will be added to the band's catalogue. Check "
+"that the names are correct."
 
 #: templates/members/import_detail.html:57
-#, python-format
-msgid "Se creará %(counter)s cuerda:"
-msgid_plural "Se crearán %(counter)s cuerdas:"
-msgstr[0] "%(counter)s section will be created:"
-msgstr[1] "%(counter)s sections will be created:"
-
-#: templates/members/import_detail.html:57
-#, python-format
-msgid "Se creó %(counter)s cuerda:"
-msgid_plural "Se crearon %(counter)s cuerdas:"
-msgstr[0] "%(counter)s section was created:"
-msgstr[1] "%(counter)s sections were created:"
-
-#: templates/members/import_detail.html:61
 #, python-format
 msgid "Se creará %(counter)s instrumento:"
 msgid_plural "Se crearán %(counter)s instrumentos:"
 msgstr[0] "%(counter)s instrument will be created:"
 msgstr[1] "%(counter)s instruments will be created:"
 
-#: templates/members/import_detail.html:61
+#: templates/members/import_detail.html:57
 #, python-format
 msgid "Se creó %(counter)s instrumento:"
 msgid_plural "Se crearon %(counter)s instrumentos:"
 msgstr[0] "%(counter)s instrument was created:"
 msgstr[1] "%(counter)s instruments were created:"
 
-#: templates/members/import_detail.html:66
+#: templates/members/import_detail.html:61
 msgid ""
-"Todas las cuerdas e instrumentos del fichero ya existen en el catálogo de la"
-" banda."
-msgstr ""
-"All sections and instruments in the file already exist in the band's "
-"catalogue."
+"Todos los instrumentos del fichero ya existen en el catálogo de la banda."
+msgstr "All instruments in the file already exist in the band's catalogue."
 
-#: templates/members/import_detail.html:68
-msgid "No se añadió ninguna cuerda ni instrumento al catálogo."
-msgstr "No section or instrument was added to the catalogue."
+#: templates/members/import_detail.html:63
+msgid "No se añadió ningún instrumento al catálogo."
+msgstr "No instrument was added to the catalogue."
 
-#: templates/members/import_detail.html:74
+#: templates/members/import_detail.html:69
 msgid "Row"
 msgstr "Row"
 
-#: templates/members/import_detail.html:74
+#: templates/members/import_detail.html:69
 msgid "External ID"
 msgstr "External ID"
 
-#: templates/members/import_detail.html:74 templates/members/list.html:21
+#: templates/members/import_detail.html:69 templates/members/list.html:21
 msgid "Name"
 msgstr "Name"
 
-#: templates/members/import_detail.html:74
+#: templates/members/import_detail.html:69
 msgid "Result"
 msgstr "Result"
 
-#: templates/members/import_detail.html:89
+#: templates/members/import_detail.html:84
 msgid "Created"
 msgstr "Created"
 
-#: templates/members/import_detail.html:90
+#: templates/members/import_detail.html:85
 msgid "Updated"
 msgstr "Updated"
 
-#: templates/members/import_detail.html:91
+#: templates/members/import_detail.html:86
 msgid "Rejected"
 msgstr "Rejected"
 
-#: templates/members/import_detail.html:92
+#: templates/members/import_detail.html:87
 msgid "Ready"
 msgstr "Ready"
 
-#: templates/members/import_detail.html:107
+#: templates/members/import_detail.html:102
 msgid "Confirm import"
 msgstr "Confirm import"
 
-#: templates/members/import_detail.html:110
+#: templates/members/import_detail.html:105
 msgid "No hay filas válidas para confirmar. Corrige el mapeo o el fichero."
 msgstr "There are no valid rows to confirm. Fix the mapping or the file."
 
@@ -3206,12 +3211,12 @@ msgstr ""
 
 #: templates/panel/my_access.html:29
 msgid ""
-"Los cargos de junta no conceden permisos por sí solos: los permisos dependen"
-" de estos roles. Si necesitas otro, pídeselo a la administración de la "
+"Los cargos de junta no conceden permisos por sí solos: los permisos dependen "
+"de estos roles. Si necesitas otro, pídeselo a la administración de la "
 "asociación."
 msgstr ""
-"Board positions do not grant permissions on their own: permissions depend on"
-" these roles. If you need another one, ask the association's administration."
+"Board positions do not grant permissions on their own: permissions depend on "
+"these roles. If you need another one, ask the association's administration."
 
 #: templates/panel/my_access.html:31
 msgid "Qué puedes hacer"
@@ -3235,11 +3240,11 @@ msgstr "Go to the board panel"
 
 #: templates/panel/my_access.html:58
 msgid ""
-"El panel de la junta es para los roles de gestión. Para ver tus "
-"convocatorias y responder, usa la aplicación del músico."
+"El panel de la junta es para los roles de gestión. Para ver tus convocatorias"
+" y responder, usa la aplicación del músico."
 msgstr ""
-"The board panel is for management roles. To see your invitations and "
-"respond, use the musician app."
+"The board panel is for management roles. To see your invitations and respond,"
+" use the musician app."
 
 #: templates/panel/my_access.html:59
 msgid "Abrir la aplicación del músico"
@@ -3328,8 +3333,8 @@ msgstr[1] "There are %(count)s recipients."
 #: templates/polls/detail.html:30
 msgid ""
 "La selección sustituye a la actual. Las personas marcadas son los "
-"destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus "
-"músicos activos."
+"destinatarios de ahora; añade cuerdas o instrumentos para sumar a sus músicos"
+" activos."
 msgstr ""
 "The selection replaces the current one. The ticked people are the current "
 "recipients; add sections or instruments to include their active musicians."
@@ -3344,8 +3349,8 @@ msgstr "Open voting"
 
 #: templates/polls/detail.html:49
 msgid ""
-"Al abrirla ya no se puede corregir y se avisa a las personas consultadas. El"
-" voto es anónimo: nadie, tampoco la junta, puede saber qué ha votado cada "
+"Al abrirla ya no se puede corregir y se avisa a las personas consultadas. El "
+"voto es anónimo: nadie, tampoco la junta, puede saber qué ha votado cada "
 "persona. Por eso un voto emitido no se puede cambiar ni retirar."
 msgstr ""
 "Once opened it can no longer be edited, and the people asked are notified. "
@@ -3371,8 +3376,8 @@ msgstr "%(voted)s of %(recipients)s people asked have voted."
 
 #: templates/polls/detail.html:69
 msgid ""
-"Mientras se vota no se muestra quién ha votado: junto al recuento "
-"provisional delataría el voto de cada persona."
+"Mientras se vota no se muestra quién ha votado: junto al recuento provisional"
+" delataría el voto de cada persona."
 msgstr ""
 "While voting is open, who has voted is not shown: together with the "
 "provisional count it would reveal each person's vote."
@@ -3391,11 +3396,11 @@ msgstr "Publish the results"
 
 #: templates/polls/detail.html:79
 msgid ""
-"La publicación es definitiva: el recuento queda como resultado de la "
-"encuesta y se avisa a las personas consultadas."
+"La publicación es definitiva: el recuento queda como resultado de la encuesta"
+" y se avisa a las personas consultadas."
 msgstr ""
-"Publishing is final: the count becomes the poll results and the people asked"
-" are notified."
+"Publishing is final: the count becomes the poll results and the people asked "
+"are notified."
 
 #: templates/polls/detail.html:83
 msgid "Publicar resultado"
@@ -3522,3 +3527,18 @@ msgstr "Activity"
 #: templates/shared/dashboard.html:62
 msgid "Invited"
 msgstr "Invited"
+
+#~ msgid "La cuerda pertenece a otra asociación."
+#~ msgstr "The section belongs to another association."
+
+#, python-format
+#~ msgid "Se creará %(counter)s cuerda:"
+#~ msgid_plural "Se crearán %(counter)s cuerdas:"
+#~ msgstr[0] "%(counter)s section will be created:"
+#~ msgstr[1] "%(counter)s sections will be created:"
+
+#, python-format
+#~ msgid "Se creó %(counter)s cuerda:"
+#~ msgid_plural "Se crearon %(counter)s cuerdas:"
+#~ msgstr[0] "%(counter)s section was created:"
+#~ msgstr[1] "%(counter)s sections were created:"

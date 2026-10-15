@@ -166,7 +166,7 @@ def eligible_members(association, *, member_ids=(), instrument_ids=(), section_i
     if section_ids:
         selection |= Q(
             member_instruments__instrument__section_id__in=section_ids,
-            member_instruments__instrument__section__association=association,
+            member_instruments__instrument__association=association,
         )
     if not selection:
         return members.none()

@@ -199,7 +199,7 @@ class MvpApiTests(APITestCase):
             first_name="Membre",
             last_name="Prova",
         )
-        section = Section.objects.create(association=self.association, name="Vent")
+        section = Section.objects.get(code="brass")
         activity = Activity.objects.create(
             association=self.association,
             created_by=self.user,
@@ -216,9 +216,10 @@ class MvpApiTests(APITestCase):
             {"name": "Modificat"},
             format="json",
         )
-        self.assertEqual(response.status_code, 403)
+        # Las cuerdas son un catálogo fijo común (decisión 0012): nadie las modifica por la API.
+        self.assertEqual(response.status_code, 405)
         section.refresh_from_db()
-        self.assertEqual(section.name, "Vent")
+        self.assertEqual(section.name, "Viento metal")
 
         response = self.client.delete(
             f"/api/v1/activities/{activity.id}/?association_id={self.association.id}"
@@ -227,7 +228,6 @@ class MvpApiTests(APITestCase):
         self.assertTrue(Activity.objects.filter(pk=activity.id).exists())
 
     def test_cross_association_relations_are_rejected(self):
-        foreign_section = Section.objects.create(association=self.other_association, name="Metall")
         foreign_member = Member.objects.create(
             association=self.other_association, first_name="Persona", last_name="Aliena"
         )
@@ -241,7 +241,7 @@ class MvpApiTests(APITestCase):
 
         response = self.client.post(
             f"/api/v1/instruments/?association_id={self.association.id}",
-            {"name": "Trompeta", "section": foreign_section.id},
+            {"name": "Trompeta", "section": 999999},
             format="json",
         )
         self.assertEqual(response.status_code, 400)
@@ -677,7 +677,7 @@ class MvpApiTests(APITestCase):
             self.assertEqual(member.last_name, "Soler Ferri")
             self.assertEqual(
                 list(member.member_instruments.values_list("instrument__name", "instrument__section__name")),
-                [("Clarinete", "Madera")],
+                [("Clarinete", "Viento madera")],
             )
 
     def test_import_requires_name_and_surname_mapping(self):

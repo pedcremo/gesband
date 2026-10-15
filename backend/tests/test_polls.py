@@ -255,7 +255,7 @@ class PollApiTests(APITestCase):
     # --- Destinatarios y aislamiento -------------------------------------
 
     def test_recipients_by_section_or_instrument(self):
-        brass = Section.objects.create(association=self.association, name="Metal")
+        brass = Section.objects.get(code="brass")
         trumpet = Instrument.objects.create(association=self.association, name="Trompeta", section=brass)
         clarinet = Instrument.objects.create(association=self.association, name="Clarinete")
         MemberInstrument.objects.create(member=self.ana_member, instrument=trumpet)

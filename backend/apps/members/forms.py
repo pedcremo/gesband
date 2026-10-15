@@ -80,8 +80,8 @@ class MemberForm(forms.ModelForm):
 
 def _instrument_label(instrument):
     if instrument.section_id:
-        return f"{instrument.name} ({instrument.section.name})"
-    return instrument.name
+        return f"{instrument.label} ({instrument.section.label})"
+    return instrument.label
 
 
 class PhotoForm(forms.Form):

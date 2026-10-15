@@ -74,21 +74,25 @@ class AssociationSerializer(serializers.ModelSerializer):
 
 
 class SectionSerializer(serializers.ModelSerializer):
+    """Cuerda común (decisión 0012); `name` llega en el idioma de la petición."""
+
+    name = serializers.CharField(source="label", read_only=True)
+
     class Meta:
         model = Section
-        fields = ["id", "name", "order"]
+        fields = ["id", "code", "name", "order"]
 
 
 class InstrumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instrument
-        fields = ["id", "name", "section"]
+        fields = ["id", "code", "name", "section"]
+        read_only_fields = ["code"]
 
-    def validate_section(self, section):
-        association_id = self.context.get("association_id")
-        if section and association_id and str(section.association_id) != str(association_id):
-            raise serializers.ValidationError(_("La cuerda pertenece a otra asociación."))
-        return section
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["name"] = instance.label
+        return data
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -101,7 +105,7 @@ class MemberSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "photo_url", "account"]
 
     def get_instruments(self, obj):
-        return [{"id": x.instrument_id, "name": x.instrument.name, "is_primary": x.is_primary} for x in obj.member_instruments.select_related("instrument")]
+        return [{"id": x.instrument_id, "name": x.instrument.label, "is_primary": x.is_primary} for x in obj.member_instruments.select_related("instrument")]
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
@@ -556,16 +560,15 @@ class MemberMePhotoView(MemberMeView):
 
 
 class SectionViewSet(ScopedViewSet):
+    """Catálogo fijo de cuerdas, común a todas las asociaciones: solo lectura."""
+
     serializer_class = SectionSerializer
     ordering = ("order", "name", "id")
+    http_method_names = ["get", "head", "options"]
 
     def get_queryset(self):
         self.check_access()
-        return Section.objects.filter(association_id=self.association_id())
-
-    def perform_create(self, serializer):
-        self.check_access(manager=True)
-        serializer.save(association_id=self.association_id())
+        return Section.objects.all()
 
 
 class InstrumentViewSet(ScopedViewSet):

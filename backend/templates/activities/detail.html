@@ -93,7 +93,7 @@
     <fieldset>
       <legend>{% translate "Cuerdas" %}</legend>
       {% for section in sections %}
-        <label><input type="checkbox" name="section_ids" value="{{ section.id }}"> {{ section.name }}</label>
+        <label><input type="checkbox" name="section_ids" value="{{ section.id }}"> {{ section.label }}</label>
       {% endfor %}
     </fieldset>
   {% endif %}
@@ -101,7 +101,7 @@
     <fieldset>
       <legend>{% translate "Instrumentos" %}</legend>
       {% for instrument in instruments %}
-        <label><input type="checkbox" name="instrument_ids" value="{{ instrument.id }}"> {{ instrument.name }}{% if instrument.section %} <span class="muted">({{ instrument.section.name }})</span>{% endif %}</label>
+        <label><input type="checkbox" name="instrument_ids" value="{{ instrument.id }}"> {{ instrument.label }}{% if instrument.section %} <span class="muted">({{ instrument.section.label }})</span>{% endif %}</label>
       {% endfor %}
     </fieldset>
   {% endif %}

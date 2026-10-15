@@ -71,6 +71,8 @@ El recorrido que debe quedar completo es:
 
 La ficha contemplará nombre, apellidos, DNI/NIE si resulta necesario, dirección, teléfono móvil, email, instrumentos, cuerda, tipo de miembro, estado y foto opcional. No todos los datos deberán ser obligatorios para participar en una convocatoria.
 
+Las cuerdas son comunes a todas las asociaciones y forman un catálogo fijo: Viento metal, Viento madera, Percusión, Cuerda frotada, Cuerda percutida y Cuerda pulsada. Los instrumentos pertenecen a cada asociación, que parte de un catálogo precargado en castellano, valenciano e inglés y puede añadir los suyos ([decisión 0012](docs/decisions/0012-cuerdas-comunes-e-instrumentos-precargados.md)).
+
 - Separar socios músicos, socios colaboradores y colaboradores musicales externos.
 - Permitir registrar un músico externo sin crear una asociación adicional ni darle acceso al censo.
 - Permitir varias vinculaciones de una cuenta con asociaciones, sin compartir automáticamente sus fichas privadas.

@@ -77,10 +77,11 @@ class RecipientSelectionForm(forms.Form):
     def __init__(self, association, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["section_ids"].choices = [
-            (str(section.pk), section.name) for section in Section.objects.filter(association=association)
+            (str(section.pk), section.label)
+            for section in Section.objects.filter(instruments__association=association).distinct()
         ]
         self.fields["instrument_ids"].choices = [
-            (str(instrument.pk), instrument.name)
+            (str(instrument.pk), instrument.label)
             for instrument in Instrument.objects.filter(association=association)
         ]
         self.fields["member_ids"].choices = [

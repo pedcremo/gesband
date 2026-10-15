@@ -196,5 +196,6 @@ El nombre y la zona horaria de la asociación los cambia el operador de la plata
   pantallas; ver [organizacion.md](organizacion.md).
 - Importar el censo o borrar definitivamente una ficha: es de `admin`.
 - Conceder o quitar el rol `admin`.
-- Dar de alta cuerdas o instrumentos desde el panel.
+- Dar de alta instrumentos propios desde el panel; por ahora se añaden con la
+  importación. Las cuerdas son comunes a todas las bandas y no se modifican.
 - Gestionar cuotas, pagos o liquidaciones: están fuera del MVP.

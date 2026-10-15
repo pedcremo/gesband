@@ -461,7 +461,7 @@ def _render_activity_detail(request, association, activity, change_form):
             "payment_incidents": sum(1 for state in payment_states if state.incident),
             "active_musicians_count": active_musicians_count,
             "change_form": change_form,
-            "sections": Section.objects.filter(association=association),
+            "sections": Section.objects.filter(instruments__association=association).distinct(),
             "instruments": Instrument.objects.filter(association=association).select_related("section"),
             "musicians": musicians,
         },
@@ -489,7 +489,7 @@ def _selected_members(request, association):
     """
     if not any(request.POST.getlist(name) for name in ("section_ids", "instrument_ids", "member_ids")):
         return None
-    section_ids = _ids_from(request, "section_ids", Section.objects.filter(association=association))
+    section_ids = _ids_from(request, "section_ids", Section.objects.all())
     instrument_ids = _ids_from(request, "instrument_ids", Instrument.objects.filter(association=association))
     member_ids = _ids_from(request, "member_ids", Member.objects.filter(association=association))
     member_ids |= set(

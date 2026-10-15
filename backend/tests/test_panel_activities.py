@@ -146,8 +146,8 @@ class SelectiveInvitationTests(PanelTestCase):
         super().setUp()
         self.board = self.account_with_roles(AssociationRole.Role.BOARD)
         self.web = self.web_for(self.board)
-        self.metal = Section.objects.create(association=self.association, name="Metal")
-        self.wood = Section.objects.create(association=self.association, name="Madera")
+        self.metal = Section.objects.get(code="brass")
+        self.wood = Section.objects.get(code="woodwind")
         self.trumpet = Instrument.objects.create(association=self.association, name="Trompeta", section=self.metal)
         self.trombone = Instrument.objects.create(association=self.association, name="Trombón", section=self.metal)
         self.clarinet = Instrument.objects.create(association=self.association, name="Clarinete", section=self.wood)
@@ -158,9 +158,10 @@ class SelectiveInvitationTests(PanelTestCase):
         self.flautist = self.plays("Flautista", self.flute)
         self.retired = self.plays("Retirado", self.trumpet, status=Member.Status.INACTIVE)
         self.patron = self.musician("Mecenas", kind=Member.Kind.SUPPORTER)
-        foreign_section = Section.objects.create(association=self.other_association, name="Metal")
+        # Cuerda común en la que solo toca gente de otra banda.
+        foreign_section = Section.objects.get(code="plucked_strings")
         foreign_instrument = Instrument.objects.create(
-            association=self.other_association, name="Trompeta", section=foreign_section
+            association=self.other_association, name="Guitarra", section=foreign_section
         )
         self.foreign_section = foreign_section
         self.foreign_instrument = foreign_instrument
