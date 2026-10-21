@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ca-valencia">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pràctica 1 · Git i GitHub amb Gesband</title>
+<style>
+  :root {
+    --ink: #1f2430;
+    --muted: #5b6272;
+    --line: #d9dde5;
+    --soft: #f4f6f9;
+    --accent: #8a2432;
+    --accent-soft: #f8ecee;
+    --ok: #1f6f4a;
+    --ok-soft: #e8f4ee;
+    --warn: #8a5a00;
+    --warn-soft: #fff5e0;
+    --code: #f1f1f4;
+  }
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 900px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.35rem; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.1rem; margin: 24px 0 8px; }
+  p, li { max-width: 72ch; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 0.9em; }
+  code { background: var(--code); padding: 1px 5px; border-radius: 4px; }
+  pre { background: var(--code); padding: 12px 14px; border-radius: 6px; overflow-x: auto; line-height: 1.45; }
+  pre code { background: none; padding: 0; }
+  .lead { color: var(--muted); font-size: 1.05rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
+  .meta li { background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 0.9rem; }
+  .box { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 4px; margin: 16px 0; }
+  .box.ok { border-color: var(--ok); background: var(--ok-soft); }
+  .box.warn { border-color: var(--warn); background: var(--warn-soft); }
+  .box > :first-child { margin-top: 0; }
+  .box > :last-child { margin-bottom: 0; }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.95rem; }
+  th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--soft); }
+  .group { border: 1px solid var(--line); border-radius: 8px; padding: 4px 16px 12px; margin: 16px 0; }
+  .group h3 { color: var(--accent); }
+  .tag { display: inline-block; font-size: 0.8rem; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+  ol.steps > li { margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Pràctica 1 · Treball en equip amb Git i GitHub sobre Gesband</h1>
+<p class="lead">Afegireu una funcionalitat xicoteta a una aplicació real. L'objectiu no és el codi, sinó aprendre a treballar diverses persones sobre el mateix repositori: branques, <em>pull requests</em>, revisió i, sobretot, resolució de conflictes.</p>
+<ul class="meta">
+  <li>Durada: 2 hores</li>
+  <li>6 grups de 3 persones</li>
+  <li>Eines: Git, GitHub, Python 3.13, Django</li>
+</ul>
+
+<h2>1. Què és Gesband</h2>
+<p>Gesband és una aplicació per a gestionar bandes de música: censa de músics, assajos i actuacions, convocatòries, respostes, assistència i avisos. Té dues parts:</p>
+<ul>
+  <li><strong>Servidor</strong> (carpeta <code>backend/</code>): Django i Django REST Framework. Inclou el <strong>panell de la junta</strong> (<code>/panel/</code>) i l'API (<code>/api/v1/</code>).</li>
+  <li><strong>App mòbil</strong> (carpeta <code>mobile/</code>): Flutter. En aquesta pràctica <strong>no la tocareu</strong>.</li>
+</ul>
+<p>Treballareu sobre una còpia del projecte preparada per a la classe. L'adreça del repositori la trobareu al Moodle.</p>
+
+<h2>2. Objectius d'aprenentatge</h2>
+<ul>
+  <li>Clonar un repositori, crear branques i fer <em>commits</em> amb missatges clars.</li>
+  <li>Publicar branques a GitHub i obrir <em>pull requests</em> (PR).</li>
+  <li>Revisar el codi d'una altra persona i aprovar o demanar canvis.</li>
+  <li>Entendre per què apareix un conflicte i resoldre'l sense perdre la feina de ningú.</li>
+  <li>Comprovar amb proves automàtiques que, després d'una fusió, tot continua funcionant.</li>
+</ul>
+
+<h2>3. Normes del repositori</h2>
+<div class="box warn">
+  <ul>
+    <li>Ningú no fa <em>commits</em> directament a <code>main</code>. Tot entra per PR.</li>
+    <li>Prohibit <code>git push --force</code> en branques compartides.</li>
+    <li>No pugeu <code>.venv/</code>, <code>backend/db.sqlite3</code>, contrasenyes ni dades reals. Useu només dades inventades.</li>
+    <li>Davant d'un conflicte, <strong>no esborreu el canvi de l'altra persona</strong> per a acabar abans: combineu les dues versions.</li>
+    <li>Un <em>commit</em> = un canvi amb sentit. Missatge en valencià i en present: <code>Afig el compte enrere a la pròxima activitat</code>.</li>
+  </ul>
+</div>
+
+<h2>4. Organització del grup</h2>
+<p>Cada grup té una funcionalitat (apartat 6). Repartiu-vos aquests tres rols:</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Rol</th><th>Què fa</th><th>Branca</th></tr></thead>
+  <tbody>
+    <tr><td><strong>A · Codi</strong></td><td>Implementa la vista, la plantilla o l'endpoint.</td><td><code>gN/a-codi</code></td></tr>
+    <tr><td><strong>B · Proves</strong></td><td>Escriu les proves automàtiques en <code>backend/tests/test_practica_gN.py</code>. Pot començar abans que el codi estiga fet: primer fallaran i, després de la fusió, han de passar.</td><td><code>gN/b-proves</code></td></tr>
+    <tr><td><strong>C · Documentació i integració</strong></td><td>Explica la funcionalitat en el manual de la junta (<code>docs/manuales/junta.md</code>), afig la línia del grup a <code>practicas/CHANGELOG.md</code> i porta la PR final cap a <code>main</code>.</td><td><code>gN/c-docs</code></td></tr>
+  </tbody>
+</table>
+</div>
+<p><code>N</code> és el número del grup. Les tres branques ixen de la branca del grup, <code>gN/funcionalitat</code>, i tornen a ella per PR. Al final, <code>gN/funcionalitat</code> entra en <code>main</code> amb una altra PR.</p>
+<pre><code>main
+ └── g3/funcionalitat ─────────────────────────┐ PR final (revisa un altre grup)
+      ├── g3/a-codi    ── PR ──┐               │
+      ├── g3/b-proves  ── PR ──┼──► g3/funcionalitat ──► main
+      └── g3/c-docs    ── PR ──┘</code></pre>
+
+<h2>5. Planificació de les 2 hores</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Temps</th><th>Fase</th><th>Resultat</th></tr></thead>
+  <tbody>
+    <tr><td>0:00 – 0:20</td><td>Posada en marxa</td><td>Repositori clonat i servidor funcionant en local.</td></tr>
+    <tr><td>0:20 – 0:40</td><td>Escalfament: primer conflicte dins del grup</td><td>Fitxa <code>practicas/equips/grupN.md</code> fusionada.</td></tr>
+    <tr><td>0:40 – 1:25</td><td>Desenvolupament de la funcionalitat</td><td>Tres PR fusionades en <code>gN/funcionalitat</code>.</td></tr>
+    <tr><td>1:25 – 1:50</td><td>Integració en <code>main</code>: conflictes entre grups</td><td>PR del grup revisada i fusionada.</td></tr>
+    <tr><td>1:50 – 2:00</td><td>Tancament</td><td>Lliurament al Moodle.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Fase 1 · Posada en marxa (20 min)</h3>
+<p>Cada persona, en el seu ordinador:</p>
+<pre><code># Identitat de Git (una sola vegada per ordinador)
+git config --global user.name "Nom Cognom"
+git config --global user.email "el-vostre-correu-de-github@exemple.com"
+
+# Clonar (l'adreça és al Moodle)
+git clone https://github.com/ORGANITZACIO/gesband-practiques.git
+cd gesband-practiques
+
+# Entorn de Python i base de dades local (SQLite)
+python3.13 -m venv .venv
+.venv/bin/pip install -r backend/requirements.txt
+.venv/bin/python backend/manage.py compilemessages --ignore=.venv
+.venv/bin/python backend/manage.py migrate
+.venv/bin/python backend/manage.py createsuperuser
+.venv/bin/python backend/manage.py runserver</code></pre>
+<p>Obriu <code>http://127.0.0.1:8000/admin/</code>, entreu amb l'usuari que heu creat i afegiu una <strong>Asociación</strong> inventada (per exemple, nom «Banda de Proves» i identificador <code>proves</code>). Després, en una altra terminal:</p>
+<pre><code>.venv/bin/python backend/manage.py seed_role_accounts --association proves</code></pre>
+<p>Ja podeu entrar en <code>http://127.0.0.1:8000/panel/</code> com a junta: usuari <code>prova-board</code>, contrasenya <code>Gesband.demo.2026</code>. Creeu dues o tres fitxes de músic i una activitat per a tindre dades.</p>
+<div class="box"><p>Si <code>compilemessages</code> falla, instal·leu <code>gettext</code> (<code>sudo apt install gettext</code>). Les proves completes del projecte tarden molt: durant la pràctica executeu només les vostres (apartat 7).</p></div>
+
+<h3>Fase 2 · Escalfament: el primer conflicte (20 min)</h3>
+<p>Provocarem a propòsit un conflicte dins del grup per a aprendre a resoldre'l amb calma.</p>
+<ol class="steps">
+  <li><strong>Persona C</strong> crea la branca del grup i la publica:
+<pre><code>git switch main
+git pull
+git switch -c gN/funcionalitat
+git push -u origin gN/funcionalitat</code></pre></li>
+  <li><strong>Les tres persones</strong> la baixen i creen la seua branca:
+<pre><code>git fetch
+git switch gN/funcionalitat
+git switch -c gN/a-codi      # o gN/b-proves, o gN/c-docs</code></pre></li>
+  <li>Cada persona edita <code>practicas/equips/grupN.md</code>: completa <strong>la seua fila</strong> de la taula i escriu un <strong>lema del grup diferent</strong> en la mateixa línia del final. Després:
+<pre><code>git add practicas/equips/grupN.md
+git commit -m "Afig les meues dades a la fitxa del grup"
+git push -u origin gN/a-codi</code></pre></li>
+  <li>Cada persona obri una PR de la seua branca cap a <code>gN/funcionalitat</code> (<strong>no</strong> cap a <code>main</code>!). Una altra persona del grup la revisa i la fusiona. La primera entra sense problemes; les altres dues mostraran <em>This branch has conflicts</em>.</li>
+  <li>Qui té el conflicte el resol en el seu ordinador:
+<pre><code>git fetch
+git merge origin/gN/funcionalitat
+# Git avisa: CONFLICT (content): Merge conflict in practicas/equips/grupN.md</code></pre>
+  Obriu el fitxer. Veureu marques com aquestes:
+<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+Lema del grup: Qui no s'equivoca, no fa commits
+=======
+Lema del grup: Merge o morir
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/g3/funcionalitat</code></pre>
+  Entre <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> i <code>=======</code> hi ha la vostra versió; entre <code>=======</code> i <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>, la que ja hi havia en la branca del grup. Decidiu en grup el lema final, esborreu les marques, comproveu que les files de la taula són les tres i acabeu:
+<pre><code>git add practicas/equips/grupN.md
+git commit            # Git proposa un missatge de fusió; deixeu-lo
+git push</code></pre>
+  La PR s'actualitza sola i ja es pot fusionar.</li>
+</ol>
+<div class="box ok"><p><strong>Idea clau:</strong> les files de la taula, cadascuna en una línia diferent, normalment es fusionen soles. El conflicte apareix quan dues persones canvien <strong>la mateixa línia</strong> o línies del costat.</p></div>
+
+<h3>Fase 3 · Desenvolupament (45 min)</h3>
+<p>Torneu a posar al dia la vostra branca abans de començar (<code>git fetch</code> i <code>git merge origin/gN/funcionalitat</code>) i treballeu en la funcionalitat de l'apartat 6, cadascú en el seu rol:</p>
+<ul>
+  <li>Feu <em>commits</em> xicotets i freqüents. Publiqueu-los amb <code>git push</code>.</li>
+  <li>Quan acabeu una part, obriu la PR cap a <code>gN/funcionalitat</code>. Descriviu què fa i com es prova.</li>
+  <li>Cada PR la revisa <strong>una altra persona del grup</strong>, que ha de deixar almenys un comentari en una línia concreta abans d'aprovar-la.</li>
+  <li>Ordre recomanat de fusió: <strong>A (codi) → B (proves) → C (documentació)</strong>. Després de fusionar A i B, les proves de B han de passar en <code>gN/funcionalitat</code>.</li>
+  <li>Totes les cadenes que veu l'usuari, amb <code>{% translate "…" %}</code> en les plantilles o <code>gettext</code> en Python. No editeu els fitxers <code>.po</code>: generarien conflictes enormes i no és l'objectiu.</li>
+</ul>
+
+<h3>Fase 4 · Integració en <code>main</code> (25 min)</h3>
+<p>Ara toca el conflicte de veritat. Els sis grups entraran en <code>main</code> un darrere l'altre, i diverses funcionalitats toquen els mateixos fitxers. A més, <strong>tots</strong> els grups han d'afegir la seua línia en la <strong>primera posició</strong> de la llista de <code>practicas/CHANGELOG.md</code>. Qui fusione més tard trobarà més conflictes.</p>
+<ol class="steps">
+  <li><strong>Persona C</strong> porta <code>main</code> a la branca del grup:
+<pre><code>git switch gN/funcionalitat
+git pull
+git fetch
+git merge origin/main</code></pre></li>
+  <li>Si hi ha conflictes, <code>git status</code> mostra els fitxers afectats (<em>both modified</em>). Resoleu-los <strong>amb tot el grup davant</strong>:
+    <ul>
+      <li>En <code>CHANGELOG.md</code>, les dues línies han de quedar. L'ordre entre elles no importa.</li>
+      <li>En codi Python o en plantilles, les dues funcionalitats han de continuar funcionant. Si dubteu, parleu amb el grup que ha escrit l'altre canvi.</li>
+      <li>Si dos grups afigen la mateixa configuració, deixeu-la <strong>una sola vegada</strong>.</li>
+    </ul></li>
+  <li>Abans del <em>commit</em> de fusió, comproveu que no queda cap marca i que les proves passen:
+<pre><code>git grep -n -E "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|=======|&gt;&gt;&gt;&gt;&gt;&gt;&gt;)"   # no ha d'eixir res
+.venv/bin/python backend/manage.py check
+.venv/bin/python backend/manage.py test backend.tests.test_practica_gN
+git add .
+git commit
+git push</code></pre></li>
+  <li>Obriu la PR <code>gN/funcionalitat → main</code>. La revisa una persona del grup següent (el grup 6 revisa el grup 1). Els comentaris es resolen abans de fusionar.</li>
+  <li>Si mentre esperàveu la revisió ha entrat un altre grup en <code>main</code>, torneu al pas 1. Quan la PR estiga aprovada i en verd, fusioneu-la.</li>
+</ol>
+<div class="box"><p>Si una fusió se us complica massa, podeu cancel·lar-la i tornar a l'estat anterior amb <code>git merge --abort</code>. No useu <code>git reset --hard</code> sense preguntar al professorat.</p></div>
+
+<h3>Fase 5 · Tancament (10 min)</h3>
+<p>Comproveu en GitHub la pestanya <em>Insights → Network</em> per a veure el dibuix de branques i fusions de tota la classe, i feu el lliurament de l'apartat 8.</p>
+
+<h2>6. Funcionalitats per grup</h2>
+<p>Totes són xicotetes. Si acabeu abans, milloreu les proves o ajudeu el grup que reviseu.</p>
+<p>Totes han de respectar dues regles del projecte: cada banda <strong>només veu les seues dades</strong> (una consulta mai no pot barrejar dades de dues associacions) i les dates es guarden en UTC però <strong>es mostren en la zona horària de la banda</strong>.</p>
+
+<div class="group">
+  <h3>Grup 1 · Músics per corda</h3>
+  <p>En el llistat de músics (<code>/panel/members/</code>), damunt de la taula, mostreu quantes fitxes <strong>actives</strong> hi ha per corda: <em>Fusta 12 · Metall 9 · Percussió 3</em>.</p>
+  <ul>
+    <li><strong>Fitxers:</strong> <code>backend/config/panel.py</code> (funció <code>members</code>), <code>backend/templates/members/list.html</code>.</li>
+    <li><strong>Pista:</strong> mireu en <code>backend/apps/members/models.py</code> com es relacionen <code>Member</code>, <code>MemberInstrument</code>, <code>Instrument</code> i <code>Section</code>. Useu <code>annotate(Count(...))</code> i compteu cada músic una sola vegada per corda encara que hi toque dos instruments.</li>
+    <li><strong>Proves mínimes:</strong> els comptadors són correctes; les fitxes de baixa no compten; els músics d'una <strong>altra associació</strong> no apareixen.</li>
+  </ul>
+</div>
+
+<div class="group">
+  <h3>Grup 2 · Compte enrere</h3>
+  <p>En el cartell de la pròxima activitat de la pàgina d'inici del panell, afegiu <em>«Hui»</em>, <em>«Demà»</em> o <em>«Falten N dies»</em>.</p>
+  <ul>
+    <li><strong>Fitxers:</strong> <code>backend/config/panel.py</code> (funció <code>dashboard</code>) o un filtre nou en <code>backend/apps/activities/templatetags/</code>; <code>backend/templates/shared/dashboard.html</code>.</li>
+    <li><strong>Pista:</strong> compteu dies de calendari en la zona de la banda (<code>association.timezone</code>), no blocs de 24 hores: una activitat demà a les 9:00 vista hui a les 23:00 és «Demà».</li>
+    <li><strong>Proves mínimes:</strong> la funció de càlcul amb dates fixes (hui, demà, d'ací a 5 dies, canvi d'hora d'octubre); la pàgina d'inici mostra el text.</li>
+  </ul>
+</div>
+
+<div class="group">
+  <h3>Grup 3 · Versió en el peu del panell</h3>
+  <p>Totes les pàgines del panell mostren un peu discret: <em>Gesband · versió 0.1.0</em>.</p>
+  <ul>
+    <li><strong>Fitxers:</strong> <code>backend/config/settings.py</code> (nova opció <code>GESBAND_VERSION = "0.1.0"</code> i registre del processador de context), <code>backend/config/context_processors.py</code> (nou), <code>backend/templates/shared/base.html</code>.</li>
+    <li><strong>Pista:</strong> un <em>context processor</em> és una funció que rep la petició i torna un diccionari que arriba a totes les plantilles.</li>
+    <li><strong>Proves mínimes:</strong> el panell mostra la versió; amb <code>@override_settings(GESBAND_VERSION="9.9.9")</code> mostra la nova.</li>
+  </ul>
+</div>
+
+<div class="group">
+  <h3>Grup 4 · Endpoint de versió</h3>
+  <p>Una adreça pública <code>GET /version/</code> que respon en JSON <code>{"name": "Gesband", "version": "0.1.0"}</code>, com ja fa <code>/health/</code>.</p>
+  <ul>
+    <li><strong>Fitxers:</strong> <code>backend/config/settings.py</code> (opció <code>GESBAND_VERSION = "0.1.0"</code>), <code>backend/config/urls.py</code>, i una vista on considereu adequat.</li>
+    <li><strong>Pista:</strong> mireu com està feta la ruta <code>health/</code> en <code>urls.py</code>. Accepteu només <code>GET</code>. No exposeu cap altra dada de la configuració.</li>
+    <li><strong>Proves mínimes:</strong> resposta 200 i JSON correcte sense iniciar sessió; <code>POST</code> torna 405; amb <code>override_settings</code> canvia la versió.</li>
+  </ul>
+</div>
+
+<div class="group">
+  <h3>Grup 5 · Contacte amb un clic</h3>
+  <p>En el llistat de músics, una columna nova <em>Contacte</em> amb enllaços <code>tel:</code> i <code>mailto:</code> perquè la junta puga telefonar o escriure des del mòbil.</p>
+  <ul>
+    <li><strong>Fitxers:</strong> <code>backend/templates/members/list.html</code>, un filtre nou en <code>backend/apps/members/templatetags/</code>.</li>
+    <li><strong>Pista:</strong> l'enllaç <code>tel:</code> no admet espais: <code>+34 600 000 001</code> → <code>tel:+34600000001</code>. Si una fitxa no té telèfon o correu, no mostreu l'enllaç buit. Recordeu canviar el <code>colspan</code> de la fila «no hi ha músics».</li>
+    <li><strong>Proves mínimes:</strong> el filtre amb números amb espais, guions i buits; el llistat conté els enllaços correctes.</li>
+  </ul>
+</div>
+
+<div class="group">
+  <h3>Grup 6 · Duració de l'activitat</h3>
+  <p>En el detall d'una activitat del panell, si té hora de final, mostreu <em>Duració: 2 h 30 min</em>.</p>
+  <ul>
+    <li><strong>Fitxers:</strong> un filtre nou en <code>backend/apps/activities/templatetags/</code>, <code>backend/templates/activities/detail.html</code>.</li>
+    <li><strong>Pista:</strong> <code>ends_at - starts_at</code> és un <code>timedelta</code>. Formats: <em>45 min</em>, <em>2 h</em>, <em>2 h 30 min</em>. Si no hi ha final, o el final és anterior a l'inici, no mostreu res.</li>
+    <li><strong>Proves mínimes:</strong> el filtre amb els tres formats i els dos casos sense duració; la pàgina de detall mostra el text.</li>
+  </ul>
+</div>
+
+<div class="box"><p><strong>Tots els grups</strong> també modifiquen <code>docs/manuales/junta.md</code> (una explicació breu de la funcionalitat) i <code>practicas/CHANGELOG.md</code> (una línia en la primera posició de la llista). Fixeu-vos en la taula de fitxers: hi ha grups que coincidiran en el mateix fitxer. No és un error de l'enunciat.</p></div>
+
+<h2>7. Com escriure i executar les proves</h2>
+<p>El projecte usa les proves de Django. Mireu algun fitxer de <code>backend/tests/</code> (per exemple, <code>test_panel_activities.py</code>) per a veure com es creen una associació, un usuari amb rol de junta i com s'entra en el panell. Esquelet:</p>
+<pre><code>from django.test import TestCase
+
+
+class VersionEndpointTests(TestCase):
+    def test_returns_name_and_version(self):
+        response = self.client.get("/version/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["name"], "Gesband")</code></pre>
+<p>Executeu només el vostre fitxer i, abans de la PR final, també el mòdul del panell que heu tocat:</p>
+<pre><code>.venv/bin/python backend/manage.py test backend.tests.test_practica_gN
+.venv/bin/python backend/manage.py test backend.tests.test_panel_activities</code></pre>
+<p>Quan obriu una PR, GitHub executa automàticament la integració contínua (pestanya <em>Checks</em>). Una PR en roig no es fusiona.</p>
+
+<h2>8. Lliurament al Moodle</h2>
+<p>Una entrega per grup (la fa la persona C) amb:</p>
+<ol>
+  <li>L'enllaç a la PR <code>gN/funcionalitat → main</code> fusionada.</li>
+  <li>Una captura de la funcionalitat en el navegador.</li>
+  <li>Una captura d'un conflicte abans de resoldre'l (amb les marques) i del mateix fitxer després.</li>
+  <li>Responeu breument, en un text de grup:
+    <ul>
+      <li>Quins conflictes heu tingut, amb quins grups i com els heu resolt?</li>
+      <li>Quin conflicte s'hauria pogut evitar organitzant-vos d'una altra manera, i com?</li>
+      <li>Per què no s'ha de resoldre un conflicte quedant-se sempre amb «la meua versió»?</li>
+    </ul></li>
+</ol>
+
+<h2>9. Avaluació</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Criteri</th><th>Pes</th><th>Què es mira</th></tr></thead>
+  <tbody>
+    <tr><td>Flux de treball</td><td>30 %</td><td>Branques amb el nom indicat, cap <em>commit</em> directe a <code>main</code>, PR cap a la branca correcta, <em>commits</em> xicotets amb missatges clars.</td></tr>
+    <tr><td>Resolució de conflictes</td><td>25 %</td><td>Cap marca de conflicte en <code>main</code>, cap canvi d'un altre grup perdut, proves en verd després de la fusió.</td></tr>
+    <tr><td>Revisió de codi</td><td>15 %</td><td>Comentaris concrets i útils en les PR revisades, dins i fora del grup.</td></tr>
+    <tr><td>Funcionalitat i proves</td><td>20 %</td><td>Fa el que demana l'enunciat, respecta l'aïllament entre bandes i té proves que passen.</td></tr>
+    <tr><td>Lliurament i reflexió</td><td>10 %</td><td>Captures i respostes de l'apartat 8.</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Cada persona ha de tindre almenys un <em>commit</em> propi i una revisió feta. Es comprovarà amb l'historial de GitHub.</p>
+
+<h2>10. Xuleta de Git</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Vull…</th><th>Ordre</th></tr></thead>
+  <tbody>
+    <tr><td>Veure en quina branca estic i què he canviat</td><td><code>git status</code></td></tr>
+    <tr><td>Veure els canvis exactes abans d'afegir-los</td><td><code>git diff</code></td></tr>
+    <tr><td>Crear una branca i canviar-me a ella</td><td><code>git switch -c nom-branca</code></td></tr>
+    <tr><td>Canviar a una branca existent</td><td><code>git switch nom-branca</code></td></tr>
+    <tr><td>Preparar i confirmar canvis</td><td><code>git add fitxer</code> · <code>git commit -m "Missatge"</code></td></tr>
+    <tr><td>Publicar una branca nova</td><td><code>git push -u origin nom-branca</code></td></tr>
+    <tr><td>Baixar novetats sense tocar els meus fitxers</td><td><code>git fetch</code></td></tr>
+    <tr><td>Portar els canvis d'una altra branca a la meua</td><td><code>git merge origin/altra-branca</code></td></tr>
+    <tr><td>Cancel·lar una fusió amb conflictes</td><td><code>git merge --abort</code></td></tr>
+    <tr><td>Veure l'historial com un arbre</td><td><code>git log --oneline --graph --all</code></td></tr>
+    <tr><td>Saber qui va escriure cada línia</td><td><code>git blame fitxer</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+</main>
+</body>
+</html>
