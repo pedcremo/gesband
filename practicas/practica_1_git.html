@@ -69,7 +69,7 @@
   <li><strong>Servidor</strong> (carpeta <code>backend/</code>): Django i Django REST Framework. Inclou el <strong>panell de la junta</strong> (<code>/panel/</code>) i l'API (<code>/api/v1/</code>).</li>
   <li><strong>App mòbil</strong> (carpeta <code>mobile/</code>): Flutter. En aquesta pràctica <strong>no la tocareu</strong>.</li>
 </ul>
-<p>Treballareu sobre una còpia del projecte preparada per a la classe. L'adreça del repositori la trobareu al Moodle.</p>
+<p>Treballareu sobre una còpia del projecte preparada per a la classe: <a href="https://github.com/pedcremo/gesband_practicas">github.com/pedcremo/gesband_practicas</a>. El propietari és el professor; per a poder publicar-hi branques necessiteu permís d'escriptura (fase 0).</p>
 
 <h2>2. Objectius d'aprenentatge</h2>
 <ul>
@@ -115,14 +115,26 @@
 <table>
   <thead><tr><th>Temps</th><th>Fase</th><th>Resultat</th></tr></thead>
   <tbody>
+    <tr><td>Abans de classe</td><td>Compte de GitHub i accés al repositori</td><td>Invitació acceptada.</td></tr>
     <tr><td>0:00 – 0:20</td><td>Posada en marxa</td><td>Repositori clonat i servidor funcionant en local.</td></tr>
     <tr><td>0:20 – 0:40</td><td>Escalfament: primer conflicte dins del grup</td><td>Fitxa <code>practicas/equips/grupN.md</code> fusionada.</td></tr>
     <tr><td>0:40 – 1:25</td><td>Desenvolupament de la funcionalitat</td><td>Tres PR fusionades en <code>gN/funcionalitat</code>.</td></tr>
     <tr><td>1:25 – 1:50</td><td>Integració en <code>main</code>: conflictes entre grups</td><td>PR del grup revisada i fusionada.</td></tr>
-    <tr><td>1:50 – 2:00</td><td>Tancament</td><td>Lliurament al Moodle.</td></tr>
+    <tr><td>1:50 – 2:00</td><td>Tancament</td><td>Lliurament a Aules FP.</td></tr>
   </tbody>
 </table>
 </div>
+
+<h3>Fase 0 · Compte de GitHub i accés al repositori (abans de classe)</h3>
+<p>Sense aquest pas no podreu publicar cap branca. Feu-lo abans de la sessió: l'invitació no arriba al moment.</p>
+<ol class="steps">
+  <li>Si encara no en teniu, creeu un compte en <a href="https://github.com/signup">github.com/signup</a>. Useu un nom d'usuari reconeixible (per exemple, <code>nomcognom</code>) i verifiqueu el correu.</li>
+  <li>Activeu la verificació en dos passos (<em>Settings → Password and authentication</em>). GitHub l'exigeix per a contribuir.</li>
+  <li>Demaneu accés d'escriptura al propietari: envieu al professor, per Aules FP, el vostre <strong>nom d'usuari de GitHub</strong> i el vostre <strong>grup</strong>. No envieu mai la contrasenya.</li>
+  <li>El professor vos afegirà com a col·laboradors. Rebreu un correu de GitHub: accepteu la invitació des del correu o en <a href="https://github.com/pedcremo/gesband_practicas/invitations">github.com/pedcremo/gesband_practicas/invitations</a>. Caduca als 7 dies.</li>
+  <li>Comproveu-ho després d'iniciar sessió (vegeu el quadre): <code>gh repo view pedcremo/gesband_practicas --json viewerPermission</code> ha de respondre <code>WRITE</code>. Si respon <code>READ</code>, encara no heu acceptat la invitació.</li>
+</ol>
+<div class="box"><p>Per a fer <code>git push</code> per HTTPS, GitHub no accepta la contrasenya del compte. Inicieu sessió una vegada amb <code>gh auth login</code> (GitHub CLI) o creeu un <em>personal access token</em> i useu-lo com a contrasenya.</p></div>
 
 <h3>Fase 1 · Posada en marxa (20 min)</h3>
 <p>Cada persona, en el seu ordinador:</p>
@@ -130,9 +142,9 @@
 git config --global user.name "Nom Cognom"
 git config --global user.email "el-vostre-correu-de-github@exemple.com"
 
-# Clonar (l'adreça és al Moodle)
-git clone https://github.com/ORGANITZACIO/gesband-practiques.git
-cd gesband-practiques
+# Clonar
+git clone https://github.com/pedcremo/gesband_practicas.git
+cd gesband_practicas
 
 # Entorn de Python i base de dades local (SQLite)
 python3.13 -m venv .venv
@@ -302,7 +314,7 @@ class VersionEndpointTests(TestCase):
 .venv/bin/python backend/manage.py test backend.tests.test_panel_activities</code></pre>
 <p>Quan obriu una PR, GitHub executa automàticament la integració contínua (pestanya <em>Checks</em>). Una PR en roig no es fusiona.</p>
 
-<h2>8. Lliurament al Moodle</h2>
+<h2>8. Lliurament a Aules FP</h2>
 <p>Una entrega per grup (la fa la persona C) amb:</p>
 <ol>
   <li>L'enllaç a la PR <code>gN/funcionalitat → main</code> fusionada.</li>

@@ -1,34 +1,45 @@
 # Prácticas con el alumnado
 
 Material para usar Gesband como proyecto de clase. Los enunciados para el alumnado
-están en valenciano y preparados para subirse a Moodle.
+están en valenciano y preparados para subirse a Aules FP (el Moodle de la Conselleria).
 
 | Archivo | Uso |
 | --- | --- |
-| `practica_1_git.html` | Enunciado de la práctica 1 (Git, GitHub y conflictos, 2 horas, 6 grupos de 3). Se sube a Moodle como recurso *Archivo*. Si se pega en un recurso *Página*, Moodle puede descartar los estilos, pero el contenido sigue siendo legible. |
+| `practica_1_git.html` | Enunciado de la práctica 1 (Git, GitHub y conflictos, 2 horas, 6 grupos de 3). Se sube a Aules FP como recurso *Archivo*. Si se pega en un recurso *Página*, Aules FP puede descartar los estilos, pero el contenido sigue siendo legible. |
 | `CHANGELOG.md` | Archivo común: cada grupo añade su línea en primera posición. Provoca conflictos entre grupos a propósito. |
 | `equips/grupN.md` | Ficha de cada grupo. Las tres personas escriben un lema distinto en la misma línea: primer conflicto, dentro del grupo. |
 
 ## Preparación de la práctica 1 (profesorado)
 
-1. Crear una copia de clase. No usar `pedcremo/gesband`: el alumnado necesita
-   permiso de escritura y la práctica llena el historial de ramas.
+1. Copia de clase: [`pedcremo/gesband_practicas`](https://github.com/pedcremo/gesband_practicas),
+   creada el 21/10/2026 desde `main` de `pedcremo/gesband`. No usar `pedcremo/gesband`:
+   el alumnado necesita escritura y la práctica integra en `main` ramas y PR que no
+   deben llegar al producto ni al despliegue del piloto. No es un fork porque GitHub
+   no permite hacer un fork de un repositorio propio en la misma cuenta. Para
+   recrearla otro curso:
 
    ```bash
-   gh repo create ORGANIZACION/gesband-practiques --public
-   git push https://github.com/ORGANIZACION/gesband-practiques.git main:main
+   gh repo create pedcremo/gesband_practicas --public
+   git push https://github.com/pedcremo/gesband_practicas.git main:main
    ```
 
-   La protección de ramas en repositorios privados de una organización gratuita no
-   está disponible; con GitHub Education (plan Team) sí. Por eso el ejemplo usa uno
-   público. El código ya es público y solo contiene datos sintéticos.
+   Es pública porque la protección de ramas no está disponible en repositorios
+   privados de cuentas gratuitas. El código ya es público y solo tiene datos sintéticos.
 
-2. Proteger `main`: *Settings → Branches → Add rule*, exigir PR con una aprobación
-   e impedir `force push`. Si se exige además que la CI esté en verde, tener en cuenta
+2. Proteger `main` (ya hecho en la copia actual): *Settings → Branches → Add rule*,
+   exigir PR con una aprobación e impedir `force push`. Si se exige además que la CI esté en verde, tener en cuenta
    que `Backend CI` solo se ejecuta cuando la PR toca `backend/`.
-3. Invitar a las 18 personas como colaboradoras (*Settings → Collaborators*), o
-   crear un equipo por grupo en la organización.
-4. Publicar en Moodle la URL del repositorio y el enunciado.
+3. Recoger en Aules FP el usuario de GitHub y el grupo de cada persona (fase 0 del
+   enunciado) e invitarlas como colaboradoras (*Settings → Collaborators*), por ejemplo:
+
+   ```bash
+   gh api -X PUT repos/pedcremo/gesband_practicas/collaborators/USUARIO -f permission=push
+   ```
+
+   Las invitaciones caducan a los 7 días. En un repositorio personal, colaborador
+   implica escritura; `main` queda protegida por la regla del paso 2, que no se aplica
+   al propietario.
+4. Publicar el enunciado en Aules FP.
 
 La CI ejecuta la suite completa del backend en cada `push` con cambios en
 `backend/`. Con 18 personas habrá muchas ejecuciones en paralelo; en un
