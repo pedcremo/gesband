@@ -92,6 +92,31 @@
   </ul>
 </div>
 
+<h3>Ús d'eines d'intel·ligència artificial</h3>
+<p>Podeu usar models d'IA gratuïts per a programar, escriure proves i redactar la documentació. Alguns que funcionen bé amb aquest projecte:</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Eina</th><th>Tipus</th><th>Comentari</th></tr></thead>
+  <tbody>
+    <tr><td><a href="https://antigravity.google/">Google Antigravity</a></td><td>Editor amb agent</td><td>Basat en VS Code, amb models Gemini. Pot llegir i editar tot el projecte.</td></tr>
+    <tr><td><a href="https://opencode.ai/">OpenCode</a></td><td>Agent en la terminal</td><td>Codi obert. Admet models gratuïts i també models locals amb Ollama.</td></tr>
+    <tr><td><a href="https://github.com/features/copilot">GitHub Copilot</a></td><td>Extensió de VS Code</td><td>Té pla gratuït, i Copilot Pro és gratuït per a estudiants verificats amb <a href="https://education.github.com/pack">GitHub Education</a>.</td></tr>
+    <tr><td><a href="https://chatgpt.com/">ChatGPT</a>, <a href="https://gemini.google.com/">Gemini</a>, <a href="https://claude.ai/">Claude</a></td><td>Xat web</td><td>Per a preguntar dubtes, entendre un error o revisar un fragment. No veuen el vostre projecte si no els el copieu.</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Els plans gratuïts tenen límits d'ús que canvien sovint. Si se vos acaba la quota, canvieu d'eina. Les eines amb agent llegeixen el fitxer <code>AGENTS.md</code> de l'arrel, amb les regles del projecte.</p>
+<div class="box warn">
+  <ul>
+    <li><strong>Qui fa el <em>commit</em> respon del codi.</strong> Heu de poder explicar cada línia en la revisió de la PR. «Ho ha fet la IA» no és una resposta.</li>
+    <li><strong>Els conflictes els resoleu vosaltres.</strong> La IA vos pot explicar què fa cada versió, però decidiu vosaltres com combinar-les i comproveu que no es perd res. És l'objectiu principal de la pràctica.</li>
+    <li>No deixeu que un agent faça <code>push</code>, fusione PR ni use <code>--force</code> pel seu compte. Reviseu el <code>git diff</code> abans de cada <em>commit</em>.</li>
+    <li>Comproveu que les proves generades fallen sense el vostre codi i passen amb ell. Una prova que sempre passa no prova res.</li>
+    <li>No hi copieu contrasenyes, <em>tokens</em> ni dades personals reals.</li>
+    <li>Declareu-ho: en la descripció de cada PR, afegiu una línia <code>IA: eina usada i per a què</code> (o <code>IA: cap</code>).</li>
+  </ul>
+</div>
+
 <h2>4. Organització del grup</h2>
 <p>Cada grup té una funcionalitat (apartat 6). Repartiu-vos aquests tres rols:</p>
 <div class="table-wrap">
@@ -327,6 +352,7 @@ class VersionEndpointTests(TestCase):
       <li>Quins conflictes heu tingut, amb quins grups i com els heu resolt?</li>
       <li>Quin conflicte s'hauria pogut evitar organitzant-vos d'una altra manera, i com?</li>
       <li>Per què no s'ha de resoldre un conflicte quedant-se sempre amb «la meua versió»?</li>
+      <li>Quines eines d'IA heu usat, per a què, i en què vos han ajudat o vos han fet equivocar?</li>
     </ul></li>
 </ol>
 

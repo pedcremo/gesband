@@ -49,6 +49,16 @@ La CI ejecuta la suite completa del backend en cada `push` con cambios en
 `backend/`. Con 18 personas habrá muchas ejecuciones en paralelo; en un
 repositorio público no consumen minutos de pago.
 
+## Uso de IA
+
+El enunciado permite herramientas de IA gratuitas (Antigravity, OpenCode, Copilot,
+ChatGPT, Gemini, Claude) con estas condiciones: quien hace el commit debe poder
+explicarlo, los conflictos los resuelve el alumnado, ningún agente hace `push` ni
+fusiona por su cuenta, y cada PR declara una línea `IA: ...`. Esa línea y la
+pregunta sobre IA de la entrega sirven para la rúbrica. Las herramientas con agente
+leen `AGENTS.md`, que describe el producto completo y no la práctica; conviene
+recordar al alumnado que el alcance es el de su apartado 6.
+
 ## Mapa de conflictos previstos
 
 Sirve para anticipar dónde se atascarán los grupos en la fase 4.
