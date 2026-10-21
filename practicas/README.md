@@ -39,7 +39,11 @@ están en valenciano y preparados para subirse a Aules FP (el Moodle de la Conse
    Las invitaciones caducan a los 7 días. En un repositorio personal, colaborador
    implica escritura; `main` queda protegida por la regla del paso 2, que no se aplica
    al propietario.
-4. Publicar el enunciado en Aules FP.
+4. Permitir solo *merge commit* (ya hecho en la copia actual: *Settings → General →
+   Pull Requests*, desactivar *squash* y *rebase*). Así se conserva el autor de cada
+   commit, que la evaluación necesita. El enunciado pide además que `user.email` sea
+   un correo verificado de su cuenta de GitHub.
+5. Publicar el enunciado en Aules FP.
 
 La CI ejecuta la suite completa del backend en cada `push` con cambios en
 `backend/`. Con 18 personas habrá muchas ejecuciones en paralelo; en un

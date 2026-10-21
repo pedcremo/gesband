@@ -153,6 +153,7 @@ python3.13 -m venv .venv
 .venv/bin/python backend/manage.py migrate
 .venv/bin/python backend/manage.py createsuperuser
 .venv/bin/python backend/manage.py runserver</code></pre>
+<div class="box warn"><p><strong>El correu de <code>user.email</code> ha de ser un correu verificat del vostre compte de GitHub</strong> (<em>Settings → Emails</em>), o l'adreça <code>…@users.noreply.github.com</code> que hi apareix si teniu el correu ocult. Si no coincideix, GitHub no vos atribueix els <em>commits</em> i en l'avaluació constarà que no heu fet cap. Comproveu-ho amb <code>git config user.email</code> abans del primer <em>commit</em>.</p></div>
 <p>Obriu <code>http://127.0.0.1:8000/admin/</code>, entreu amb l'usuari que heu creat i afegiu una <strong>Asociación</strong> inventada (per exemple, nom «Banda de Proves» i identificador <code>proves</code>). Després, en una altra terminal:</p>
 <pre><code>.venv/bin/python backend/manage.py seed_role_accounts --association proves</code></pre>
 <p>Ja podeu entrar en <code>http://127.0.0.1:8000/panel/</code> com a junta: usuari <code>prova-board</code>, contrasenya <code>Gesband.demo.2026</code>. Creeu dues o tres fitxes de músic i una activitat per a tindre dades.</p>
